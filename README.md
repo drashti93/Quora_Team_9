@@ -1,3 +1,3 @@
 # Quora_Team_9
 
-This is Sanjas's first dummy commit
+Quora mock developed as part of final project for CMPE277 in SJSU
