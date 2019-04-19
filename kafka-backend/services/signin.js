@@ -3,7 +3,7 @@ var bcrypt = require('bcrypt');
 
 
 function handle_request(msg, callback){
-    var ressssss = {};
+    var res = {};
     console.log("In handle request:"+ JSON.stringify(msg));
     mongo.connect(function(err,db){
         if(err){
