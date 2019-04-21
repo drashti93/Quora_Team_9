@@ -1,9 +1,14 @@
 //import the require dependencies
 var express = require("express");
 var app = express();
-var bodyParser = require("body-parser");
-var cors = require("cors");
-var kafka = require("./kafka/client");
+var bodyParser = require('body-parser');
+var cors = require('cors');
+var mongoose = require('./src/resources/mongoose');
+var passport = require('passport');
+var kafka = require('./kafka/client');
+var session = require('express-session');
+var MongoDBStore = require('connect-mongodb-session')(session);
+
 //use cors to allow cross origin resource sharing
 app.use(
 	cors({
@@ -11,13 +16,16 @@ app.use(
 		credentials: true
 	})
 );
+
 app.use(bodyParser.json());
+app.use(passport.initialize());
+require('./config/passport')(passport);
 
 require("dotenv").config();
 
 //Allow Access Control
 app.use(function(req, res, next) {
-	res.setHeader(
+    res.setHeader(
 		"Access-Control-Allow-Origin",
 		`${process.env.FRONT_END_URL}:${process.env.FRONT_END_PORT}`
 	);
@@ -34,6 +42,23 @@ app.use(function(req, res, next) {
 	next();
 });
 
+  var sessionStore = new MongoDBStore({
+    uri: 'mongodb://root:root@cluster0-shard-00-00-ptqwg.mongodb.net:27017,cluster0-shard-00-01-ptqwg.mongodb.net:27017,cluster0-shard-00-02-ptqwg.mongodb.net:27017/quora?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin',
+    collection: 'q_sessions'
+  });
+
+  app.use(session({
+    secret: "Iamsupersecretsecret",
+    resave: false,
+    saveUninitialized: false,
+    duration: 600000000000 * 60 * 1000,
+    activeDuration: 6 * 60 * 60 * 1000,
+     cookie : {
+          maxAge: 1000* 60 * 60 *24 * 365,
+          expires : 3600000 * 24 * 60
+  },
+  store: sessionStore
+  }));
 //Route to get All Books when user visits the Home Page
 /*app.get('/books', function(req,res){   
     res.writeHead(200,{
@@ -43,30 +68,6 @@ app.use(function(req, res, next) {
     
 });
 */
-app.post("/book", function(req, res) {
-
-    // console.log(`In side POST /book`);
-    // console.log(`${req.body.bookid}`);
-    // res.status(200).json(req.body.bookid);
-
-	kafka.make_request("post_book", req.body, function(err, results) {
-		console.log("in result");
-		console.log(results);
-		if (err) {
-			console.log("Inside err");
-			res.json({
-				status: "error",
-				msg: "System Error, Try Again."
-			});
-		} else {
-			console.log("Inside else");
-			res.json({
-				updatedList: results
-			});
-			res.end();
-		}
-	});
-});
 //start your server on port 3001
 app.listen(process.env.BACK_END_PORT);
 console.log(`Server Listening on port ${process.env.BACK_END_PORT}`);
