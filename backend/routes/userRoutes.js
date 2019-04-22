@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('../resources/mongoose');
 
-const QuestionSchema = require('../model/QuestionSchema')
+const UserSchema = require('../model/UserSchema')
 
 
-router.post('/:questionId/follow/enable', function(request, response) {
+router.post('/:userId/follow/enable', function(request, response) {
 
-	console.log(`\n\nInside Post /question/:questionId/follow/enable`);
-	QuestionSchema.findOneAndUpdate(
-		{ CourseId: request.params.questionId },
+	console.log(`\n\nInside Post /users/:userId/follow/enable`);
+	UserSchema.findOneAndUpdate(
+		{ userId: request.params.userId },
 		{
 			$set: {
 				isFollowAllowed: true
@@ -18,11 +18,11 @@ router.post('/:questionId/follow/enable', function(request, response) {
 		{new: true},
 		(error, questionDocument) => {
 			if (err) {
-				console.log(`Error while enabling follow for the question ${request.params.questionId}:\n ${error}`);
+				console.log(`Error while enabling follow for the user ${request.params.userId}:\n ${error}`);
 				// response.status(500).json({ error: err, message: "Attaching Files to Course Failed" });
-				response.status(500).json({error: error, message: `Error while enabling follow for the question ${request.params.questionId}`});
+				response.status(500).json({error: error, message: `Error while enabling follow for the user ${request.params.userId}`});
 			} else {
-				console.log(`Sucessfully enabled follow for the question ${request.params.questionId}:\n ${questionDocument}`);
+				console.log(`Sucessfully enabled follow for the user ${request.params.userId}:\n ${questionDocument}`);
 				response.status(200).json(questionDocument);
 			}
 		}
@@ -30,11 +30,11 @@ router.post('/:questionId/follow/enable', function(request, response) {
 });
 
 
-router.post('/:questionId/follow/disable', function(request, response) {
+router.post('/:userId/follow/disable', function(request, response) {
 
-	console.log(`\n\nInside Post /question/:questionId/follow/disable`);
-	QuestionSchema.findOneAndUpdate(
-		{ CourseId: request.params.questionId },
+	console.log(`\n\nInside Post /users/:userId/follow/disable`);
+	UserSchema.findOneAndUpdate(
+		{ userId: request.params.userId },
 		{
 			$set: {
 				isFollowAllowed: false

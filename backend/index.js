@@ -4,7 +4,7 @@ var app = express();
 var bodyParser = require("body-parser");
 var cors = require("cors");
 var mongoose = require("./resources/mongoose");
-var passport = require("./config/passport");
+var passport = require("passport");
 var kafka = require("./kafka/client");
 var session = require("express-session");
 var MongoDBStore = require("connect-mongodb-session")(session);
@@ -16,7 +16,7 @@ app.use(
 		credentials: true
 	})
 );
-
+require('./config/passport');
 app.use(bodyParser.json());
 app.use(passport.initialize());
 require("./config/passport")(passport);
@@ -72,13 +72,11 @@ app.use(
 });
 */
 
+const userRoutes = require("./routes/userRoutes");
+const fileUploadRoutes = require("./routes/fileUploadRoute");
 
-const questionRoutes = require('./routes/questionRoutes');
-const fileUploadRoutes = require('./routes/fileUploadRoute');
-
-app.use('/questions', questionRoutes);
-app.use('/uploads', fileUploadRoutes);
-
+app.use("/users", userRoutes);
+app.use("/uploads", fileUploadRoutes);
 
 //start your server on port 3001
 app.listen(process.env.BACK_END_PORT);

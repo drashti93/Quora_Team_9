@@ -21,12 +21,10 @@ const QuestionSchema = new Schema({
 			type: Schema.Types.ObjectId,
 			ref: "answers"
 		}
-	],
-	isFollowAllowed: {
-		type: Boolean
-	},
-	timestamps: true
+	]
 });
+
+QuestionSchema.set('timestamps', true);
 
 const QuestionModel = mongoose.model("questions", QuestionSchema, "Questions");
 module.exports = QuestionModel;
