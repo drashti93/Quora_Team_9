@@ -17,16 +17,16 @@ app.use(
 		credentials: true
 	})
 );
-
+require('./config/passport');
 app.use(bodyParser.json());
 app.use(passport.initialize());
-require('./config/passport')(passport);
+require("./config/passport")(passport);
 
 require("dotenv").config();
 
 //Allow Access Control
 app.use(function(req, res, next) {
-    res.setHeader(
+	res.setHeader(
 		"Access-Control-Allow-Origin",
 		`${process.env.FRONT_END_URL}:${process.env.FRONT_END_PORT}`
 	);
@@ -43,10 +43,11 @@ app.use(function(req, res, next) {
 	next();
 });
 
-  var sessionStore = new MongoDBStore({
-    uri: 'mongodb://root:root@cluster0-shard-00-00-ptqwg.mongodb.net:27017,cluster0-shard-00-01-ptqwg.mongodb.net:27017,cluster0-shard-00-02-ptqwg.mongodb.net:27017/quora?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin',
-    collection: 'q_sessions'
-  });
+var sessionStore = new MongoDBStore({
+	uri:
+		"mongodb://root:root@cluster0-shard-00-00-ptqwg.mongodb.net:27017,cluster0-shard-00-01-ptqwg.mongodb.net:27017,cluster0-shard-00-02-ptqwg.mongodb.net:27017/quora?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin",
+	collection: "q_sessions"
+});
 
   app.use(session({
     secret: "Iamsupersecretsecret",
@@ -72,6 +73,13 @@ app.use(function(req, res, next) {
     
 });
 */
+
+const userRoutes = require("./routes/userRoutes");
+const fileUploadRoutes = require("./routes/fileUploadRoute");
+
+app.use("/users", userRoutes);
+app.use("/uploads", fileUploadRoutes);
+
 //start your server on port 3001
 app.listen(3001);
 console.log(`Server Listening on port ${process.env.BACK_END_PORT}`);
