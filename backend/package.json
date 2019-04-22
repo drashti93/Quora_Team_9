@@ -13,6 +13,7 @@
 		"chai": "^4.1.2",
 		"chai-http": "^4.2.0",
 		"client-sessions": "^0.8.0",
+		"connect-mongodb-session": "^2.1.1",
 		"cookie-parser": "^1.4.3",
 		"cors": "^2.8.4",
 		"crypto": "^1.0.1",
@@ -22,6 +23,8 @@
 		"express-sessions": "^1.0.6",
 		"kafka-node": "^3.0.1",
 		"mocha": "^5.2.0",
-		"mongoose": "^5.5.2"
+		"mongoose": "^5.5.2",
+		"passport": "^0.4.0",
+		"passport-jwt": "^4.0.0"
 	}
 }
