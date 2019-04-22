@@ -3,7 +3,6 @@ var JwtStrategy = require('passport-jwt').Strategy;
 var ExtractJwt = require('passport-jwt').ExtractJwt;
 var db = require('../resources/mongoose');
 var config = require('./keys');
-// var Users = require('../models/users');
 
 // Setup work and export for the JWT passport strategy
 module.exports = function (passport) {
