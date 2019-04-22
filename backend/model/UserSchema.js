@@ -109,8 +109,13 @@ const UserSchema = new Schema({
 			}
 		]
 	},
-	timestamps: true
+	isFollowAllowed: {
+		type: Boolean,
+		default: true
+	}
 });
+
+UserSchema.set('timestamps', true);
 
 const UserModel = mongoose.model("users", UserSchema, "Users");
 module.exports = UserModel;
