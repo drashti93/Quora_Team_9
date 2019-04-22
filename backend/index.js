@@ -81,5 +81,5 @@ app.use("/users", userRoutes);
 app.use("/uploads", fileUploadRoutes);
 
 //start your server on port 3001
-app.listen(3001);
+app.listen(process.env.BACK_END_PORT);
 console.log(`Server Listening on port ${process.env.BACK_END_PORT}`);
