@@ -8,7 +8,8 @@ var passport = require('passport');
 var kafka = require('./kafka/client');
 var session = require('express-session');
 var MongoDBStore = require('connect-mongodb-session')(session);
-
+var answer=require("./routes/answer");
+var question=require("./routes/question");
 //use cors to allow cross origin resource sharing
 app.use(
 	cors({
@@ -59,6 +60,9 @@ app.use(function(req, res, next) {
   },
   store: sessionStore
   }));
+
+  app.use("/answer",answer);
+  app.use("/question",question);
 //Route to get All Books when user visits the Home Page
 /*app.get('/books', function(req,res){   
     res.writeHead(200,{
@@ -69,5 +73,5 @@ app.use(function(req, res, next) {
 });
 */
 //start your server on port 3001
-app.listen(process.env.BACK_END_PORT);
+app.listen(3001);
 console.log(`Server Listening on port ${process.env.BACK_END_PORT}`);
