@@ -60,9 +60,8 @@ const AnswerSchema = new Schema({
 			topicId: Schema.Types.ObjectId,
 			description: String
 		}
-	},
-	timestamps: true
+	}
 });
-
+AnswerSchema.set('timestamps', true);
 const AnswerModel = mongoose.model("answers", AnswerSchema, "Answers");
 module.exports = AnswerModel;

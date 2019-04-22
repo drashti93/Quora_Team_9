@@ -1,14 +1,15 @@
 //import the require dependencies
 var express = require("express");
 var app = express();
-var bodyParser = require("body-parser");
-var cors = require("cors");
-var mongoose = require("./resources/mongoose");
-var passport = require("passport");
-var kafka = require("./kafka/client");
-var session = require("express-session");
-var MongoDBStore = require("connect-mongodb-session")(session);
-
+var bodyParser = require('body-parser');
+var cors = require('cors');
+var mongoose = require('./resources/mongoose');
+var passport = require('passport');
+var kafka = require('./kafka/client');
+var session = require('express-session');
+var MongoDBStore = require('connect-mongodb-session')(session);
+var answer=require("./routes/answer");
+var question=require("./routes/question");
 //use cors to allow cross origin resource sharing
 app.use(
 	cors({
@@ -48,20 +49,21 @@ var sessionStore = new MongoDBStore({
 	collection: "q_sessions"
 });
 
-app.use(
-	session({
-		secret: "Iamsupersecretsecret",
-		resave: false,
-		saveUninitialized: false,
-		duration: 600000000000 * 60 * 1000,
-		activeDuration: 6 * 60 * 60 * 1000,
-		cookie: {
-			maxAge: 1000 * 60 * 60 * 24 * 365,
-			expires: 3600000 * 24 * 60
-		},
-		store: sessionStore
-	})
-);
+  app.use(session({
+    secret: "Iamsupersecretsecret",
+    resave: false,
+    saveUninitialized: false,
+    duration: 600000000000 * 60 * 1000,
+    activeDuration: 6 * 60 * 60 * 1000,
+     cookie : {
+          maxAge: 1000* 60 * 60 *24 * 365,
+          expires : 3600000 * 24 * 60
+  },
+  store: sessionStore
+  }));
+
+  app.use("/answer",answer);
+  app.use("/question",question);
 //Route to get All Books when user visits the Home Page
 /*app.get('/books', function(req,res){   
     res.writeHead(200,{
