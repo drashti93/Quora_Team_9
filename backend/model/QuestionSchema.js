@@ -22,6 +22,9 @@ const QuestionSchema = new Schema({
 			ref: "answers"
 		}
 	],
+	isFollowAllowed: {
+		type: Boolean
+	},
 	timestamps: true
 });
 
