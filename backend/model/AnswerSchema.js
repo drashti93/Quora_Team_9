@@ -8,12 +8,11 @@ const AnswerSchema = new Schema({
 	answerText: {
 		type: String
 	},
-	userId: [
-		{
-			type: Schema.Types.ObjectId,
-			ref: "users"
-		}
-	],
+	userId: {
+		type: Schema.Types.ObjectId,
+		ref: "users"
+	}
+	,
 	images: [
 		{
 			uid: {
@@ -55,11 +54,12 @@ const AnswerSchema = new Schema({
 		}
 	],
 	credentials: {
-		credentialId: Schema.Types.ObjectId,
 		topic: {
 			topicId: Schema.Types.ObjectId,
 			description: String
-		}
+		},
+		credentialType: String,
+		credentialIndex: Number
 	}
 });
 AnswerSchema.set('timestamps', true);

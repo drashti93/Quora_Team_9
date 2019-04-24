@@ -8,8 +8,9 @@ var passport = require('passport');
 var kafka = require('./kafka/client');
 var session = require('express-session');
 var MongoDBStore = require('connect-mongodb-session')(session);
-var answer=require("./routes/answer");
-var question=require("./routes/question");
+var answer = require("./routes/answer");
+var question = require("./routes/question");
+var comment = require("./routes/comment");
 //use cors to allow cross origin resource sharing
 app.use(
 	cors({
@@ -25,7 +26,7 @@ require("./config/passport")(passport);
 require("dotenv").config();
 
 //Allow Access Control
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
 	res.setHeader(
 		"Access-Control-Allow-Origin",
 		`${process.env.FRONT_END_URL}:${process.env.FRONT_END_PORT}`
@@ -49,21 +50,22 @@ var sessionStore = new MongoDBStore({
 	collection: "q_sessions"
 });
 
-  app.use(session({
-    secret: "Iamsupersecretsecret",
-    resave: false,
-    saveUninitialized: false,
-    duration: 600000000000 * 60 * 1000,
-    activeDuration: 6 * 60 * 60 * 1000,
-     cookie : {
-          maxAge: 1000* 60 * 60 *24 * 365,
-          expires : 3600000 * 24 * 60
-  },
-  store: sessionStore
-  }));
+app.use(session({
+	secret: "Iamsupersecretsecret",
+	resave: false,
+	saveUninitialized: false,
+	duration: 600000000000 * 60 * 1000,
+	activeDuration: 6 * 60 * 60 * 1000,
+	cookie: {
+		maxAge: 1000 * 60 * 60 * 24 * 365,
+		expires: 3600000 * 24 * 60
+	},
+	store: sessionStore
+}));
 
-  app.use("/answer",answer);
-  app.use("/question",question);
+app.use("/answer", answer);
+app.use("/question", question);
+app.use("/comment", comment);
 //Route to get All Books when user visits the Home Page
 /*app.get('/books', function(req,res){   
     res.writeHead(200,{
