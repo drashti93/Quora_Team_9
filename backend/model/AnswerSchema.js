@@ -41,6 +41,12 @@ const AnswerSchema = new Schema({
 			ref: "users"
 		}
 	],
+	bookmarks: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: "users"
+		}
+	],
 	comments: [
 		{
 			userId: Schema.Types.ObjectId,

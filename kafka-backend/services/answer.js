@@ -8,6 +8,13 @@ function  handle_request(msg, callback){
     var question_id = parseInt(msg.question_id, 10);
     Questions.find({
       question_id: question_id
-    }, {answers: 1})                 
+    }).populate('answers').exec(function(err, results){
+      if(err){
+        callback(err,"Error");
+      }
+      else if(results.length > 0){
+        callback(null,result);
+      }
+    })                 
     }  
     exports.handle_request = handle_request;
