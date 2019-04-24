@@ -5,6 +5,7 @@ const QuestionSchema = new Schema({
 	questionId: {
 		type: mongoose.Schema.Types.ObjectId
 	},
+	questionText: String,
 	userId: {
 		type: Schema.Types.ObjectId,
 		ref: "users",
