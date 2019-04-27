@@ -8,7 +8,7 @@ mongoose
 		{
 			useCreateIndex: true,
 			useNewUrlParser: true,
-			poolSize: 500
+			poolSize: 10
 		}
 	)
 	.then(

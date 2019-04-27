@@ -11,6 +11,10 @@ var MongoDBStore = require('connect-mongodb-session')(session);
 var answer = require("./routes/answer");
 var question = require("./routes/question");
 var comment = require("./routes/comment");
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
+var userModel = require("./model/UserSchema.js");
+var jwt = require('jsonwebtoken');
 //use cors to allow cross origin resource sharing
 app.use(
 	cors({
@@ -73,9 +77,56 @@ const fileUploadRoutes = require("./routes/fileUploadRoute");
 app.use("/users", userRoutes);
 app.use("/uploads", fileUploadRoutes);
 
+// app.post('/login', async function (req, res) {
+// 	// let req = {
+// 	// 	body: req.body
+// 	//   }
+// 	  let loginSuccess = 0;
+// 	  try {
+// 		let { email, password } = req.body;
+// 		console.log(req.body);
+// 		console.log("here");
+// 		email = email.toLowerCase();
+// 		let result = await userModel.findOne({ email });
+// 		let data = null;
+// 		if (!result) {
+// 		  data = {
+// 			loginSuccess: 0,
+// 			message: "Email or Password Incorrect"
+// 		  };
+// 		} else {
+// 		  const match = await bcrypt.compare(password, result.password);
+// 		  if (match) {
+// 			var user = {
+// 			  email: result.email
+// 			};
+// 			var token = jwt.sign(user, "There is no substitute for hardwork", {
+// 			  expiresIn: 10080 // in seconds
+// 			});
+// 			data = {
+// 			  id: result._id,
+// 			  role: result.role,
+// 			  loginSuccess: 1,
+// 			  message: "Login Successfull!",
+// 			  token: 'JWT ' + token
+// 			};
+// 		  } else {
+// 			data = {
+// 			  loginSuccess: 0,
+// 			  message: "Email or Password Incorrect"
+// 			};
+// 		  }
+// 		}
+// 		res.status(200).json(data);
+// 	  } catch (error) {
+// 		  console.log(error);
+// 		res.status(400).json(error);
+// 		// callback(error, null);
+// 	  }
+// });
 app.post('/login', function (req, res) {
 
-	kafka.make_request('login', req.body, function (err, results) {
+	kafka.make_request('signin', req.body, function (err, results) {
 		if (err) {
 			console.log("Inside err");
 			res.json({
