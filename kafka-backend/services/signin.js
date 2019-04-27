@@ -20,6 +20,7 @@ async function handle_request_signup(msg, callback) {
       var user = new userModel({ email, password: hash, firstName, lastName });
       let response = await user.save();
       var body = {
+        id: response._id,
         message: "Sign up successfull. Redirecting to Login Page...",
         insertStatus: 1
       };
