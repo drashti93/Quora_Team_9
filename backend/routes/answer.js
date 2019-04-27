@@ -5,7 +5,7 @@ var QuestionModel = require("../model/QuestionSchema");
 var bodyparser = require('body-parser');
 var urlencodedParser = bodyparser.urlencoded({ extended: false });
 var kafka = require('../kafka/client');
-var client = require('../resources/redis')
+var client = require('../resources/redis');
 
 answer.get("/:question_id/answers", urlencodedParser, function (req, res) {
     client.get('answersKey', function(err, results){

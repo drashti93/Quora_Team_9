@@ -4,7 +4,7 @@ var AnswerModel = require("../model/AnswerSchema");
 var QuestionModel = require("../model/QuestionSchema");
 var bodyparser = require('body-parser');
 var urlencodedParser = bodyparser.urlencoded({ extended: false });
-
+var client = require('../resources/redis')
 
 //delete comment
 comment.delete("/", async (req, res) => {
