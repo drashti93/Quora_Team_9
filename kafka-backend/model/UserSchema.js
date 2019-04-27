@@ -112,11 +112,7 @@ const UserSchema = new Schema({
 	isFollowAllowed: {
 		type: Boolean,
 		default: true
-	},
-	topicsFollowed:[{
-		type: Schema.Types.ObjectId,
-		ref: "topics"
-	}]
+	}
 });
 
 UserSchema.set('timestamps', true);
