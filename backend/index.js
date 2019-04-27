@@ -11,6 +11,7 @@ var MongoDBStore = require('connect-mongodb-session')(session);
 var answer = require("./routes/answer");
 var question = require("./routes/question");
 var comment = require("./routes/comment");
+var graphs = require('./routes/graphs')
 //use cors to allow cross origin resource sharing
 app.use(
 	cors({
@@ -66,6 +67,7 @@ app.use(session({
 app.use("/answer", answer);
 app.use("/question", question);
 app.use("/comment", comment);
+app.use('/graphs',graphs);
 //Route to get All Books when user visits the Home Page
 /*app.get('/books', function(req,res){   
     res.writeHead(200,{

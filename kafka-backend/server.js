@@ -2,6 +2,14 @@ var connection =  new require('./kafka/Connection');
 //topics files
 //var signin = require('./services/signin.js');
 var Answers = require('./services/answer.js');
+var top10Answers = require('./services/graphs/top10Answers')
+var top10AnswersUpvotes = require('./services/graphs/top10Answers_upvote')
+var top5AnswersDownvotes = require('./services/graphs/top5Answers_downvotes')
+var bookmarkedAnswers = require('./services/graphs/Bookmarked')
+var profileViews = require('./services/graphs/profileViews')
+var userActivity = require('./services/graphs/userActivity')
+
+
 
 function handleTopicRequest(topic_name,fname){
     //var topic_name = 'root_topic';
@@ -36,3 +44,14 @@ function handleTopicRequest(topic_name,fname){
 //first argument is topic name
 //second argument is a function that will handle this topic request
 handleTopicRequest("get_answers",Answers)
+handleTopicRequest("top_10_answers",top10Answers)
+handleTopicRequest("top_10_answers_upvote",top10AnswersUpvotes)
+handleTopicRequest("top_5_answers_downvotes",top5AnswersDownvotes)
+handleTopicRequest("bookmarked_answers",bookmarkedAnswers)
+handleTopicRequest("profile_views",profileViews)
+handleTopicRequest("user_activity",userActivity)
+
+
+
+
+
