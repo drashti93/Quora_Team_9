@@ -15,6 +15,10 @@ var bcrypt = require('bcrypt');
 const saltRounds = 10;
 var userModel = require("./model/UserSchema.js");
 var jwt = require('jsonwebtoken');
+const fetch = require("node-fetch");
+const redis = require('redis');
+var client = require('./resources/redis');
+
 //use cors to allow cross origin resource sharing
 app.use(
 	cors({
@@ -50,9 +54,12 @@ app.use(function (req, res, next) {
 
 var sessionStore = new MongoDBStore({
 	uri:
-		"mongodb://root:root@cluster0-shard-00-00-ptqwg.mongodb.net:27017,cluster0-shard-00-01-ptqwg.mongodb.net:27017,cluster0-shard-00-02-ptqwg.mongodb.net:27017/quora?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin",
+	`${process.env.DB_HOST}`,
 	collection: "q_sessions"
 });
+
+// create and connect redis client to local instance.
+
 
 app.use(session({
 	secret: "Iamsupersecretsecret",
@@ -67,15 +74,14 @@ app.use(session({
 	store: sessionStore
 }));
 
-app.use("/answer", answer);
-app.use("/question", question);
-app.use("/comment", comment);
-
 const userRoutes = require("./routes/userRoutes");
 const fileUploadRoutes = require("./routes/fileUploadRoute");
 
 app.use("/users", userRoutes);
 app.use("/uploads", fileUploadRoutes);
+app.use("/answer", answer);
+app.use("/question", question);
+app.use("/comment", comment);
 
 // app.post('/login', async function (req, res) {
 // 	// let req = {
@@ -125,8 +131,18 @@ app.use("/uploads", fileUploadRoutes);
 // 	  }
 // });
 app.post('/login', function (req, res) {
-
-	kafka.make_request('signin', req.body, function (err, results) {
+	var body = "";
+	client.get('loginQueryKey', function(err, query_results){
+		if(query_results){
+			body = query_results;
+		}
+		else {
+			body = req.body;
+			client.set('loginQueryKey', req.body);
+		}
+	})
+	
+	kafka.make_request('signin', body, function (err, results) {
 		if (err) {
 			console.log("Inside err");
 			res.json({
@@ -140,11 +156,13 @@ app.post('/login', function (req, res) {
 				res.cookie('cookie', JSON.stringify({ email: results.id, role: results.role, token: results.token }), { maxAge: 900000000, httpOnly: false, path: '/' });
 				req.session.user = results.id;
 			}
+			
 			res.status(200).json(results);
 		}
 	});
-
+	
 });
+
 
 app.post('/signup', function (req, res) {
 

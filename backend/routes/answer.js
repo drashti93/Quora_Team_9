@@ -5,8 +5,16 @@ var QuestionModel = require("../model/QuestionSchema");
 var bodyparser = require('body-parser');
 var urlencodedParser = bodyparser.urlencoded({ extended: false });
 var kafka = require('../kafka/client');
+var client = require('../resources/redis');
 
 answer.get("/:question_id/answers", urlencodedParser, function (req, res) {
+    client.get('answersKey', function(err, results){
+        if(results){
+            res.json({ answers:results});
+
+            res.end();
+        }
+        else {
     var question_id = req.params.question_id;
     console.log("Inside get all answers request. Question id: " + question_id);
     kafka.make_request('get_answers', question_id, function (err, results) {
@@ -19,11 +27,14 @@ answer.get("/:question_id/answers", urlencodedParser, function (req, res) {
             })
         } else {
             console.log("Inside else");
+            client.set('answersKey', results);
             res.json({ answers:results});
 
             res.end();
         }
     })
+    }
+})
 })
 
 //to add an answer
