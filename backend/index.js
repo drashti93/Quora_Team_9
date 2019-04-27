@@ -11,6 +11,9 @@ var MongoDBStore = require('connect-mongodb-session')(session);
 var answer = require("./routes/answer");
 var question = require("./routes/question");
 var comment = require("./routes/comment");
+const fetch = require("node-fetch");
+const redis = require('redis');
+const redis_connect = require('./resources/redis')
 //use cors to allow cross origin resource sharing
 app.use(
 	cors({
@@ -46,9 +49,12 @@ app.use(function (req, res, next) {
 
 var sessionStore = new MongoDBStore({
 	uri:
-		"mongodb://root:root@cluster0-shard-00-00-ptqwg.mongodb.net:27017,cluster0-shard-00-01-ptqwg.mongodb.net:27017,cluster0-shard-00-02-ptqwg.mongodb.net:27017/quora?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin",
+	`${process.env.DB_HOST}`,
 	collection: "q_sessions"
 });
+
+// create and connect redis client to local instance.
+
 
 app.use(session({
 	secret: "Iamsupersecretsecret",
@@ -63,24 +69,14 @@ app.use(session({
 	store: sessionStore
 }));
 
-app.use("/answer", answer);
-app.use("/question", question);
-app.use("/comment", comment);
-//Route to get All Books when user visits the Home Page
-/*app.get('/books', function(req,res){   
-    res.writeHead(200,{
-        'Content-Type' : 'application/json'
-    });
-    res.end(JSON.stringify(books));
-    
-});
-*/
-
 const userRoutes = require("./routes/userRoutes");
 const fileUploadRoutes = require("./routes/fileUploadRoute");
 
 app.use("/users", userRoutes);
 app.use("/uploads", fileUploadRoutes);
+app.use("/answer", answer);
+app.use("/question", question);
+app.use("/comment", comment);
 
 //start your server on port 3001
 app.listen(process.env.BACK_END_PORT);
