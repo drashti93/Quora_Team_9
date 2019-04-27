@@ -4,19 +4,12 @@ var AnswerModel = require("../model/AnswerSchema");
 var QuestionModel = require("../model/QuestionSchema");
 var bodyparser = require('body-parser');
 var urlencodedParser = bodyparser.urlencoded({ extended: false });
-
-answer.get("/", async (req, res) => {
-    try {
-        res.send("test successfull");
-    } catch (error) {
-        res.send(error);
-    }
-});
+var kafka = require('../kafka/client');
 
 answer.get("/:question_id/answers", urlencodedParser, function (req, res) {
     var question_id = req.params.question_id;
     console.log("Inside get all answers request. Question id: " + question_id);
-    kafka.make_request('answer', question_id, function (err, results) {
+    kafka.make_request('get_answers', question_id, function (err, results) {
         console.log("In get all answers - kafka make request")
         if (err) {
             console.log("Inside err");
@@ -26,9 +19,7 @@ answer.get("/:question_id/answers", urlencodedParser, function (req, res) {
             })
         } else {
             console.log("Inside else");
-            res.json({
-                answers: results
-            });
+            res.json({ answers:results});
 
             res.end();
         }
@@ -37,21 +28,21 @@ answer.get("/:question_id/answers", urlencodedParser, function (req, res) {
 
 //to add an answer
 answer.post("/", async (req, res) => {
-    try {
-        let { answerText, userId, isAnonymous, credentials, questionId } = req.body;
-        let answerInstance = new AnswerModel({ answerText, userId, isAnonymous, credentials });
-        //add answer to answer collection
-        let result = await answerInstance.save();
-        //add answerid to answer array in question collection
-        let result2 = await QuestionModel.updateOne({ _id: questionId }, {
-            $push: {
-                answers: result.id
-            }
-        })
-        res.status(200).json(result2);
-    } catch (error) {
-        res.send(error);
-    }
+
+    kafka.make_request('post_answer', req.body, function (err, results) {
+        console.log("In post answers - kafka make request")
+        if (err) {
+            console.log("Inside err");
+            res.json({
+                status: "error",
+                msg: "System Error, Try Again."
+            });
+            res.end();
+        } else {
+            console.log("Inside else");
+            res.status(200).json(results);
+        }
+    })
 });
 
 //edit an answer
