@@ -11,9 +11,13 @@ var MongoDBStore = require('connect-mongodb-session')(session);
 var answer = require("./routes/answer");
 var question = require("./routes/question");
 var comment = require("./routes/comment");
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
+var userModel = require("./model/UserSchema.js");
+var jwt = require('jsonwebtoken');
 const fetch = require("node-fetch");
 const redis = require('redis');
-var client = require('./resources/redis');
+var { client } = require('./resources/redis');
 
 //use cors to allow cross origin resource sharing
 app.use(
@@ -50,7 +54,7 @@ app.use(function (req, res, next) {
 
 var sessionStore = new MongoDBStore({
 	uri:
-	`${process.env.DB_HOST}`,
+		`${process.env.DB_HOST}`,
 	collection: "q_sessions"
 });
 
@@ -79,19 +83,74 @@ app.use("/answer", answer);
 app.use("/question", question);
 app.use("/comment", comment);
 
+
+//with redis 
+// app.post('/login', async function (req, res) {
+// 	// let req = {
+// 	// 	body: req.body
+// 	//   }
+// 	var body = "";
+// 		client.get('loginQueryKeynew', async function (err, query_results) {
+// 		if (query_results) {
+// 			body = query_results;
+// 			res.status(200).json(JSON.parse(body));
+// 		}
+// 		else {
+
+// 	  let loginSuccess = 0;
+// 	  try {
+// 		let { email, password } = req.body;
+// 		console.log(req.body);
+// 		console.log("here");
+// 		email = email.toLowerCase();
+// 		let result = await userModel.findOne({ email });
+// 		let data = null;
+// 		if (!result) {
+// 		  data = {
+// 			loginSuccess: 0,
+// 			message: "Email or Password Incorrect"
+// 		  };
+// 		} else {
+// 		  const match = await bcrypt.compare(password, result.password);
+// 		  if (match) {
+// 			var user = {
+// 			  email: result.email
+// 			};
+// 			var token = jwt.sign(user, "There is no substitute for hardwork", {
+// 			  expiresIn: 10080 // in seconds
+// 			});
+// 			data = {
+// 			  id: result._id,
+// 			  role: result.role,
+// 			  loginSuccess: 1,
+// 			  message: "Login Successfull!",
+// 			  token: 'JWT ' + token
+// 			};
+// 		  } else {
+// 			data = {
+// 			  loginSuccess: 0,
+// 			  message: "Email or Password Incorrect"
+// 			};
+// 		  }
+// 		}
+// 		client.set('loginQueryKeynew', JSON.stringify(data));
+// 		res.status(200).json(data);
+// 	  } catch (error) {
+// 		  console.log(error);
+// 		res.status(400).json(error);
+// 		// callback(error, null);
+// 	  }
+// 	}
+// })
+// });
+
+
+//with redis on kafka-backend
+
 app.post('/login', function (req, res) {
-	var body = "";
-	client.get('loginQueryKey', function(err, query_results){
-		if(query_results){
-			body = query_results;
-		}
-		else {
-			body = req.body;
-			client.set('loginQueryKey', req.body);
-		}
-	})
-	
-	kafka.make_request('login', body, function (err, results) {
+
+	body = req.body;
+	kafka.make_request('signin', body, function (err, results) {
 		if (err) {
 			console.log("Inside err");
 			res.json({
@@ -105,11 +164,11 @@ app.post('/login', function (req, res) {
 				res.cookie('cookie', JSON.stringify({ email: results.id, role: results.role, token: results.token }), { maxAge: 900000000, httpOnly: false, path: '/' });
 				req.session.user = results.id;
 			}
-			
 			res.status(200).json(results);
 		}
 	});
-	
+
+
 });
 
 

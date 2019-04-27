@@ -39,7 +39,7 @@ function handleTopicRequest(topic_name, fname) {
 // Add your TOPICs here
 //first argument is topic name
 //second argument is a function that will handle this topic request
-handleTopicRequest("login", signinRequests.signin);
+handleTopicRequest("signin", signinRequests.signin);
 handleTopicRequest("signup", signinRequests.signup);
 handleTopicRequest("get_answers", answerRequests.getanswers);
 handleTopicRequest("post_answer", answerRequests.postanswers);
