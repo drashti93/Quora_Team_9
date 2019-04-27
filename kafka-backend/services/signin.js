@@ -2,6 +2,7 @@ var bcrypt = require('bcrypt');
 const saltRounds = 10;
 var jwt = require('jsonwebtoken');
 var userModel = require("../model/UserSchema.js");
+var { client } = require('../resources/redis');
 
 
 async function handle_request_signup(msg, callback) {
@@ -31,47 +32,59 @@ async function handle_request_signup(msg, callback) {
   }
 }
 async function handle_request_signin(msg, callback) {
-  let req = {
-    body: msg
-  }
-  let loginSuccess = 0;
-  try {
-    let { email, password } = msg;
-    email = email.toLowerCase();
-    let result = await userModel.findOne({ email });
-    let data = null;
-    if (!result) {
-      data = {
-        loginSuccess: 0,
-        message: "Email or Password Incorrect"
-      };
-    } else {
-      const match = await bcrypt.compare(password, result.password);
-      if (match) {
-        var user = {
-          email: result.email
-        };
-        var token = jwt.sign(user, "There is no substitute for hardwork", {
-          expiresIn: 10080 // in seconds
-        });
-        data = {
-          id: result._id,
-          role: result.role,
-          loginSuccess: 1,
-          message: "Login Successfull!",
-          token: 'JWT ' + token
-        };
-      } else {
-        data = {
-          loginSuccess: 0,
-          message: "Email or Password Incorrect"
-        };
-      }
+  var body = "";
+  client.get('loginQueryKey', async function (err, query_results) {
+    if (query_results) {
+      body = query_results;
+      callback(null, JSON.parse(body));
     }
-    callback(null, data)
-  } catch (error) {
-    callback(error, null);
-  }
+    else {
+
+      let req = {
+        body: msg
+      }
+      let loginSuccess = 0;
+      try {
+        let { email, password } = msg;
+        email = email.toLowerCase();
+        let result = await userModel.findOne({ email });
+        let data = null;
+        if (!result) {
+          data = {
+            loginSuccess: 0,
+            message: "Email or Password Incorrect"
+          };
+        } else {
+          const match = await bcrypt.compare(password, result.password);
+          if (match) {
+            var user = {
+              email: result.email
+            };
+            var token = jwt.sign(user, "There is no substitute for hardwork", {
+              expiresIn: 10080 // in seconds
+            });
+            data = {
+              id: result._id,
+              role: result.role,
+              loginSuccess: 1,
+              message: "Login Successfull!",
+              token: 'JWT ' + token
+            };
+          } else {
+            data = {
+              loginSuccess: 0,
+              message: "Email or Password Incorrect"
+            };
+          }
+        }
+        client.set('loginQueryKey', JSON.stringify(data));
+        callback(null, data)
+      } catch (error) {
+        callback(error, null);
+      }
+
+    }
+  });
 }
 
 module.exports = {

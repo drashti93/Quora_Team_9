@@ -17,7 +17,7 @@ var userModel = require("./model/UserSchema.js");
 var jwt = require('jsonwebtoken');
 const fetch = require("node-fetch");
 const redis = require('redis');
-var client = require('./resources/redis');
+var { client } = require('./resources/redis');
 
 //use cors to allow cross origin resource sharing
 app.use(
@@ -54,7 +54,7 @@ app.use(function (req, res, next) {
 
 var sessionStore = new MongoDBStore({
 	uri:
-	`${process.env.DB_HOST}`,
+		`${process.env.DB_HOST}`,
 	collection: "q_sessions"
 });
 
@@ -83,10 +83,20 @@ app.use("/answer", answer);
 app.use("/question", question);
 app.use("/comment", comment);
 
+
+//with redis 
 // app.post('/login', async function (req, res) {
 // 	// let req = {
 // 	// 	body: req.body
 // 	//   }
+// 	var body = "";
+// 		client.get('loginQueryKeynew', async function (err, query_results) {
+// 		if (query_results) {
+// 			body = query_results;
+// 			res.status(200).json(JSON.parse(body));
+// 		}
+// 		else {
+
 // 	  let loginSuccess = 0;
 // 	  try {
 // 		let { email, password } = req.body;
@@ -123,25 +133,23 @@ app.use("/comment", comment);
 // 			};
 // 		  }
 // 		}
+// 		client.set('loginQueryKeynew', JSON.stringify(data));
 // 		res.status(200).json(data);
 // 	  } catch (error) {
 // 		  console.log(error);
 // 		res.status(400).json(error);
 // 		// callback(error, null);
 // 	  }
+// 	}
+// })
 // });
+
+
+//with redis on kafka-backend
+
 app.post('/login', function (req, res) {
-	var body = "";
-	client.get('loginQueryKey', function(err, query_results){
-		if(query_results){
-			body = query_results;
-		}
-		else {
-			body = req.body;
-			client.set('loginQueryKey', req.body);
-		}
-	})
-	
+
+	body = req.body;
 	kafka.make_request('signin', body, function (err, results) {
 		if (err) {
 			console.log("Inside err");
@@ -156,11 +164,11 @@ app.post('/login', function (req, res) {
 				res.cookie('cookie', JSON.stringify({ email: results.id, role: results.role, token: results.token }), { maxAge: 900000000, httpOnly: false, path: '/' });
 				req.session.user = results.id;
 			}
-			
 			res.status(200).json(results);
 		}
 	});
-	
+
+
 });
 
 
