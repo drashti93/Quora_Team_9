@@ -13,7 +13,8 @@ var question = require("./routes/question");
 var comment = require("./routes/comment");
 const fetch = require("node-fetch");
 const redis = require('redis');
-const redis_connect = require('./resources/redis')
+var client = require('./resources/redis');
+
 //use cors to allow cross origin resource sharing
 app.use(
 	cors({
@@ -79,8 +80,18 @@ app.use("/question", question);
 app.use("/comment", comment);
 
 app.post('/login', function (req, res) {
-
-	kafka.make_request('login', req.body, function (err, results) {
+	var body = "";
+	client.get('loginQueryKey', function(err, query_results){
+		if(query_results){
+			body = query_results;
+		}
+		else {
+			body = req.body;
+			client.set('loginQueryKey', req.body);
+		}
+	})
+	
+	kafka.make_request('login', body, function (err, results) {
 		if (err) {
 			console.log("Inside err");
 			res.json({
@@ -94,11 +105,13 @@ app.post('/login', function (req, res) {
 				res.cookie('cookie', JSON.stringify({ email: results.id, role: results.role, token: results.token }), { maxAge: 900000000, httpOnly: false, path: '/' });
 				req.session.user = results.id;
 			}
+			
 			res.status(200).json(results);
 		}
 	});
-
+	
 });
+
 
 app.post('/signup', function (req, res) {
 
