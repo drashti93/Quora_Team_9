@@ -78,6 +78,44 @@ app.use("/answer", answer);
 app.use("/question", question);
 app.use("/comment", comment);
 
+app.post('/login', function (req, res) {
+
+	kafka.make_request('login', req.body, function (err, results) {
+		if (err) {
+			console.log("Inside err");
+			res.json({
+				status: "error",
+				message: "System Error, Try Again."
+			});
+			res.end();
+		} else {
+			console.log("Inside else");
+			if (results.id) {
+				res.cookie('cookie', JSON.stringify({ email: results.id, role: results.role, token: results.token }), { maxAge: 900000000, httpOnly: false, path: '/' });
+				req.session.user = results.id;
+			}
+			res.status(200).json(results);
+		}
+	});
+
+});
+
+app.post('/signup', function (req, res) {
+
+	kafka.make_request('signup', req.body, function (err, results) {
+		if (err) {
+			console.log("Inside err");
+			res.json({
+				status: "error",
+				msg: "System Error, Try Again."
+			});
+			res.end();
+		} else {
+			console.log("Inside else");
+			res.status(200).json(results);
+		}
+	});
+});
 //start your server on port 3001
 app.listen(process.env.BACK_END_PORT);
 console.log(`Server Listening on port ${process.env.BACK_END_PORT}`);

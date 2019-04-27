@@ -1,7 +1,7 @@
 var express = require("express");
 var question = express.Router();
 var QuestionModel = require("../model/QuestionSchema");
-
+var kafka = require('../kafka/client');
 
 // question.get("/",async (req,res)=>{
 //     try {
@@ -12,36 +12,56 @@ var QuestionModel = require("../model/QuestionSchema");
 // });
 
 question.post("/", async (req, res) => {
-    try {
-        let { userId, questionText } = req.body;
-        let questionInstance = new QuestionModel({
-            questionText,
-            userId
-        });
-        let result = await questionInstance.save();
-        res.status(200).json(result);
-    } catch (error) {
 
-    }
+    kafka.make_request('post_question', req.body, function (err, results) {
+        console.log("In post question - kafka make request")
+        if (err) {
+            console.log("Inside err");
+            res.json({
+                status: "error",
+                msg: "System Error, Try Again."
+            });
+            res.end();
+        } else {
+            console.log("Inside else");
+            res.status(200).json(results);
+        }
+    })
 });
 question.post("/edit", async (req, res) => {
-    try {
-        console.log("here");
-        let { _id, questionText } = req.body;
-        let result = await QuestionModel.updateOne({ _id }, { questionText });
-        res.status(200).json(result);
-    } catch (error) {
 
-    }
+    kafka.make_request('edit_question', req.body, function (err, results) {
+        console.log("In edit question - kafka make request")
+        if (err) {
+            console.log("Inside err");
+            res.json({
+                status: "error",
+                msg: "System Error, Try Again."
+            });
+            res.end();
+        } else {
+            console.log("Inside else");
+            res.status(200).json(results);
+        }
+    })
 });
 question.delete("/", async (req, res) => {
-    try {
-        let { _id } = req.body;
-        let result = await QuestionModel.remove({ _id });
-        res.status(200).json(result);
-    } catch (error) {
 
-    }
+
+    kafka.make_request('delete_question', req.body, function (err, results) {
+        console.log("In delete question - kafka make request")
+        if (err) {
+            console.log("Inside err");
+            res.json({
+                status: "error",
+                msg: "System Error, Try Again."
+            });
+            res.end();
+        } else {
+            console.log("Inside else");
+            res.status(200).json(results);
+        }
+    })
 });
 
 module.exports = question;
