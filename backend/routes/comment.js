@@ -41,13 +41,22 @@ comment.post('/comment', async (req, res) => {
 })
 
 comment.get('/:answerId/comment', async (req, res) => {
-    try {
-        let { answerId } = req.params;
-        let result = await AnswerModel.find({_id: answeId}, {comments: 1});
-        res.status(200).json(result);
-    } catch (error) {
-        res.send(error);
-    }
+    client.get('commentsKey', async (err, results) => {
+        if (results){
+            res.status(200).json(result);
+        }
+        else {
+            try {
+                let { answerId } = req.params;
+                let result = await AnswerModel.find({_id: answeId}, {comments: 1});
+                client.set('commentsKey', results);
+                res.status(200).json(result);
+            } catch (error) {
+                res.send(error);
+            }
+        }
+    })
+    
 })
 
 comment.put('/comment', async (req, res) => {

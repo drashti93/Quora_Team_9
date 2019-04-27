@@ -80,6 +80,8 @@ app.use("/comment", comment);
 
 app.post('/login', function (req, res) {
 
+	
+	
 	kafka.make_request('login', req.body, function (err, results) {
 		if (err) {
 			console.log("Inside err");
@@ -94,11 +96,13 @@ app.post('/login', function (req, res) {
 				res.cookie('cookie', JSON.stringify({ email: results.id, role: results.role, token: results.token }), { maxAge: 900000000, httpOnly: false, path: '/' });
 				req.session.user = results.id;
 			}
+			
 			res.status(200).json(results);
 		}
 	});
-
+	
 });
+
 
 app.post('/signup', function (req, res) {
 
