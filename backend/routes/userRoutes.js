@@ -93,8 +93,23 @@ router.get('/:userId/following', (request, response) => {
 });
 
 
+router.get('/:userId/bookmarks', (request, response) => {
 
+	console.log(`\n\nInside GET /users/:userId/bookmarks`);
 
+	UserSchema.findOne(
+		{ userId: request.params.userId },
+		(error, userDocument) => {
+			if (error) {
+				console.log(`Error fetching users following ${request.params.userId}:\n ${error}`);
+				response.status(500).json({ error: error, message: `Error fetching users following ${request.params.userId}` });
+			} else {
+				console.log(`Sucessfully fetched users following ${request.params.userId}:\n ${userDocument}`);
+				response.status(200).json(userDocument.following);
+			}
+		}
+	);
+});
 
 
 module.exports = router;
