@@ -5,9 +5,9 @@ const mongoose = require('../resources/mongoose');
 const UserSchema = require('../model/UserSchema')
 
 
-router.post('/:userId/follow/enable', async (request, response) => {
+router.get('/:userId/follow/enable', async (request, response) => {
 
-	console.log(`\n\nInside POST /users/:userId/follow/enable`);
+	console.log(`\n\nInside GET /users/:userId/follow/enable`);
 
 	try {
 		let userDocument = await UserSchema.findOneAndUpdate(
@@ -35,9 +35,9 @@ router.post('/:userId/follow/enable', async (request, response) => {
 });
 
 
-router.post('/:userId/follow/disable', async (request, response) => {
+router.get('/:userId/follow/disable', async (request, response) => {
 
-	console.log(`\n\nInside POST /users/:userId/follow/disable`);
+	console.log(`\n\nInside GET /users/:userId/follow/disable`);
 
 	try {
 		let userDocument = await UserSchema.findOneAndUpdate(
@@ -65,9 +65,9 @@ router.post('/:userId/follow/disable', async (request, response) => {
 });
 
 
-router.post('/:userId/followers', async (request, response) => {
+router.get('/:userId/followers', async (request, response) => {
 
-	console.log(`\n\nInside POST /users/:userId/followers`);
+	console.log(`\n\nInside GET /users/:userId/followers`);
 
 	try {
 		let userDocument = await UserSchema.findOne(
@@ -113,22 +113,27 @@ router.get('/:userId/following', async (request, response) => {
 });
 
 
-router.get('/:userId/bookmarks', (request, response) => {
+router.get('/:userId/bookmarks', async (request, response) => {
 
 	console.log(`\n\nInside GET /users/:userId/bookmarks`);
 
-	UserSchema.findOne(
-		{ userId: request.params.userId },
-		(error, userDocument) => {
-			if (error) {
-				console.log(`Error fetching users following ${request.params.userId}:\n ${error}`);
-				response.status(500).json({ error: error, message: `Error fetching users following ${request.params.userId}` });
-			} else {
-				console.log(`Sucessfully fetched users following ${request.params.userId}:\n ${userDocument}`);
-				response.status(200).json(userDocument.following);
-			}
+	try {
+		let userDocument = await UserSchema.findOne(
+			{ _id: request.params.userId }
+		);
+
+		//If user present
+		if(userDocument) {
+			console.log(`Sucessfully fetched bookmarked answers for user ${request.params.userId}:\n ${userDocument}`);
+			response.status(200).json(userDocument.bookmarkedAnswers);
+		} else {
+			console.log(`User ${request.params.userId} not found`);
+			response.status(404).json({messgage: `User ${request.params.userId} not found`});
 		}
-	);
+	} catch (error) {
+		console.log(`Error fetching bookmarked answers for user ${request.params.userId}:\n ${error}`);
+		response.status(500).json({ error: error, message: `Error fetching bookmarked answers for user ${request.params.userId}`});
+	}
 });
 
 
