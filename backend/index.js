@@ -11,6 +11,8 @@ var MongoDBStore = require("connect-mongodb-session")(session);
 var answer = require("./routes/answer");
 var question = require("./routes/question");
 var comment = require("./routes/comment");
+var graphs = require('./routes/graphs');
+
 // var bcrypt = require("bcrypt");
 // const saltRounds = 10;
 // var userModel = require("./model/UserSchema.js");
@@ -18,6 +20,7 @@ var comment = require("./routes/comment");
 // const fetch = require("node-fetch");
 // const redis = require("redis");
 // var { client } = require("./resources/redis");
+
 
 //use cors to allow cross origin resource sharing
 app.use(
@@ -82,8 +85,10 @@ app.use("/uploads", fileUploadRoutes);
 app.use("/answer", answer);
 app.use("/question", question);
 app.use("/comment", comment);
+app.use('/graphs',graphs);
 
-//with redis
+
+//with redis 
 // app.post('/login', async function (req, res) {
 // 	// let req = {
 // 	// 	body: req.body
