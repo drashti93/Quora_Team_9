@@ -118,6 +118,29 @@ const UserSchema = new Schema({
 			type: Schema.Types.ObjectId,
 			ref: "topics"
 		}
+	],
+	messagesSent: [
+		{
+			text: String,
+			senderId: [
+				{
+					type: Schema.Types.ObjectId,
+					ref: "users"
+				}
+			]
+		}
+	],
+
+	messagesReceived: [
+		{
+			text: String,
+			receiverId: [
+				{
+					type: Schema.Types.ObjectId,
+					ref: "users"
+				}
+			]
+		}
 	]
 });
 
