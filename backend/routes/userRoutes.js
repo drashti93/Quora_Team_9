@@ -5,6 +5,7 @@ const mongoose = require('../resources/mongoose');
 const UserSchema = require('../model/UserSchema')
 
 
+//Get user by id
 router.get('/:userId', async (request, response) => {
 
 	console.log(`\n\nInside GET /users/:userId`);
@@ -48,7 +49,7 @@ router.get('/:userId', async (request, response) => {
 	}
 });
 
-
+//Enable user follow
 router.get('/:userId/follow/enable', async (request, response) => {
 
 	console.log(`\n\nInside GET /users/:userId/follow/enable`);
@@ -78,7 +79,7 @@ router.get('/:userId/follow/enable', async (request, response) => {
 	}
 });
 
-
+//Disable user follow
 router.get('/:userId/follow/disable', async (request, response) => {
 
 	console.log(`\n\nInside GET /users/:userId/follow/disable`);
@@ -108,7 +109,7 @@ router.get('/:userId/follow/disable', async (request, response) => {
 	}
 });
 
-
+//Fetch user followers
 router.get('/:userId/followers', async (request, response) => {
 
 	console.log(`\n\nInside GET /users/:userId/followers`);
@@ -132,7 +133,7 @@ router.get('/:userId/followers', async (request, response) => {
 	}
 });
 
-
+//Fetch users following user
 router.get('/:userId/following', async (request, response) => {
 
 	console.log(`\n\nInside GET /users/:userId/following`);
@@ -156,7 +157,7 @@ router.get('/:userId/following', async (request, response) => {
 	}
 });
 
-
+//Fetch answers bookmarked by user
 router.get('/:userId/bookmarks', async (request, response) => {
 
 	console.log(`\n\nInside GET /users/:userId/bookmarks`);
