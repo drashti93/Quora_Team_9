@@ -5,28 +5,33 @@ const mongoose = require('../resources/mongoose');
 const UserSchema = require('../model/UserSchema')
 
 
-router.get('/:userId/follow/enable',  (request, response) => {
+router.post('/:userId/follow/enable',  (request, response) => {
 
 	console.log(`\n\nInside GET /users/:userId/follow/enable`);
 
-	UserSchema.findOneAndUpdate(
-		{ userId: request.params.userId },
-		{
-			$set: {
-				isFollowAllowed: true
-			}
-		},
-		{ new: true },
-		(error, userDocument) => {
-			if (error) {
-				console.log(`Error while enabling follow for the user ${request.params.userId}:\n ${error}`);
-				response.status(500).json({ error: error, message: `Error while enabling follow for the user ${request.params.userId}` });
-			} else {
-				console.log(`Sucessfully enabled follow for the user ${request.params.userId}:\n ${userDocument}`);
-				response.status(200).json(userDocument);
-			}
+	try {
+		let userDocument = await UserSchema.findOneAndUpdate(
+			{ _id: request.params.userId },
+			{
+				$set: {
+					isFollowAllowed: true
+				}
+			},
+			{ new: true }
+		);
+
+		//If user present
+		if(userDocument) {
+			console.log(`Sucessfully enabled follow for the user ${request.params.userId}:\n ${userDocument}`);
+			response.status(200).json(userDocument);
+		} else {
+			console.log(`User ${request.params.userId} not found`);
+			response.status(404).json({messgage: `User ${request.params.userId} not found`});
 		}
-	);
+	} catch (error) {
+		console.log(`Error while enabling follow for the user ${request.params.userId}:\n ${error}`);
+		response.status(500).json({ error: error, message: `Error while enabling follow for the user ${request.params.userId}`});
+	}
 });
 
 
