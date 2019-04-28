@@ -5,9 +5,10 @@ const mongoose = require('../resources/mongoose');
 const UserSchema = require('../model/UserSchema')
 
 
-router.post('/:userId/follow/enable', function (request, response) {
+router.get('/:userId/follow/enable',  (request, response) => {
 
-	console.log(`\n\nInside Post /users/:userId/follow/enable`);
+	console.log(`\n\nInside GET /users/:userId/follow/enable`);
+
 	UserSchema.findOneAndUpdate(
 		{ userId: request.params.userId },
 		{
@@ -16,23 +17,23 @@ router.post('/:userId/follow/enable', function (request, response) {
 			}
 		},
 		{ new: true },
-		(error, questionDocument) => {
-			if (err) {
+		(error, userDocument) => {
+			if (error) {
 				console.log(`Error while enabling follow for the user ${request.params.userId}:\n ${error}`);
-				// response.status(500).json({ error: err, message: "Attaching Files to Course Failed" });
 				response.status(500).json({ error: error, message: `Error while enabling follow for the user ${request.params.userId}` });
 			} else {
-				console.log(`Sucessfully enabled follow for the user ${request.params.userId}:\n ${questionDocument}`);
-				response.status(200).json(questionDocument);
+				console.log(`Sucessfully enabled follow for the user ${request.params.userId}:\n ${userDocument}`);
+				response.status(200).json(userDocument);
 			}
 		}
 	);
 });
 
 
-router.post('/:userId/follow/disable', function (request, response) {
+router.get('/:userId/follow/disable', (request, response) => {
 
-	console.log(`\n\nInside Post /users/:userId/follow/disable`);
+	console.log(`\n\nInside GET /users/:userId/follow/disable`);
+
 	UserSchema.findOneAndUpdate(
 		{ userId: request.params.userId },
 		{
@@ -41,18 +42,41 @@ router.post('/:userId/follow/disable', function (request, response) {
 			}
 		},
 		{ new: true },
-		(error, questionDocument) => {
-			if (err) {
-				console.log(`Error while disabling follow for the question ${request.params.questionId}:\n ${error}`);
-				// response.status(500).json({ error: err, message: "Attaching Files to Course Failed" });
-				response.status(500).json({ error: error, message: `Error while enabling follow for the question ${request.params.questionId}` });
+		(error, userDocument) => {
+			if (error) {
+				console.log(`Error while disabling follow for the question ${request.params.userId}:\n ${error}`);
+				response.status(500).json({ error: error, message: `Error while enabling follow for the user ${request.params.userId}` });
 			} else {
-				console.log(`Sucessfully disabled follow for the question ${request.params.questionId}:\n ${questionDocument}`);
-				response.status(200).json(questionDocument);
+				console.log(`Sucessfully disabled follow for the question ${request.params.userId}:\n ${userDocument}`);
+				response.status(200).json(userDocument);
 			}
 		}
 	);
 });
+
+
+router.get('/:userId/followers', (request, response) => {
+
+	console.log(`\n\nInside GET /users/:userId/followers`);
+
+	UserSchema.findOne(
+		{ userId: request.params.userId },
+		(error, userDocument) => {
+			if (error) {
+				console.log(`Error fetching followers for the user ${request.params.userId}:\n ${error}`);
+				response.status(500).json({ error: error, message: `Error fetching followers for the user ${request.params.userId}` });
+			} else {
+				console.log(`Sucessfully fetched followers for the user ${request.params.userId}:\n ${userDocument}`);
+				response.status(200).json(userDocument.followers);
+			}
+		}
+	);
+});
+
+
+
+
+
 
 
 module.exports = router;

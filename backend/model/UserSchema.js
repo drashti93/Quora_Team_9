@@ -116,6 +116,26 @@ const UserSchema = new Schema({
 	topicsFollowed:[{
 		type: Schema.Types.ObjectId,
 		ref: "topics"
+	}],
+	followers: [{
+		type: Schema.Types.ObjectId,
+		ref: "users"
+	}],
+	following: [{
+		type: Schema.Types.ObjectId,
+		ref: "users"
+	}],
+	questions: [{
+		type: Schema.Types.ObjectId,
+		ref: "questions"
+	}],
+	answers: [{
+		type: Schema.Types.ObjectId,
+		ref: "answers"
+	}],
+	bookmarkedAnswers: [{
+		type: Schema.Types.ObjectId,
+		ref: "answers"
 	}]
 });
 
