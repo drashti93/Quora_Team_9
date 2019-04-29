@@ -14,7 +14,6 @@ var answerRequests = require('./services/answer.js');
 var questionRequests = require('./services/question');
 var signinRequests = require('./services/signin');
 
-
 function handleTopicRequest(topic_name, fname) {
     //var topic_name = 'root_topic';
     var consumer = connection.getConsumer(topic_name);
@@ -56,7 +55,6 @@ handleTopicRequest("top_5_answers_downvotes",top5AnswersDownvotes)
 handleTopicRequest("bookmarked_answers",bookmarkedAnswers)
 handleTopicRequest("profile_views",profileViews)
 handleTopicRequest("user_activity",userActivity)
-handleTopicRequest("login", signinRequests.signin);
 handleTopicRequest("signin", signinRequests.signin);
 handleTopicRequest("signup", signinRequests.signup);
 handleTopicRequest("get_answers", answerRequests.getanswers);
@@ -64,4 +62,17 @@ handleTopicRequest("post_answer", answerRequests.postanswers);
 handleTopicRequest("post_question", questionRequests.postquestion);
 handleTopicRequest("edit_question", questionRequests.editquestion);
 handleTopicRequest("delete_question", questionRequests.deletequestion);
+// handleTopicRequest("follow_question", followquestionRequests.followquestion);
+// handleTopicRequest("follow_topic", followtopicRequests.followtopic);
+// handleTopicRequest("post_message", postmessageRequests.postmessage);
+// handleTopicRequest("get_message", getmessageRequests.getmessage);
+// handleTopicRequest("delete_message", deletemessageRequests.deletemessage);
+handleTopicRequest(
+	"get_topic_questions",
+	topicquestionsRequests.gettopicquestions
+);
+handleTopicRequest(
+	"get_following_questions",
+	followingquestionsRequests.getfollowingquestions
+);
 

@@ -113,10 +113,34 @@ const UserSchema = new Schema({
 		type: Boolean,
 		default: true
 	},
-	topicsFollowed:[{
-		type: Schema.Types.ObjectId,
-		ref: "topics"
-	}],
+	topicsFollowed: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: "topics"
+		}
+	],
+	messagesSent: [
+		{
+			text: String,
+			senderId: [
+				{
+					type: Schema.Types.ObjectId,
+					ref: "users"
+				}
+			]
+		}
+	],
+	messagesReceived: [
+		{
+			text: String,
+			receiverId: [
+				{
+					type: Schema.Types.ObjectId,
+					ref: "users"
+				}
+			]
+		}
+	],
 	followers: [{
 		type: Schema.Types.ObjectId,
 		ref: "users"
