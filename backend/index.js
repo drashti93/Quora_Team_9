@@ -82,9 +82,9 @@ const fileUploadRoutes = require("./routes/fileUploadRoute");
 
 app.use("/users", userRoutes);
 app.use("/uploads", fileUploadRoutes);
-app.use("/answer", answer);
-app.use("/question", question);
-app.use("/comment", comment);
+app.use("/answers", answer);
+app.use("/questions", question);
+app.use("/comments", comment);
 app.use('/graphs',graphs);
 
 
