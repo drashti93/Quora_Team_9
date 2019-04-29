@@ -8,8 +8,8 @@ const UserSchema = require("../model/UserSchema");
 // Edit Profile
 user.put("/:userId/editProfile", (request,response) => {
 	console.log(`\n\nInside Post /:userId/editProfile`);
-	body = request.body;
-	let { firstName, lastName, aboutMe, phoneNumber, gender, isFollowAllowed, topicsFollowed } = req.body;
+	// body = request.body;
+	let { firstName, lastName, aboutMe, phoneNumber, street, city, state, zipcode, startDate, endDate, gender, isFollowAllowed, topicsFollowed } = request.body;
 	UserSchema.findOneAndUpdate(
 		{ userId: request.params.userId },
 		{
@@ -19,16 +19,37 @@ user.put("/:userId/editProfile", (request,response) => {
 				// email: body.email,
 				aboutMe: aboutMe,
 				phoneNumber: phoneNumber,
+				credentials: {
+					address:{
+						street: street,
+						city: city,
+						state: state,
+						zipcode: zipcode,
+						startDate: startDate,
+						endDate: endDate,
+					},	
+					education: {
+						school: school,
+						concentration: concentration,
+						secConcentration: secConcentration,
+						degree: degree,
+						gradYear: gradYear,
+					},
+					career: {
+						position: position,
+						company: company,
+						startDate: startDate,
+						endDate: endDate,
+					}
+				},
 				gender: gender,
-				// credentials: , 
-				// have to complete this
 				isFollowAllowed: isFollowAllowed,
 				topicsFollowed: topicsFollowed
 			}
 		},
 		{ new: true },
 		(error, questionDocument) => {
-			if (err) {
+			if (error) {
 				console.log(
 					`Error while editing or updating user profile ${
 						request.params.userId
@@ -62,7 +83,7 @@ user.get("/:userId", (request,response) => {
 	UserSchema.findOne(
 		{ userId: request.params.userId },
 		(error, questionDocument) => {
-			if (err) {
+			if (error) {
 				console.log(
 					`Error while getting user profile details ${
 						request.params.userId
@@ -105,6 +126,40 @@ user.delete("/:userId", async (request, response) => {
         response.send(error);
     }
 });
+
+// Deactivate User Account
+user.post(":/userId", (request, response) => {
+	console.log(`\n\n Inside Post /:userId/deactivateProfile`);
+	UserSchema.findOneAndUpdate(
+		{ userId: request.params.userId },
+		{
+			$set: {
+				accountDeactivated: true,
+			}
+		},
+		{ new: true },
+		(error, questionDocument) => {
+			if(error){
+				console.log(
+					`Error while deactivating user account ${
+						request.params.userId
+					}:\n ${error}`
+				);
+				response.status(500).json({
+					error: error,
+					message: `Error while deactivating user account ${
+						request.params.userId
+					}`
+				});
+			} else { 
+				console.log(`Account Deactivated succssfully ${request.params.userId}:\n ${questionDocument}`);
+				response.status(200).json(questionDocument);
+			}
+		} 
+	)
+});
+
+
 
 user.post("/:userId/follow/enable", function(request, response) {
 	console.log(`\n\nInside Post /users/:userId/follow/enable`);

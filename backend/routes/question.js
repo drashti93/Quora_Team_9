@@ -1,5 +1,6 @@
 var express = require("express");
 var question = express.Router();
+const UserSchema = require("../model/UserSchema");
 var QuestionModel = require("../model/QuestionSchema");
 var kafka = require('../kafka/client');
 
@@ -64,4 +65,37 @@ question.delete("/", async (req, res) => {
     })
 });
 
+// Search question
+question.get("/questions/:questionId", (request, response) => {
+    console.log(`\n\nInside Get /questions/:questionId`);
+    let keyword = request.body.keyword;
+    QuestionModel.find(
+        {},
+        (error,questionDocument) => {
+            if(error) {
+                console.log(
+					`Error while getting questions ${
+						request.params.userId
+					}:\n ${error}`
+                );
+                response
+                .status(500)
+                .json({
+                    error: error,
+                    message: `Error while getting questions ${
+                        request.params.userId
+                    }`
+                });
+            } else {
+                console.log(
+					`Successfully got User Profile details ${
+						request.params.userId
+					}:\n ${questionDocument}`
+                );
+                let result = questionDocument;
+                response.status(200).json(result);                
+            }             
+        }
+    )
+});
 module.exports = question;
