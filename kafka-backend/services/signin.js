@@ -1,52 +1,93 @@
-var mongo = require('./mongo');
 var bcrypt = require('bcrypt');
+const saltRounds = 10;
+var jwt = require('jsonwebtoken');
+var userModel = require("../model/UserSchema.js");
+var { client } = require('../resources/redis');
 
 
-function handle_request(msg, callback){
-    var res = {};
-    console.log("In handle request:"+ JSON.stringify(msg));
-    mongo.connect(function(err,db){
-        if(err){
-            callback(null,"Cannot connect to db");
-        }
-        else{
-            console.log('Connected to mongodb');
-            var query = {Email : msg.username};
-            var dbo = db.db('usersignup');
-            dbo.collection("usersignup").find(query).toArray(function(err,result){
-                if(err){
-                    //throw err;
-                    callback(err,"Error");
-                }
-                if(result.length > 0){
-                    var hash = result[0].Password;
-                    bcrypt.compare(msg.password,hash,function(err,doesMatch){
-                        if(doesMatch){
-                            console.log("Inside result.length",result[0].userID);
-                          
-                            callback(null,result);
-                        } else {
-                            callback(null,[]);
-                        }
-                    });
-                }
-                else{
-                    callback(null,[]);
-                }
+async function handle_request_signup(msg, callback) {
+  try {
+    let { email, password, firstName, lastName } = msg;
+    email = email.toLowerCase();
+    let responseOne = await userModel.findOne({ email });
+    if (responseOne) {
+      var body = {
+        message: "Signup failed! Email already exists",
+        insertStatus: 0
+      };
+      callback(null, body)
+    } else {
+      let hash = await bcrypt.hash(password, saltRounds);
+      var user = new userModel({ email, password: hash, firstName, lastName });
+      let response = await user.save();
+      var body = {
+        id: response._id,
+        message: "Sign up successfull. Redirecting to Login Page...",
+        insertStatus: 1
+      };
+      callback(null, body)
+    }
+  } catch (error) {
+    callback(error, null);
+  }
+}
+async function handle_request_signin(msg, callback) {
+  var body = "";
+  client.get('loginQueryKey', async function (err, query_results) {
+    if (query_results) {
+      body = query_results;
+      callback(null, JSON.parse(body));
+    }
+    else {
+
+      let req = {
+        body: msg
+      }
+      let loginSuccess = 0;
+      try {
+        let { email, password } = msg;
+        email = email.toLowerCase();
+        let result = await userModel.findOne({ email });
+        let data = null;
+        if (!result) {
+          data = {
+            loginSuccess: 0,
+            message: "Email or Password Incorrect"
+          };
+        } else {
+          const match = await bcrypt.compare(password, result.password);
+          if (match) {
+            var user = {
+              email: result.email
+            };
+            var token = jwt.sign(user, "There is no substitute for hardwork", {
+              expiresIn: 10080 // in seconds
             });
+            data = {
+              id: result._id,
+              role: result.role,
+              loginSuccess: 1,
+              message: "Login Successfull!",
+              token: 'JWT ' + token
+            };
+          } else {
+            data = {
+              loginSuccess: 0,
+              message: "Email or Password Incorrect"
+            };
+          }
         }
-    });
-
-    /*if(msg.username == "bhavan@b.com" && msg.password =="a"){
-        res.code = "200";
-        res.value = "Success Login";
+        client.set('loginQueryKey', JSON.stringify(data));
+        callback(null, data)
+      } catch (error) {
+        callback(error, null);
+      }
 
     }
-    else{
-        res.code = "401";
-        res.value = "Failed Login";
-    }
-    callback(null, res);*/
+  });
 }
 
-exports.handle_request = handle_request;
+module.exports = {
+  signin: { handle_request: handle_request_signin },
+  signup: { handle_request: handle_request_signup }
+};

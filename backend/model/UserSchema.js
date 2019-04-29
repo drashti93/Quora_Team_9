@@ -130,7 +130,6 @@ const UserSchema = new Schema({
 			]
 		}
 	],
-
 	messagesReceived: [
 		{
 			text: String,
@@ -141,10 +140,30 @@ const UserSchema = new Schema({
 				}
 			]
 		}
-	]
+	],
+	followers: [{
+		type: Schema.Types.ObjectId,
+		ref: "users"
+	}],
+	following: [{
+		type: Schema.Types.ObjectId,
+		ref: "users"
+	}],
+	questions: [{
+		type: Schema.Types.ObjectId,
+		ref: "questions"
+	}],
+	answers: [{
+		type: Schema.Types.ObjectId,
+		ref: "answers"
+	}],
+	bookmarkedAnswers: [{
+		type: Schema.Types.ObjectId,
+		ref: "answers"
+	}]
 });
 
-UserSchema.set("timestamps", true);
+UserSchema.set('timestamps', true);
 
 const UserModel = mongoose.model("users", UserSchema, "Users");
 module.exports = UserModel;

@@ -1,3 +1,5 @@
-module.exports = {
-	secret: "canvaswebapplicationprototypejwtsecretkey"
-};
+
+module.exports ={
+    secret: "canvaswebapplicationprototypejwtsecretkey"
+}
+
