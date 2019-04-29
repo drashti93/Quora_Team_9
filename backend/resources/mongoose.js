@@ -20,5 +20,4 @@ mongoose
 		}
 	);
 
-
 module.exports = { mongoose };

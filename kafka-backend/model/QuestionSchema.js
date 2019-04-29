@@ -25,6 +25,7 @@ const QuestionSchema = new Schema({
 	]
 });
 
+
 QuestionSchema.set('timestamps', true);
 
 const QuestionModel = mongoose.model("questions", QuestionSchema, "Questions");

@@ -2,7 +2,48 @@ var express = require("express");
 var question = express.Router();
 const UserSchema = require("../model/UserSchema");
 var QuestionModel = require("../model/QuestionSchema");
-var kafka = require('../kafka/client');
+var UserModel = require("../model/UserSchema");
+var kafka = require("../kafka/client");
+var client = require('../resources/redis');
+
+
+//Follow a Question
+question.post("/follow", async (req, res) => {
+	try {
+		let { userId, questionId } = req.body;
+		let result = await QuestionModel.update(
+			{ _id: questionId },
+			{
+				$push: { followers: userId }
+			}
+		);
+		res.status(200).json({});
+	} catch (error) {
+		res.send(error);
+	}
+});
+
+//GET QUESTIONS FROM TOPICS & FOLLOWING - FOR FEED
+
+// question.get("/feed", async (req, res) => {
+// 	try {
+		// let { userId } = req.body;
+		// Model.QuestionModel.find((err, result) => {
+        //     if (err) {
+        //         console.log("Error in retrieving courses ALL data", err);
+        //         res.writeHead(400, {
+        //             "Content-type": "text/plain"
+        //         });
+        //         res.end("Error in retrieving courses All data");
+        //     } else {
+        //         console.log("courses ALL jason Data: ", JSON.stringify(result));
+
+        //         res.writeHead(200, {
+        //             "Content-type": "application/json"
+        //         });
+        //         res.end(JSON.stringify(result));
+        //     }
+        // });
 
 // question.get("/",async (req,res)=>{
 //     try {
@@ -11,6 +52,7 @@ var kafka = require('../kafka/client');
 //            res.send(error);
 //        }
 // });
+
 
 question.post("/", async (req, res) => {
 
@@ -29,6 +71,8 @@ question.post("/", async (req, res) => {
         }
     })
 });
+
+
 question.post("/edit", async (req, res) => {
 
     kafka.make_request('edit_question', req.body, function (err, results) {
@@ -46,9 +90,9 @@ question.post("/edit", async (req, res) => {
         }
     })
 });
+
+
 question.delete("/", async (req, res) => {
-
-
     kafka.make_request('delete_question', req.body, function (err, results) {
         console.log("In delete question - kafka make request")
         if (err) {
@@ -65,8 +109,9 @@ question.delete("/", async (req, res) => {
     })
 });
 
+
 // Search question
-question.get("/questions/:questionId", (request, response) => {
+question.get("/:questionId", (request, response) => {
     console.log(`\n\nInside Get /questions/:questionId`);
     let keyword = request.body.keyword;
     QuestionModel.find(
