@@ -92,7 +92,7 @@ class Signup extends Component {
         <div className="input-parent">
        <div> <input required onChange={this.changeHandlerName} type="text" placeholder="First Name"></input></div>
        <div> <input required onChange={this.changeHandlerLastName} type="text" placeholder="Last Name"></input></div>
-        <div> <input required title="Please enter an email address of the form xyz@sjsu.edu"  type="email" pattern=".+@sjsu.edu" onChange={this.changeHandlerEmail}  placeholder="Email"></input></div>
+        <div> <input required title="Please enter an email address of the form xyz@abc.xx/xxx"  type="email" pattern="[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" onChange={this.changeHandlerEmail}  placeholder="Email"></input></div>
        <div><input required onChange={this.changeHandlerPassword} type="password" placeholder="Password"></input></div>
         <input className="btn" type="submit" value="Sign Up"></input>
         </div>
