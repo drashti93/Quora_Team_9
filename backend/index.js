@@ -160,6 +160,7 @@ app.post('/login', function (req, res) {
 			res.end();
 		} else {
 			console.log("Inside else");
+			console.log(results);
 			if (results.id) {
 				res.cookie('cookie', JSON.stringify({ email: results.id, role: results.role, token: results.token }), { maxAge: 900000000, httpOnly: false, path: '/' });
 				req.session.user = results.id;

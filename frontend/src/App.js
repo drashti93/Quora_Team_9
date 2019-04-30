@@ -1,11 +1,21 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import {BrowserRouter} from 'react-router-dom';
-import {Provider} from 'react-redux';
-import store from './store';
+import {BrowserRouter,Route,Switch} from 'react-router-dom';
 import Main from './components/Main';
-
+import Login from './components/login/login';
+import Signup from './components/signup/signup';
+import thunk from 'redux-thunk';
+import {applyMiddleware,compose,combineReducers,createStore} from 'redux';
+import {Provider} from 'react-redux';
+import allReducers from "./reducers/allReducers";
+const allStoreEnchancers=compose(
+    applyMiddleware(thunk)
+   , window.devToolsExtension && window.devToolsExtension()
+);
+const store=createStore(
+    allReducers,
+    allStoreEnchancers  
+);
 
 // App Component
 class App extends Component {
@@ -14,10 +24,11 @@ class App extends Component {
           <Provider store = {store}>
            {/* Routing to different pages */}
               <BrowserRouter>
-                  <div>
-                      {/* Child Component of App Component */}
-                      <Main />
-                  </div>
+              <Switch>
+                <Route exact path="/" component={Main}></Route>
+                <Route path="/login" component={Login}></Route>
+                <Route path="/signup" component={Signup}></Route>
+                </Switch>
               </BrowserRouter>
           </Provider>
       );
