@@ -113,9 +113,53 @@ const UserSchema = new Schema({
 		type: Boolean,
 		default: true
 	},
-	topicsFollowed:[{
+	topicsFollowed: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: "topics"
+		}
+	],
+	messagesSent: [
+		{
+			text: String,
+			senderId: [
+				{
+					type: Schema.Types.ObjectId,
+					ref: "users"
+				}
+			]
+		}
+	],
+	messagesReceived: [
+		{
+			text: String,
+			receiverId: [
+				{
+					type: Schema.Types.ObjectId,
+					ref: "users"
+				}
+			]
+		}
+	],
+	followers: [{
 		type: Schema.Types.ObjectId,
-		ref: "topics"
+		ref: "users"
+	}],
+	following: [{
+		type: Schema.Types.ObjectId,
+		ref: "users"
+	}],
+	questions: [{
+		type: Schema.Types.ObjectId,
+		ref: "questions"
+	}],
+	answers: [{
+		type: Schema.Types.ObjectId,
+		ref: "answers"
+	}],
+	bookmarkedAnswers: [{
+		type: Schema.Types.ObjectId,
+		ref: "answers"
 	}]
 });
 

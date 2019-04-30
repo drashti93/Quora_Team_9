@@ -20,6 +20,4 @@ mongoose
 		}
 	);
 
-
-
 module.exports = { mongoose };

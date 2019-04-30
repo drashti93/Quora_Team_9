@@ -11,8 +11,8 @@ const AnswerSchema = new Schema({
 	userId: {
 		type: Schema.Types.ObjectId,
 		ref: "users"
-	}
-	,
+
+	},
 	images: [
 		{
 			uid: {
@@ -68,6 +68,7 @@ const AnswerSchema = new Schema({
 		credentialIndex: Number
 	}
 });
+
 AnswerSchema.set('timestamps', true);
 const AnswerModel = mongoose.model("answers", AnswerSchema, "Answers");
 module.exports = AnswerModel;
