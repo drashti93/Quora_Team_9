@@ -162,6 +162,7 @@ app.post("/login", function(req, res) {
 			res.end();
 		} else {
 			console.log("Inside else");
+			console.log(results);
 			if (results.id) {
 				res.cookie(
 					"cookie",

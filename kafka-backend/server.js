@@ -67,12 +67,12 @@ handleTopicRequest("delete_question", questionRequests.deletequestion);
 // handleTopicRequest("post_message", postmessageRequests.postmessage);
 // handleTopicRequest("get_message", getmessageRequests.getmessage);
 // handleTopicRequest("delete_message", deletemessageRequests.deletemessage);
-handleTopicRequest(
-	"get_topic_questions",
-	topicquestionsRequests.gettopicquestions
-);
-handleTopicRequest(
-	"get_following_questions",
-	followingquestionsRequests.getfollowingquestions
-);
+// handleTopicRequest(
+// 	"get_topic_questions",
+// 	topicquestionsRequests.gettopicquestions
+// );
+// handleTopicRequest(
+// 	"get_following_questions",
+// 	followingquestionsRequests.getfollowingquestions
+// );
 
