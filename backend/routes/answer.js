@@ -127,11 +127,13 @@ answer.post("/answer/bookmark", async (req, res) => {
     }
 });
 
-answer.get("/:userId/answers", async(req, res) => {
-    try {
-        let {userId} = req.body;
-        let result1 = await AnswerModel.find({userId: userId});
-        let result2 = await QuestionModel.find({})
-    }
-})
+// answer.get("/:userId/answers", async(req, res) => {
+//     try {
+//         let {userId} = req.body;
+//         let result1 = await AnswerModel.find({userId: userId});
+//         let result2 = await QuestionModel.find({})
+//     } catch(error) {
+//         res.send(error);
+//     }
+// })
 module.exports = answer;
