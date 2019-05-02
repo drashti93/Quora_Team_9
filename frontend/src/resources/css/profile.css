@@ -1,0 +1,14 @@
+#user_image{
+    height: 142px;
+    width: 142px;
+    border-radius: 100%;
+    
+}
+
+#user_image_col{
+    text-align: center;
+}
+
+#profile_body{
+    margin-top: 20px;
+}
