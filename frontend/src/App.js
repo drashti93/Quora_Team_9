@@ -5,7 +5,7 @@ import Main from './components/Main';
 import Login from './components/login/login';
 import Signup from './components/signup/signup';
 import thunk from 'redux-thunk';
-import {applyMiddleware,compose,combineReducers,createStore} from 'redux';
+import {applyMiddleware,compose,createStore} from 'redux';
 import {Provider} from 'react-redux';
 import allReducers from "./reducers/allReducers";
 const allStoreEnchancers=compose(

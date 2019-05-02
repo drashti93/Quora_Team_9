@@ -1,0 +1,16 @@
+.navbar-parent .navbar{
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 3px 2px -2px rgba(200,200,200,0.2);
+}
+.navbar-parent .navbar-logo {
+    height: 23px;
+    position: relative;
+    bottom: 3px;
+}
+.navbar-parent svg{
+    height: 25px;
+    margin-right: 5px;
+    position: relative;
+    bottom: 2px;
+}
