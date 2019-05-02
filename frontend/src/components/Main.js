@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import Navigationbar from "./navbar/Navigationbar"
+import TopicBar from './topics/topic'
 
 // import '../App.css';
 
@@ -19,7 +20,7 @@ class Main extends Component{
             <Navigationbar></Navigationbar>
             <div className="container">
                 <div className="row">
-                    <div className="col-lg-2 col-md-2 col-xs-12">Left side Bar</div>
+                    <div className="col-lg-2 col-md-2 col-xs-12"><TopicBar/></div>
                     <div className="col-lg-8 col-md-8 col-xs-12">Middle section</div>
                     <div className="col-lg-2 col-md-2 col-xs-12">Right side bar</div>
                 </div>
