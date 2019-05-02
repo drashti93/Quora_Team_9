@@ -5,8 +5,8 @@ import {Link} from 'react-router-dom';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {loginuser} from '../../actions/loginActions';
-import quoralogo from "../../images/quoraLogo.svg";
-import loginBackground from "../../images/loginBackground.png";
+import quoralogo from "../../resources/images/quoraLogo.svg";
+import loginBackground from "../../resources/images/loginBackground.png";
 class Login extends Component {
 
   constructor(props){
