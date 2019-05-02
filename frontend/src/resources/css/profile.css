@@ -1,0 +1,53 @@
+#user_image{
+    height: 142px;
+    width: 142px;
+    border-radius: 100%;
+    
+}
+
+#user_image_col{
+    text-align: center;
+}
+
+#profile_body{
+    margin-top: 10px;
+}
+
+#list_of_actions{
+    text-align: center;
+    padding: 5px;
+}
+
+#profile_details{
+    margin-top: 20px;
+}
+
+#profile_main{
+    padding: 10px;
+    border-bottom: 2px solid #e2e2e2
+    
+}
+
+#feeds_title{
+    text-align: left;
+    border-bottom: 1px solid #e2e2e2;
+    width: 100%;
+}
+
+#feeds_options{
+    text-align: left;
+}
+
+.single-feeds-option:hover{
+    background-color: #e2e2e2;
+    color:black;
+    cursor: pointer;
+}
+
+.tab_details{
+    border-bottom: 1px solid #e2e2e2;
+}
+
+#tab{
+    padding: 5px;
+}
