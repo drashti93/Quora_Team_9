@@ -14,7 +14,8 @@ class Profile extends Component {
     super(props)
 
     this.state={
-     
+     profile_options: ["Profile", "Questions", "Answers", "Following", "Followers", "Activity"],
+     selectedTab: "Profile",
     }
   }
 
@@ -23,12 +24,12 @@ class Profile extends Component {
         <div>
             <Navigationbar></Navigationbar>
             <Container id="profile_body">
-                <Row>
+                <Row >
                     <Col xs={9}>
-                        <Row>
+                        <Row id="profile_main">
                             <Col id="user_image_col" xs={3}>
                                 <div>
-                                    <span><img id="user_image" src={user_img}></img>Add Photo</span>
+                                    <span><img id="user_image" src={user_img}></img><div>Add Photo</div></span>
                                 </div>
                             </Col>
                             <Col xs={9}>
@@ -37,16 +38,33 @@ class Profile extends Component {
                                 </div>
                             </Col>
                         </Row>
-                    
-                        <Row>
-                            <Col xs={3}>
-                                <div>
-                                    List of actions
+                        <Row id="profile_details">
+                            <Col id="list_of_actions" xs={3}>
+                                <div id="feeds_title">
+                                    <h6>Feeds</h6>
+                                </div>
+                                <div id="feeds_options">
+                                    {
+                                        this.state.profile_options.map((option,index) => {
+                                            return <div  onClick={() => {
+                                                this.setState({selectedTab : option})
+                                            }} className="single-feeds-option" key={index}>
+                                                <span>{option}</span>
+                                            </div>
+                                        })
+                                    }
                                 </div>
                             </Col>
-                            <Col xs={9}>
+                            <Col id="tab" xs={9}>
                                 <div>
-                                    Details
+                                    {
+                                        this.state.selectedTab === "Profile" ?
+                                            <div className="tab_details">
+                                                <h6>{ this.state.selectedTab }</h6>
+                                            </div>
+                                            :
+                                            <span></span>
+                                    }
                                 </div>
                             </Col>
                         </Row>
