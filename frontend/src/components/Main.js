@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
-import Navigationbar from "./navbar/Navigationbar"
-
-// import '../App.css';
+import Navigationbar from "./navbar/Navigationbar";
+import Feed from "./feed/Feed";
 
 // Main Component
 class Main extends Component{
@@ -16,11 +15,11 @@ class Main extends Component{
         return(
             <div>
                 {redirectVar}
-            <Navigationbar></Navigationbar>
+            <Navigationbar/>
             <div className="container">
                 <div className="row">
                     <div className="col-lg-2 col-md-2 col-xs-12">Left side Bar</div>
-                    <div className="col-lg-8 col-md-8 col-xs-12">Middle section</div>
+                    <div className="col-lg-8 col-md-8 col-xs-12"><Feed/></div>
                     <div className="col-lg-2 col-md-2 col-xs-12">Right side bar</div>
                 </div>
                 </div>
