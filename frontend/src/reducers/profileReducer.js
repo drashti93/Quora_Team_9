@@ -10,6 +10,10 @@ const reducer = (state = initial, action) => {
 
 			
         }
+
+        case "CREDENTIALS_SUCCESS": {
+            return{...state}
+        }
                     
         default :
             return state;

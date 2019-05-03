@@ -15,26 +15,26 @@ answer.get("/:question_id/answers", urlencodedParser, function (req, res) {
             res.end();
         }
         else {
-    var question_id = req.params.question_id;
-    console.log("Inside get all answers request. Question id: " + question_id);
-    kafka.make_request('get_answers', question_id, function (err, results) {
-        console.log("In get all answers - kafka make request")
-        if (err) {
-            console.log("Inside err");
-            res.json({
-                status: "error",
-                msg: "System Error, Try Again."
-            })
-        } else {
-            console.log("Inside else");
-            client.set('answersKey', results);
-            res.json({ answers:results});
+            var question_id = req.params.question_id;
+            console.log("Inside get all answers request. Question id: " + question_id);
+            kafka.make_request('get_answers', question_id, function (err, results) {
+                console.log("In get all answers - kafka make request")
+                if (err) {
+                    console.log("Inside err");
+                    res.json({
+                        status: "error",
+                        msg: "System Error, Try Again."
+                    })
+                } else {
+                    console.log("Inside else");
+                    client.set('answersKey', results);
+                    res.json({ answers:results});
 
-            res.end();
+                    res.end();
+                }
+            })
         }
     })
-    }
-})
 })
 
 //to add an answer
@@ -88,7 +88,7 @@ answer.delete("/", async (req, res) => {
     }
 });
 
-answer.post("/answer/upvote", async (req, res) => {
+answer.post("/upvote", async (req, res) => {
     try {
         let { userId, questionId, answerId } = req.body;
         let result = await AnswerModel.update({ _id: answerId }, {
@@ -101,7 +101,7 @@ answer.post("/answer/upvote", async (req, res) => {
     }
 });
 
-answer.post("/answer/downvote", async (req, res) => {
+answer.post("/downvote", async (req, res) => {
     try {
         let { userId, questionId, answerId } = req.body;
         let result = await AnswerModel.update({ _id: answerId }, {
@@ -114,7 +114,7 @@ answer.post("/answer/downvote", async (req, res) => {
     }
 });
 
-answer.post("/answer/bookmark", async (req, res) => {
+answer.post("/bookmark", async (req, res) => {
     try {
         let { userId, questionId, answerId } = req.body;
         let result = await AnswerModel.update({ _id: answerId }, {
