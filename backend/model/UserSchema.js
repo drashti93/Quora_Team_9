@@ -98,7 +98,7 @@ const UserSchema = new Schema({
 				type: Boolean,
 				default: false
 			}
-		}]
+		}],
 	},
 	isFollowAllowed: {
 		type: Boolean,
@@ -123,8 +123,15 @@ const UserSchema = new Schema({
 		text: String,
 		receiverId: [{
 			type: Schema.Types.ObjectId,
-			ref: "users"
+			ref: "topics"
 		}]
+	}],
+	chats: [{
+		uid: { type: Schema.Types.ObjectId, ref: 'users' },
+		messages: [{
+			action: String,
+			messagetext: String
+		}],
 	}],
 	followers: [{
 		type: Schema.Types.ObjectId,
@@ -144,7 +151,7 @@ const UserSchema = new Schema({
 	}],
 	bookmarkedAnswers: [{
 		type: Schema.Types.ObjectId,
-		ref: "answers"
+		ref: "answers",
 	}]
 });
 

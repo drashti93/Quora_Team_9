@@ -1,12 +1,12 @@
 const express = require("express");
-const user = express.Router();
+const router = express.Router();
 
 const mongoose = require("../resources/mongoose");
 const UserSchema = require("../model/UserSchema");
 
 
 // Edit Profile
-user.post("/:userId/edit", (request,response) => {
+router.post("/:userId/edit", (request,response) => {
 	console.log(`\n\nInside Post /:userId/edit`);
 	// body = request.body;
 	let { firstName, lastName, aboutMe, phoneNumber, street, city, state, zipcode, startDate, endDate, gender, isFollowAllowed, topicsFollowed } = request.body;
@@ -78,7 +78,7 @@ user.post("/:userId/edit", (request,response) => {
 
 
 // Delete User account
-user.delete("/:userId", async (request, response) => {
+router.delete("/:userId", async (request, response) => {
     try {
         let result = await UserSchema.updateOne({ _id: request.params.userId }, {
             $pull: {
@@ -93,7 +93,7 @@ user.delete("/:userId", async (request, response) => {
 
 
 // Deactivate User Account
-user.put("/:userId", (request, response) => {
+router.put("/:userId", (request, response) => {
 	console.log(`\n\n Inside Post users/:userId/deactivateProfile`);
 	UserSchema.findOneAndUpdate(
 		{ _id: request.params.userId },
@@ -128,8 +128,22 @@ user.put("/:userId", (request, response) => {
 
 
 // Get Profile
+router.get("/getallusers",(req,res)=>{
+  
+    (async()=>{
+        try {
+       let result=await UserSchema.find();
+        res.status=200;
+        res.setHeader("Content-Type", "application/json");
+        res.send(JSON.stringify(result));
+        } catch (error) {
+            console.log(error);
+        }
+    })();
+});
+
 //Get user by id
-user.get('/:userId', async (request, response) => {
+router.get('/:userId', async (request, response) => {
 
 	console.log(`\n\nInside GET /users/:userId`);
 
@@ -153,7 +167,7 @@ user.get('/:userId', async (request, response) => {
 });
 
 //Enable user follow
-user.get('/:userId/follow/enable', async (request, response) => {
+router.get('/:userId/follow/enable', async (request, response) => {
 
 	console.log(`\n\nInside GET /users/:userId/follow/enable`);
 
@@ -184,7 +198,7 @@ user.get('/:userId/follow/enable', async (request, response) => {
 
 
 //Disable user follow
-user.get('/:userId/follow/disable', async (request, response) => {
+router	.get('/:userId/follow/disable', async (request, response) => {
 
 	console.log(`\n\nInside GET /users/:userId/follow/disable`);
 
@@ -215,7 +229,7 @@ user.get('/:userId/follow/disable', async (request, response) => {
 
 
 //Fetch user followers
-user.get('/:userId/followers', async (request, response) => {
+router.get('/:userId/followers', async (request, response) => {
 
 	console.log(`\n\nInside GET /users/:userId/followers`);
 
@@ -240,7 +254,7 @@ user.get('/:userId/followers', async (request, response) => {
 
 
 //Fetch users following user
-user.get('/:userId/following', async (request, response) => {
+router.get('/:userId/following', async (request, response) => {
 
 	console.log(`\n\nInside GET /users/:userId/following`);
 
@@ -265,7 +279,7 @@ user.get('/:userId/following', async (request, response) => {
 
 
 //Fetch answers bookmarked by user
-user.get('/:userId/bookmarks', async (request, response) => {
+router.get('/:userId/bookmarks', async (request, response) => {
 
 	console.log(`\n\nInside GET /users/:userId/bookmarks`);
 
@@ -288,4 +302,114 @@ user.get('/:userId/bookmarks', async (request, response) => {
 	}
 });
 
-module.exports = user;
+router.post("/getchats",(req,res)=>{
+  
+    (async()=>{
+        try {
+            let {uid}=req.body;
+            console.log("For chats");
+            console.log(uid);
+       let result=await UserSchema.findOne({_id:uid}).populate({path:'chats.uid',select:["firstName","lastName","profileImage"]}).exec();
+       console.log(result);
+       let chatArray=[]
+       if(result.chats){
+        chatArray=result.chats;
+       }
+        res.status=200;
+        res.setHeader("Content-Type", "application/json");
+        res.send(JSON.stringify(chatArray));
+        } catch (error) {
+            console.log(error);
+        }
+    })();
+});
+router.post("/message",(req,res)=>{
+  
+    (async()=>{
+        try {
+            let {receiverid,uid,messagetext}=req.body;
+            console.log(receiverid);
+            console.log(uid);
+            console.log(messagetext);
+
+            let receiverObj={
+                action:"received",
+                messagetext
+            }
+            let senderObj={
+                action:"sent",
+                messagetext
+            }
+            let chatchecksender=await UserSchema.findOne({_id:uid,"chats.uid":receiverid});
+            if(chatchecksender){
+                console.log("inside existing chats");
+                let senderResult=await UserSchema.updateOne({
+                    _id:uid,
+                    chats:{ 
+                        $elemMatch: {
+                        uid: receiverid
+                            }
+                        }
+                }, {
+                    $push: {
+                        'chats.$.messages': senderObj                     
+                    }
+                });
+            }else{
+                let senderUpperObj={
+                    uid:receiverid,
+                    messages:[{
+                        action:"sent",
+                        messagetext
+                    }]
+                }
+                let ress=await UserSchema.findOneAndUpdate({_id:uid},{
+                    $push:{
+                        chats:senderUpperObj
+                    }
+                })
+            }
+
+            let chatcheckreceiver=await UserSchema.findOne({_id:receiverid,"chats.uid":uid});
+            if(chatcheckreceiver){
+
+                
+                let receiverResult=await UserSchema.updateOne({
+                    _id:receiverid,
+                    chats:{ 
+                          $elemMatch: {
+                           uid: uid
+                             }
+                        }
+                   }, {
+                       $push: {
+                           'chats.$.messages': receiverObj                     
+                       }
+                   });
+        
+            }else{
+                let recUpperObj={
+                    uid:uid,
+                    messages:[{
+                        action:"received",
+                        messagetext
+                    }]
+                }
+                let ress=await UserSchema.findOneAndUpdate({_id:receiverid},{
+                    $push:{
+                        chats:recUpperObj
+                    }
+                })
+                
+            }
+        res.status=200;
+        res.setHeader("Content-Type", "application/json");
+        res.send(JSON.stringify({message:"Message posted"}));
+        } catch (error) {
+            console.log(error);
+        }
+    })();
+});
+
+module.exports = router;
+

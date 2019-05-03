@@ -2,3 +2,164 @@
   text-align: center;
   background-color: white; 
 }
+/*************************Login Page***************/
+.login-header {
+  position: relative;
+  display: block;
+  height: 80px;
+  width: 100%;
+  text-align: center;
+  -webkit-box-shadow: 0 0 2px 1px rgba(175, 175, 175, 0.3);
+  box-shadow: 0 0 2px 1px rgba(175, 175, 175, 0.3);
+  background-color: #fff;
+  background-color: #000;
+padding-bottom: 20px;
+}
+
+
+
+.login-header span {
+  margin-top: 18px;
+  display: inline-block;
+  color: #fff;
+  /* color: #777; */
+  font-size: 24px;
+  margin-right: 17px;
+}
+.login-header span img {
+  position: relative;
+  top: 8px;
+  height: 30px;
+}
+
+
+.login-form {
+width: 40%;
+margin: auto;
+margin-top: 75px;
+background-color: #fff;
+text-align: center;
+font-size: 14px;
+line-height: 1.4;
+background-color: #f9f9f9;
+color: #777;
+border-style: solid;
+border-width: 1px;
+height: auto;
+/* width: 760px; */
+min-width: 300px;
+background-color: #fff;
+border: 1px solid #e2e2e2;
+box-shadow: 0 0 5px #888;
+border-radius: 4px
+}
+.login-header p {
+  width: 48%;
+  margin: auto;
+  color: #fff;
+  /* color: #777; */
+  margin-top: 10px;
+  font-size: 15px;
+}
+.login-form img {
+  width: 224px;
+  margin-top: 20px;
+}
+.img-parent {
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+.input-parent{
+  width: 60%;
+  margin: auto;
+}
+.input-parent input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 5px;
+  border: none;
+}
+.input-parent .btn{
+  border-color: #004b75;
+    border-bottom-color: #00456a;
+    box-shadow: rgba(0, 0, 0, 0.15) 0 1px 0, rgba(255, 255, 255, 0.1) 0 1px 0 0 inset;
+    color: #fff;
+    height: 40px;
+    width: 100%;
+    background: #3e78ad;
+    margin-bottom: 20px;
+    border: 1px solid #3a66ad;
+    box-shadow: 0 1px 1px 0 rgba(200,200,200,0.6);
+}
+.input-parent input {
+  width: 100%;
+  /* margin-top: 8px; */
+  /* padding: 5px; */
+  /* padding: 10px; */
+  height: 35px;
+  text-align: center;
+  border: none;
+  margin-bottom: 15px;
+  border-radius: 3px;
+  border: 1px solid #ddd;
+}
+.login-form .sign-up{
+  margin-bottom: 20px;
+}
+.login-form p{
+  margin-bottom: 0px;
+  font-weight: bold;
+}
+.login-form input[type="radio"] {
+  height: 15px;
+  width: 30px;
+  position: relative;
+  top: 3px;
+}
+.login-form .radio-parent{
+  text-align: left;
+}
+.login-form a{
+  color: white;
+}
+.home-parent.input-parent {
+  width: 70%;
+  margin: auto;
+  height: 157px;
+  margin-top: 57px;
+}
+.home-parent.input-parent .btn{
+  display: inline-block;
+  width: 40%;
+  border: none;
+  margin-right: 15px;
+
+}
+.sign-up a{
+  color: #0077b9
+}
+.login-form p{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.login-form .header-text{
+  font-family: 'q_serif',Georgia,Times,"Times New Roman","Hiragino Kaku Gothic Pro","Meiryo",serif;
+  font-size: 19px;
+  font-weight: 400;
+  margin-bottom: 20px;
+  padding: 0px 15px;
+
+}
+.login-parent .background-image{
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+.login-parent .background-image img{
+  width: 100%;
+  height: 100%;
+}
+/*************************End Login Page***************/

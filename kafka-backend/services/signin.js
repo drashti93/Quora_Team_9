@@ -33,12 +33,12 @@ async function handle_request_signup(msg, callback) {
 }
 async function handle_request_signin(msg, callback) {
   var body = "";
-  client.get('loginQueryKey', async function (err, query_results) {
-    if (query_results) {
-      body = query_results;
-      callback(null, JSON.parse(body));
-    }
-    else {
+  // client.get('loginQueryKey', async function (err, query_results) {
+  //   if (query_results) {
+  //     body = query_results;
+  //     callback(null, JSON.parse(body));
+  //   }
+  //   else {
 
       let req = {
         body: msg
@@ -46,6 +46,8 @@ async function handle_request_signin(msg, callback) {
       let loginSuccess = 0;
       try {
         let { email, password } = msg;
+        console.log("email==========>")
+        console.log(email);
         email = email.toLowerCase();
         let result = await userModel.findOne({ email });
         let data = null;
@@ -68,7 +70,8 @@ async function handle_request_signin(msg, callback) {
               role: result.role,
               loginSuccess: 1,
               message: "Login Successfull!",
-              token: 'JWT ' + token
+              token: 'JWT ' + token,
+              email:result.email
             };
           } else {
             data = {
@@ -77,14 +80,14 @@ async function handle_request_signin(msg, callback) {
             };
           }
         }
-        client.set('loginQueryKey', JSON.stringify(data));
+      //  client.set('loginQueryKey', JSON.stringify(data));
         callback(null, data)
       } catch (error) {
         callback(error, null);
       }
 
-    }
-  });
+   // }
+//  });
 }
 
 module.exports = {
