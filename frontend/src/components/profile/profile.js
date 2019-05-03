@@ -168,7 +168,7 @@ class Profile extends Component {
                                         this.state.selectedTab === "Followers" ?
                                             <div>
                                                 <div className="tab_details">
-                                                    <h6>{ this.state.selectedTab }</h6>
+                                                    <h6>{this.props && this.props.followers ? (this.props.followers).length : 0} followers</h6>
                                                 </div>
                                                 <Feed></Feed>
                                             </div>
@@ -179,7 +179,7 @@ class Profile extends Component {
                                         this.state.selectedTab === "Following" ?
                                             <div>
                                                 <div className="tab_details">
-                                                    <h6>{ this.state.selectedTab }</h6>
+                                                    <h6>{this.props && this.props.following ? (this.props.following).length : 0} following</h6>
                                                 </div>
                                                 <Feed></Feed>
                                             </div>
