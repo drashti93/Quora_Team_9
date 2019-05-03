@@ -12,6 +12,7 @@ var answer = require("./routes/answer");
 var question = require("./routes/question");
 var comment = require("./routes/comment");
 var graphs = require('./routes/graphs');
+var topics = require('./routes/topic');
 
 // var bcrypt = require("bcrypt");
 // const saltRounds = 10;
@@ -82,10 +83,11 @@ const fileUploadRoutes = require("./routes/fileUploadRoute");
 
 app.use("/users", userRoutes);
 app.use("/uploads", fileUploadRoutes);
-app.use("/answer", answer);
-app.use("/question", question);
-app.use("/comment", comment);
+app.use("/answers", answer);
+app.use("/questions", question);
+app.use("/comments", comment);
 app.use('/graphs',graphs);
+app.use('/topics',topics);
 
 
 //with redis 

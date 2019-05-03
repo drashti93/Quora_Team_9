@@ -1,10 +1,133 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const mongoose = require('../resources/mongoose');
 
-const UserSchema = require('../model/UserSchema')
+const mongoose = require("../resources/mongoose");
+const UserSchema = require("../model/UserSchema");
 
 
+// Edit Profile
+router.post("/:userId/edit", (request,response) => {
+	console.log(`\n\nInside Post /:userId/edit`);
+	// body = request.body;
+	let { firstName, lastName, aboutMe, phoneNumber, street, city, state, zipcode, startDate, endDate, gender, isFollowAllowed, topicsFollowed } = request.body;
+	UserSchema.findOneAndUpdate(
+		{ _id: request.params.userId },
+		{
+			$set: {
+				firstName: firstName,
+				lastName: lastName,
+				// email: body.email,
+				aboutMe: aboutMe,
+				phoneNumber: phoneNumber,
+				credentials: {
+					address:{
+						street: street,
+						city: city,
+						state: state,
+						zipcode: zipcode,
+						startDate: startDate,
+						endDate: endDate,
+					},	
+					education: {
+						school: school,
+						concentration: concentration,
+						secConcentration: secConcentration,
+						degree: degree,
+						gradYear: gradYear,
+					},
+					career: {
+						position: position,
+						company: company,
+						startDate: startDate,
+						endDate: endDate,
+					}
+				},
+				gender: gender,
+				isFollowAllowed: isFollowAllowed,
+				topicsFollowed: topicsFollowed
+			}
+		},
+		{ new: true },
+		(error, userDocument) => {
+			if (error) {
+				console.log(
+					`Error while editing or updating user profile ${
+						request.params.userId
+					}:\n ${error}`
+				);
+				// response.status(500).json({ error: err, message: "Attaching Files to Course Failed" });
+				response
+					.status(500)
+					.json({
+						error: error,
+						message: `Error while editing or updating user profile ${
+							request.params.userId
+						}`
+					});
+			} else {
+				console.log(
+					`Sucessfully updated User Profile ${
+						request.params.userId
+					}:\n ${userDocument}`
+				);
+				response.status(200).json(userDocument);
+			}
+		}
+	);
+});
+
+
+// Delete User account
+router.delete("/:userId", async (request, response) => {
+    try {
+        let result = await UserSchema.updateOne({ _id: request.params.userId }, {
+            $pull: {
+                _id: request.params.userId
+            }
+        });
+        response.status(200).json(result);
+    } catch (error) {
+        response.send(error);
+    }
+});
+
+
+// Deactivate User Account
+router.put("/:userId", (request, response) => {
+	console.log(`\n\n Inside Post users/:userId/deactivateProfile`);
+	UserSchema.findOneAndUpdate(
+		{ _id: request.params.userId },
+		{
+			$set: {
+				isDeactivated: true,
+			}
+		},
+		{ new: true },
+		(error, questionDocument) => {
+			if(error){
+				console.log(
+					`Error while deactivating user account ${
+						request.params.userId
+					}:\n ${error}`
+				);
+				response.status(500).json({
+					error: error,
+					message: `Error while deactivating user account ${
+						request.params.userId
+					}`
+				});
+			} else if(questionDocument) { 
+				console.log(`Account Deactivated succssfully ${request.params.userId}:\n ${questionDocument}`);
+				response.status(200).json(questionDocument);
+			} else {
+				response.status(404).json({message: `User not found`});
+			}
+		} 
+	)
+});
+
+
+// Get Profile
 router.get("/getallusers",(req,res)=>{
   
     (async()=>{
@@ -18,30 +141,11 @@ router.get("/getallusers",(req,res)=>{
         }
     })();
 });
+
 //Get user by id
 router.get('/:userId', async (request, response) => {
 
 	console.log(`\n\nInside GET /users/:userId`);
-
-	// try {
-	// 	let userDocument = await UserSchema.findOneAndUpdate(
-	// 		{ _id: request.params.userId },
-	// 		{ $inc: { views : 1 } },
-	// 		{ new: true }
-	// 	);
-
-	// 	//If user present
-	// 	if(userDocument) {
-	// 		console.log(`Sucessfully fetched user ${request.params.userId}:\n ${userDocument}`);
-	// 		response.status(200).json(userDocument);
-	// 	} else {
-	// 		console.log(`User ${request.params.userId} not found`);
-	// 		response.status(404).json({messgage: `User ${request.params.userId} not found`});
-	// 	}
-	// } catch (error) {
-	// 	console.log(`Error fetching user ${request.params.userId}:\n ${error}`);
-	// 	response.status(500).json({ error: error, message: `Error fetching user ${request.params.userId}`});
-	// }
 
 	try {
 		let userDocument = await UserSchema.findOne(
@@ -92,8 +196,9 @@ router.get('/:userId/follow/enable', async (request, response) => {
 	}
 });
 
+
 //Disable user follow
-router.get('/:userId/follow/disable', async (request, response) => {
+router	.get('/:userId/follow/disable', async (request, response) => {
 
 	console.log(`\n\nInside GET /users/:userId/follow/disable`);
 
@@ -122,6 +227,7 @@ router.get('/:userId/follow/disable', async (request, response) => {
 	}
 });
 
+
 //Fetch user followers
 router.get('/:userId/followers', async (request, response) => {
 
@@ -146,6 +252,7 @@ router.get('/:userId/followers', async (request, response) => {
 	}
 });
 
+
 //Fetch users following user
 router.get('/:userId/following', async (request, response) => {
 
@@ -169,6 +276,7 @@ router.get('/:userId/following', async (request, response) => {
 		response.status(500).json({ error: error, message: `Error fetching users following ${request.params.userId}`});
 	}
 });
+
 
 //Fetch answers bookmarked by user
 router.get('/:userId/bookmarks', async (request, response) => {
@@ -304,3 +412,4 @@ router.post("/message",(req,res)=>{
 });
 
 module.exports = router;
+
