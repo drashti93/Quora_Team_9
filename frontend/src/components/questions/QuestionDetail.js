@@ -4,7 +4,7 @@ export class QuestionDetail extends Component {
   render() {
 	return (
 	  <div>
-		
+		Questions
 	  </div>
 	)
   }
