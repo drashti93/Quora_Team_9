@@ -80,7 +80,7 @@ class Profile extends Component {
   componentDidMount(){
       console.log('id is:');
       console.log(cookie.load('cookie').email);
-      this.props.getUserDetails(cookie.load('cookie').email)
+      this.props.getUserDetails(cookie.load('cookie').id)
   }
 
   render() {

@@ -88,7 +88,7 @@ answer.delete("/", async (req, res) => {
     }
 });
 
-answer.post("/answer/upvote", async (req, res) => {
+answer.post("/upvote", async (req, res) => {
     try {
         let { userId, questionId, answerId } = req.body;
         let result = await AnswerModel.update({ _id: answerId }, {
@@ -101,7 +101,7 @@ answer.post("/answer/upvote", async (req, res) => {
     }
 });
 
-answer.post("/answer/downvote", async (req, res) => {
+answer.post("/downvote", async (req, res) => {
     try {
         let { userId, questionId, answerId } = req.body;
         let result = await AnswerModel.update({ _id: answerId }, {
@@ -114,7 +114,7 @@ answer.post("/answer/downvote", async (req, res) => {
     }
 });
 
-answer.post("/answer/bookmark", async (req, res) => {
+answer.post("/bookmark", async (req, res) => {
     try {
         let { userId, questionId, answerId } = req.body;
         let result = await AnswerModel.update({ _id: answerId }, {

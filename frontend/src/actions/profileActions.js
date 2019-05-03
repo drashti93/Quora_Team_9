@@ -39,3 +39,19 @@ export function saveProfilePicture(user_id, image_file) {
             });
     }
 }
+
+export function saveCredentials(user_id, type, position, company, cstartYear, cendYear, cisCurrentString, school, concentration, secConcentration, degree, graduationYear, street, city, state, zipcode, lstartYear, lendYear, lisCurrentString){
+    return function(dispatch){
+        axios.post("http://localhost:30001/users/credentials", {
+            user_id, type, position, company, cstartYear, cendYear, cisCurrentString, school, concentration, secConcentration, degree, graduationYear, street, city, state, zipcode, lstartYear, lendYear, lisCurrentString
+        })
+        .then(function(response){
+            if(response.status === 200){
+                dispatch({type: "CREDENTIALS_SUCCESS", payload: response})
+            }
+        })
+        .catch(function(error){
+            dispatch({type: "CREDENTIALS_FAILURE", payload: false})
+        })
+    }
+}
