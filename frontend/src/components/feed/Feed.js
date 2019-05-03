@@ -1,12 +1,13 @@
 import React, { Component } from "react";
-import { List, Avatar, Icon, Divider } from 'antd';
-import { connect } from 'react-redux';
-import { Redirect } from 'react-router'
+import cookie from "react-cookies";
+import { Redirect } from "react-router";
+import { List, Avatar, Icon, Divider } from "antd";
+import { connect } from "react-redux";
+
+import Navigationbar from "../navbar/Navigationbar";
 
 export class Feed extends Component {
-	
 	render() {
-
 		const listData = [];
 		for (let i = 0; i < 23; i++) {
 			listData.push({
@@ -28,70 +29,78 @@ export class Feed extends Component {
 			</span>
 		);
 
+		let redirectVar = null;
+		if (!cookie.load("cookie")) {
+			redirectVar = <Redirect to="/login" />;
+		}
+
 		return (
 			<div>
-				<List
-					itemLayout="vertical"
-					size="large"
-					pagination={{
-						onChange: page => {
-							console.log(page);
-						},
-						pageSize: 3
-					}}
-					dataSource={listData}
-					renderItem={item => (
-						<div>
-							<List.Item
-								key={item.title}
-								actions={[
-									<IconText
-										type="star-o"
-										text="156"
-									/>,
-									<IconText
-										type="like-o"
-										text="156"
-									/>,
-									<IconText type="message" text="2" />
-								]}
-								// extra={<img width={272} alt="logo" src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png" />}
-							>
-								<List.Item.Meta
-									// avatar={<Avatar src={item.avatar} />}
-									title={
-										<a href={item.href}>
-											{item.title}
-										</a>
-									}
-									description={
-										<div>
-											<Avatar src={item.avatar} />
-											&nbsp; &nbsp;
-											{item.description}
-										</div>
-									}
-								/>
-								{item.content}
-							</List.Item>
-							<div>This is my comment</div>
+				{redirectVar}
+					<List
+						itemLayout="vertical"
+						size="large"
+						pagination={{
+							onChange: page => {
+								console.log(page);
+							},
+							pageSize: 5
+						}}
+						dataSource={listData}
+						renderItem={item => (
+							<div>
+								<List.Item
+									key={item.title}
+									actions={[
+										<IconText
+											type="star-o"
+											text="156"
+										/>,
+										<IconText
+											type="like-o"
+											text="156"
+										/>,
+										<IconText
+											type="message"
+											text="2"
+										/>
+									]}
+								>
+									<List.Item.Meta
+										// avatar={<Avatar src={item.avatar} />}
+										title={
+											<a href={item.href}>
+												{item.title}
+											</a>
+										}
+										description={
+											<div>
+												<Avatar
+													src={item.avatar}
+												/>
+												&nbsp; &nbsp;
+												{item.description}
+											</div>
+										}
+									/>
+									{item.content}
+								</List.Item>
+								<div>This is my comment</div>
 
-							<Divider />
-						</div>
-					)}
-				/>
-				,
+								<Divider />
+							</div>
+						)}
+					/>
 			</div>
 		);
 	}
 }
 
-const mapStateToProps = state => ({
-	
-});
+const mapStateToProps = state => ({});
 
-Feed.propTypes = {
-	
-};
+Feed.propTypes = {};
 
-export default connect(mapStateToProps, {  })(Feed);
+export default connect(
+	mapStateToProps,
+	{}
+)(Feed);
