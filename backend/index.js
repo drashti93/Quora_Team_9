@@ -89,97 +89,108 @@ app.use('/graphs',graphs);
 
 
 //with redis 
-// app.post('/login', async function (req, res) {
-// 	// let req = {
-// 	// 	body: req.body
-// 	//   }
-// 	var body = "";
-// 		client.get('loginQueryKeynew', async function (err, query_results) {
-// 		if (query_results) {
-// 			body = query_results;
-// 			res.status(200).json(JSON.parse(body));
-// 		}
-// 		else {
+app.post('/login', async function (req, res) {
+	// let req = {
+	// 	body: req.body
+	//   }
+	var body = "";
+		client.get('loginQueryKeynew', async function (err, query_results) {
+		if (query_results) {
+			body = query_results;
+			res.status(200).json(JSON.parse(body));
+		}
+		else {
 
-// 	  let loginSuccess = 0;
-// 	  try {
-// 		let { email, password } = req.body;
-// 		console.log(req.body);
-// 		console.log("here");
-// 		email = email.toLowerCase();
-// 		let result = await userModel.findOne({ email });
-// 		let data = null;
-// 		if (!result) {
-// 		  data = {
-// 			loginSuccess: 0,
-// 			message: "Email or Password Incorrect"
-// 		  };
-// 		} else {
-// 		  const match = await bcrypt.compare(password, result.password);
-// 		  if (match) {
-// 			var user = {
-// 			  email: result.email
-// 			};
-// 			var token = jwt.sign(user, "There is no substitute for hardwork", {
-// 			  expiresIn: 10080 // in seconds
-// 			});
-// 			data = {
-// 			  id: result._id,
-// 			  role: result.role,
-// 			  loginSuccess: 1,
-// 			  message: "Login Successfull!",
-// 			  token: 'JWT ' + token
-// 			};
-// 		  } else {
-// 			data = {
-// 			  loginSuccess: 0,
-// 			  message: "Email or Password Incorrect"
-// 			};
-// 		  }
-// 		}
-// 		client.set('loginQueryKeynew', JSON.stringify(data));
-// 		res.status(200).json(data);
-// 	  } catch (error) {
-// 		  console.log(error);
-// 		res.status(400).json(error);
-// 		// callback(error, null);
-// 	  }
-// 	}
-// })
-// });
-
-//with redis on kafka-backend
-
-app.post("/login", function(req, res) {
-	body = req.body;
-	kafka.make_request("signin", body, function(err, results) {
-		if (err) {
-			console.log("Inside err");
-			res.json({
-				status: "error",
-				message: "System Error, Try Again."
-			});
-			res.end();
+	  let loginSuccess = 0;
+	  try {
+		let { email, password } = req.body;
+		console.log(req.body);
+		console.log("here");
+		email = email.toLowerCase();
+		let result = await userModel.findOne({ email });
+		let data = null;
+		if (!result) {
+		  data = {
+			loginSuccess: 0,
+			message: "Email or Password Incorrect"
+		  };
 		} else {
-			console.log("Inside else");
-			console.log(results);
-			if (results.id) {
-				res.cookie(
+		  const match = await bcrypt.compare(password, result.password);
+		  if (match) {
+			var user = {
+			  email: result.email
+			};
+			var token = jwt.sign(user, "There is no substitute for hardwork", {
+			  expiresIn: 10080 // in seconds
+			});
+			res.cookie(
 					"cookie",
 					JSON.stringify({
-						id: results.id,
-						email:results.email,
-						role: results.role,
-						token: results.token
+						id: result._id,
+						email:result.email,
+						role: result.role,
+						token: 'JWT' + token
 					}),
 					{ maxAge: 900000000, httpOnly: false, path: "/" }
 				);
-				req.session.user = results.id;
-			}
-			res.status(200).json(results);
+				req.session.user = result.id;
+			data = {
+			  id: result._id,
+			  role: result.role,
+			  loginSuccess: 1,
+			  message: "Login Successfull!",
+			  token: 'JWT ' + token
+			};
+		  } else {
+			data = {
+			  loginSuccess: 0,
+			  message: "Email or Password Incorrect"
+			};
+		  }
 		}
-	});
+		client.set('loginQueryKeynew', JSON.stringify(data));
+		res.status(200).json(data);
+	  } catch (error) {
+		  console.log(error);
+		res.status(400).json(error);
+		// callback(error, null);
+	  }
+	}
+})
 });
+
+//with redis on kafka-backend
+
+// app.post("/login", function(req, res) {
+// 	body = req.body;
+// 	kafka.make_request("signin", body, function(err, results) {
+// 		if (err) {
+// 			console.log("Inside err");
+// 			res.json({
+// 				status: "error",
+// 				message: "System Error, Try Again."
+// 			});
+// 			res.end();
+// 		} else {
+// 			console.log("Inside else");
+// 			console.log(results);
+// 			if (results.id) {
+// 				res.cookie(
+// 					"cookie",
+// 					JSON.stringify({
+// 						id: results.id,
+// 						email:results.email,
+// 						role: results.role,
+// 						token: results.token
+// 					}),
+// 					{ maxAge: 900000000, httpOnly: false, path: "/" }
+// 				);
+// 				req.session.user = results.id;
+// 			}
+// 			res.status(200).json(results);
+// 		}
+// 	});
+// });
 
 app.post("/signup", function(req, res) {
 	kafka.make_request("signup", req.body, function(err, results) {
