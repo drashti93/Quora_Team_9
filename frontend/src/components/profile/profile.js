@@ -8,6 +8,7 @@ import {Layout, Container, Grid, Row, Col} from 'react-bootstrap';
 import Navigationbar from '../navbar/Navigationbar'
 import user_img from "../../resources/images/user.png"
 import "../../resources/css/profile.css"
+import Feed from '../feed/Feed'
 class Profile extends Component {
 
   constructor(props){
@@ -59,8 +60,66 @@ class Profile extends Component {
                                 <div>
                                     {
                                         this.state.selectedTab === "Profile" ?
-                                            <div className="tab_details">
-                                                <h6>{ this.state.selectedTab }</h6>
+                                            <div>
+                                                <div className="tab_details">
+                                                    <h6>{ this.state.selectedTab }</h6>
+                                                </div>
+                                                <Feed></Feed>
+                                            </div>
+                                            :
+                                            <span></span>
+                                    }
+                                    {
+                                        this.state.selectedTab === "Questions" ?
+                                            <div>
+                                                <div className="tab_details">
+                                                    <h6>{ this.state.selectedTab }</h6>
+                                                </div>
+                                                <Feed></Feed>
+                                            </div>
+                                            :
+                                            <span></span>
+                                    }
+                                    {
+                                        this.state.selectedTab === "Answers" ?
+                                            <div>
+                                                <div className="tab_details">
+                                                    <h6>{ this.state.selectedTab }</h6>
+                                                </div>
+                                                <Feed></Feed>
+                                            </div>
+                                            :
+                                            <span></span>
+                                    }
+                                    {
+                                        this.state.selectedTab === "Followers" ?
+                                            <div>
+                                                <div className="tab_details">
+                                                    <h6>{ this.state.selectedTab }</h6>
+                                                </div>
+                                                <Feed></Feed>
+                                            </div>
+                                            :
+                                            <span></span>
+                                    }
+                                    {
+                                        this.state.selectedTab === "Following" ?
+                                            <div>
+                                                <div className="tab_details">
+                                                    <h6>{ this.state.selectedTab }</h6>
+                                                </div>
+                                                <Feed></Feed>
+                                            </div>
+                                            :
+                                            <span></span>
+                                    }
+                                    {
+                                        this.state.selectedTab === "Activity" ?
+                                            <div>
+                                                <div className="tab_details">
+                                                    <h6>{ this.state.selectedTab }</h6>
+                                                </div>
+                                                
                                             </div>
                                             :
                                             <span></span>
@@ -69,7 +128,24 @@ class Profile extends Component {
                             </Col>
                         </Row>
                     </Col>
-                    <Col xs={3}>Column 2</Col>
+                    <Col xs={3} id="credentials_languages">
+                        <Row id="credentials">
+                            <div id="credentials_title">
+                                <h6 >Credentials</h6>
+                            </div>
+                            <ul>
+                                <li><a>Add employment credential</a></li>
+                                <li><a>Add education credential</a></li>
+                                <li><a>Add a loaction credential</a></li>
+                                <li>Knows Hindi</li>
+                            </ul>
+                        </Row>
+                        <Row id="languages">
+                            <div id="languages_title">
+                                <h6>Languages</h6>
+                            </div>
+                        </Row>
+                    </Col>
                 </Row>
             </Container>
         </div>
