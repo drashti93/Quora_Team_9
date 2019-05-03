@@ -140,18 +140,6 @@ const UserSchema = new Schema({
 	following: [{
 		type: Schema.Types.ObjectId,
 		ref: "users"
-	}],
-	questions: [{
-		type: Schema.Types.ObjectId,
-		ref: "questions"
-	}],
-	answers: [{
-		type: Schema.Types.ObjectId,
-		ref: "answers"
-	}],
-	bookmarkedAnswers: [{
-		type: Schema.Types.ObjectId,
-		ref: "answers",
 	}]
 });
 
