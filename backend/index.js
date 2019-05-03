@@ -167,7 +167,8 @@ app.post("/login", function(req, res) {
 				res.cookie(
 					"cookie",
 					JSON.stringify({
-						email: results.id,
+						id: results.id,
+						email:results.email,
 						role: results.role,
 						token: results.token
 					}),

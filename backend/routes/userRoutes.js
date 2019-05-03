@@ -5,6 +5,19 @@ const mongoose = require('../resources/mongoose');
 const UserSchema = require('../model/UserSchema')
 
 
+router.get("/getallusers",(req,res)=>{
+  
+    (async()=>{
+        try {
+       let result=await UserSchema.find();
+        res.status=200;
+        res.setHeader("Content-Type", "application/json");
+        res.send(JSON.stringify(result));
+        } catch (error) {
+            console.log(error);
+        }
+    })();
+});
 //Get user by id
 router.get('/:userId', async (request, response) => {
 
@@ -181,5 +194,113 @@ router.get('/:userId/bookmarks', async (request, response) => {
 	}
 });
 
+router.post("/getchats",(req,res)=>{
+  
+    (async()=>{
+        try {
+            let {uid}=req.body;
+            console.log("For chats");
+            console.log(uid);
+       let result=await UserSchema.findOne({_id:uid}).populate({path:'chats.uid',select:["firstName","lastName","profileImage"]}).exec();
+       console.log(result);
+       let chatArray=[]
+       if(result.chats){
+        chatArray=result.chats;
+       }
+        res.status=200;
+        res.setHeader("Content-Type", "application/json");
+        res.send(JSON.stringify(chatArray));
+        } catch (error) {
+            console.log(error);
+        }
+    })();
+});
+router.post("/message",(req,res)=>{
+  
+    (async()=>{
+        try {
+            let {receiverid,uid,messagetext}=req.body;
+            console.log(receiverid);
+            console.log(uid);
+            console.log(messagetext);
+
+            let receiverObj={
+                action:"received",
+                messagetext
+            }
+            let senderObj={
+                action:"sent",
+                messagetext
+            }
+            let chatchecksender=await UserSchema.findOne({_id:uid,"chats.uid":receiverid});
+            if(chatchecksender){
+                console.log("inside existing chats");
+                let senderResult=await UserSchema.updateOne({
+                    _id:uid,
+                    chats:{ 
+                        $elemMatch: {
+                        uid: receiverid
+                            }
+                        }
+                }, {
+                    $push: {
+                        'chats.$.messages': senderObj                     
+                    }
+                });
+            }else{
+                let senderUpperObj={
+                    uid:receiverid,
+                    messages:[{
+                        action:"sent",
+                        messagetext
+                    }]
+                }
+                let ress=await UserSchema.findOneAndUpdate({_id:uid},{
+                    $push:{
+                        chats:senderUpperObj
+                    }
+                })
+            }
+
+            let chatcheckreceiver=await UserSchema.findOne({_id:receiverid,"chats.uid":uid});
+            if(chatcheckreceiver){
+
+                
+                let receiverResult=await UserSchema.updateOne({
+                    _id:receiverid,
+                    chats:{ 
+                          $elemMatch: {
+                           uid: uid
+                             }
+                        }
+                   }, {
+                       $push: {
+                           'chats.$.messages': receiverObj                     
+                       }
+                   });
+        
+            }else{
+                let recUpperObj={
+                    uid:uid,
+                    messages:[{
+                        action:"received",
+                        messagetext
+                    }]
+                }
+                let ress=await UserSchema.findOneAndUpdate({_id:receiverid},{
+                    $push:{
+                        chats:recUpperObj
+                    }
+                })
+                
+            }
+        res.status=200;
+        res.setHeader("Content-Type", "application/json");
+        res.send(JSON.stringify({message:"Message posted"}));
+        } catch (error) {
+            console.log(error);
+        }
+    })();
+});
 
 module.exports = router;
