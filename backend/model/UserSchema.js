@@ -119,28 +119,13 @@ const UserSchema = new Schema({
 			ref: "topics"
 		}
 	],
-	messagesSent: [
-		{
-			text: String,
-			senderId: [
-				{
-					type: Schema.Types.ObjectId,
-					ref: "users"
-				}
-			]
-		}
-	],
-	messagesReceived: [
-		{
-			text: String,
-			receiverId: [
-				{
-					type: Schema.Types.ObjectId,
-					ref: "users"
-				}
-			]
-		}
-	],
+	chats: [{
+		uid: { type: Schema.Types.ObjectId, ref: 'users' },
+		messages: [{
+			action: String,
+			messagetext: String
+		}]
+	}],
 	followers: [{
 		type: Schema.Types.ObjectId,
 		ref: "users"
