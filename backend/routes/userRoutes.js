@@ -3,6 +3,7 @@ const router = express.Router();
 
 const mongoose = require("../resources/mongoose");
 const UserSchema = require("../model/UserSchema");
+const AnswerSchema = require("../model/AnswerSchema");
 
 
 // Edit Profile
@@ -284,23 +285,17 @@ router.get('/:userId/bookmarks', async (request, response) => {
 	console.log(`\n\nInside GET /users/:userId/bookmarks`);
 
 	try {
-		// let userDocument = await UserSchema.findOne(
-		// 	{ _id: request.params.userId }
-		// );
+		
+		let answerDocument = await AnswerSchema.find({ 'bookmarks': request.params.userId });
 
-		// //If user present
-		// if(userDocument) {
-		// 	console.log(`Sucessfully fetched bookmarked answers for user ${request.params.userId}:\n ${userDocument}`);
-		// 	response.status(200).json(userDocument.bookmarkedAnswers);
-		// } else {
-		// 	console.log(`User ${request.params.userId} not found`);
-		// 	response.status(404).json({messgage: `User ${request.params.userId} not found`});
-		// }
-
-
-		let userDocument = await AnswerSchema.find({ 'bookmarks._id': request.params.userId });
-
-		response.status(200).json(userDocument);
+		//If bookmarked answer present
+		if(answerDocument) {
+			console.log(`Sucessfully fetched bookmarked answers for user ${request.params.userId}:\n ${answerDocument}`);
+			response.status(200).json(answerDocument);
+		} else {
+			console.log(`User ${request.params.userId} not found`);
+			response.status(404).json({messgage: `User ${request.params.userId} not found`});
+		}
 
 	} catch (error) {
 		console.log(`Error fetching bookmarked answers for user ${request.params.userId}:\n ${error}`);
