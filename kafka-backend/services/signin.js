@@ -70,7 +70,8 @@ async function handle_request_signin(msg, callback) {
               role: result.role,
               loginSuccess: 1,
               message: "Login Successfull!",
-              token: 'JWT ' + token
+              token: 'JWT ' + token,
+              email:result.email
             };
           } else {
             data = {

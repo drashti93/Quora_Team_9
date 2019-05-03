@@ -48,13 +48,13 @@ function handleTopicRequest(topic_name, fname) {
 //first argument is topic name
 //second argument is a function that will handle this topic request
 
-handleTopicRequest("get_answers",Answers)
-handleTopicRequest("top_10_answers",top10Answers)
-handleTopicRequest("top_10_answers_upvote",top10AnswersUpvotes)
-handleTopicRequest("top_5_answers_downvotes",top5AnswersDownvotes)
-handleTopicRequest("bookmarked_answers",bookmarkedAnswers)
-handleTopicRequest("profile_views",profileViews)
-handleTopicRequest("user_activity",userActivity)
+// handleTopicRequest("get_answers",Answers)
+// handleTopicRequest("top_10_answers",top10Answers)
+// handleTopicRequest("top_10_answers_upvote",top10AnswersUpvotes)
+// handleTopicRequest("top_5_answers_downvotes",top5AnswersDownvotes)
+// handleTopicRequest("bookmarked_answers",bookmarkedAnswers)
+// handleTopicRequest("profile_views",profileViews)
+// handleTopicRequest("user_activity",userActivity)
 handleTopicRequest("signin", signinRequests.signin);
 handleTopicRequest("signup", signinRequests.signup);
 handleTopicRequest("get_answers", answerRequests.getanswers);
