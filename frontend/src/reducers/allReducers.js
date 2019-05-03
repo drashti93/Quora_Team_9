@@ -2,9 +2,12 @@ import {combineReducers} from 'redux';
 import {LOGOUT_USER} from "../actions/loginActions";
 import loginReducer from './loginReducer';
 import signupReducer from './signupReducer';
+import profileReducer from './profileReducer';
+
 const rootReducers=combineReducers({
     login:loginReducer,
-    signup:signupReducer
+    signup:signupReducer,
+    profile: profileReducer,
 });
 
 const allReducers = (state, action) => {

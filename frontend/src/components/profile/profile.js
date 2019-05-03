@@ -9,6 +9,8 @@ import Navigationbar from '../navbar/Navigationbar'
 import user_img from "../../resources/images/user.png"
 import "../../resources/css/profile.css"
 import Feed from '../feed/Feed'
+import * as actions from '../../actions/profileActions';
+
 class Profile extends Component {
 
   constructor(props){
@@ -17,7 +19,16 @@ class Profile extends Component {
     this.state={
      profile_options: ["Profile", "Questions", "Answers", "Following", "Followers", "Activity"],
      selectedTab: "Profile",
+     userDetails: {},
+     firstName: "",
+     lastName: "",
     }
+  }
+
+  componentDidMount(){
+      console.log('id is:');
+      console.log(cookie.load('cookie').email);
+      this.props.getUserDetails(cookie.load('cookie').email)
   }
 
   render() {
@@ -35,7 +46,7 @@ class Profile extends Component {
                             </Col>
                             <Col xs={9}>
                                 <div>
-                                    Profile Information
+                                    <h3>{this.props.userDetails.firstName} {this.props.userDetails.lastName}</h3>
                                 </div>
                             </Col>
                         </Row>
@@ -153,12 +164,20 @@ class Profile extends Component {
   }
 }
 
-const mapStatetoProps=(state,props)=>{
- 
-}
-const mapActionToProps=(dispatch,props)=>{
- 
+function mapStatetoProps(state) {
+    return{
+        userDetails: state.profile.userDetails,
+        firstName: state.profile.userDetails.firstName,
+        lastName: state.profile.userDetails.lastName,
+    }
 }
 
-export default connect(mapStatetoProps,mapActionToProps)(Profile);
+function mapDispatchToProps(dispatch) {
+    
+    return {
+        getUserDetails: (user_id) => dispatch(actions.getUserDetails(user_id))
+    };
+}
+
+export default connect(mapStatetoProps,mapDispatchToProps)(Profile);
 
