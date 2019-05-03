@@ -104,7 +104,7 @@ const UserSchema = new Schema({
 		type: Boolean,
 		default: true
 	},
-	accountDeactivated:{
+	isDeactivated:{
 		type: Boolean,
 		default: false
 	},

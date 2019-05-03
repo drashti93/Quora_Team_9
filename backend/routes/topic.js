@@ -22,4 +22,39 @@ topic.post("/topics/follow", async (req, res) => {
 	}
 });
 
+// Search topic
+topic.get("/:topicId", (request, response) => {
+    console.log(`\n\nInside Get /topics/:topicId`);
+    TopicModel.find(
+        {},
+        (error,topicDocument) => {
+            if(error) {
+                console.log(
+					`Error while getting topics ${
+						request.params.userId
+					}:\n ${error}`
+                );
+                response
+                .status(500)
+                .json({
+                    error: error,
+                    message: `Error while getting topics ${
+                        request.params.userId
+                    }`
+                });
+            } else if(topicDocument){
+                console.log(
+					`Error while getting topics ${
+						request.params.userId
+					}:\n ${topicDocument}`
+                );
+                let result = topicDocument;
+                response.status(200).json(result);                
+            } else {
+				response.status(404).json({message: `Topic not found`});
+			}             
+        }
+    )
+});
+
 module.exports = topic;

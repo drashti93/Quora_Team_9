@@ -113,7 +113,6 @@ question.delete("/", async (req, res) => {
 // Search question
 question.get("/:questionId", (request, response) => {
     console.log(`\n\nInside Get /questions/:questionId`);
-    let keyword = request.body.keyword;
     QuestionModel.find(
         {},
         (error,questionDocument) => {
@@ -131,14 +130,16 @@ question.get("/:questionId", (request, response) => {
                         request.params.userId
                     }`
                 });
-            } else {
+            } else if(questionDocument) {
                 console.log(
-					`Successfully got User Profile details ${
+					`Successfully got all questions ${
 						request.params.userId
 					}:\n ${questionDocument}`
                 );
                 let result = questionDocument;
                 response.status(200).json(result);                
+            } else {
+                response.status(404).json({message: `Question not found`});
             }             
         }
     )

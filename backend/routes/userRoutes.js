@@ -6,8 +6,8 @@ const UserSchema = require("../model/UserSchema");
 
 
 // Edit Profile
-user.put("/:userId/editProfile", (request,response) => {
-	console.log(`\n\nInside Post /:userId/editProfile`);
+user.post("/:userId/edit", (request,response) => {
+	console.log(`\n\nInside Post /:userId/edit`);
 	// body = request.body;
 	let { firstName, lastName, aboutMe, phoneNumber, street, city, state, zipcode, startDate, endDate, gender, isFollowAllowed, topicsFollowed } = request.body;
 	UserSchema.findOneAndUpdate(
@@ -99,7 +99,7 @@ user.put("/:userId", (request, response) => {
 		{ _id: request.params.userId },
 		{
 			$set: {
-				accountDeactivated: true,
+				isDeactivated: true,
 			}
 		},
 		{ new: true },
@@ -116,9 +116,11 @@ user.put("/:userId", (request, response) => {
 						request.params.userId
 					}`
 				});
-			} else { 
+			} else if(questionDocument) { 
 				console.log(`Account Deactivated succssfully ${request.params.userId}:\n ${questionDocument}`);
 				response.status(200).json(questionDocument);
+			} else {
+				response.status(404).json({message: `User not found`});
 			}
 		} 
 	)
