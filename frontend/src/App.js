@@ -21,7 +21,7 @@ const store=createStore(
 );
 
 // App Component
-class App extends Component {
+class App extends Component { 
   render(){
       return(
           <Provider store = {store}>
