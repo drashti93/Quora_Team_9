@@ -12,14 +12,16 @@ var answer = require("./routes/answer");
 var question = require("./routes/question");
 var comment = require("./routes/comment");
 var graphs = require('./routes/graphs');
-var topics = require('./routes/topic');
 
-// var bcrypt = require("bcrypt");
-// const saltRounds = 10;
-// var userModel = require("./model/UserSchema.js");
-// var jwt = require("jsonwebtoken");
-// const fetch = require("node-fetch");
-// const redis = require("redis");
+var { client } = require('./resources/redis');
+var bcrypt = require("bcrypt");
+const saltRounds = 10;
+var userModel = require("./model/UserSchema.js");
+var jwt = require("jsonwebtoken");
+const fetch = require("node-fetch");
+const redis = require("redis");
+
+var topics = require('./routes/topic');
 // var { client } = require("./resources/redis");
 
 
@@ -96,12 +98,12 @@ app.post('/login', async function (req, res) {
 	// 	body: req.body
 	//   }
 	var body = "";
-		client.get('loginQueryKeynew', async function (err, query_results) {
-		if (query_results) {
-			body = query_results;
-			res.status(200).json(JSON.parse(body));
-		}
-		else {
+		// client.get('loginQueryKeynew', async function (err, query_results) {
+		// if (query_results) {
+		// 	body = query_results;
+		// 	res.status(200).json(JSON.parse(body));
+		// }
+		// else {
 
 	  let loginSuccess = 0;
 	  try {
@@ -150,15 +152,15 @@ app.post('/login', async function (req, res) {
 			};
 		  }
 		}
-		client.set('loginQueryKeynew', JSON.stringify(data));
+		// client.set('loginQueryKeynew', JSON.stringify(data));
 		res.status(200).json(data);
 	  } catch (error) {
 		  console.log(error);
 		res.status(400).json(error);
 		// callback(error, null);
 	  }
-	}
-})
+// 	}
+// })
 });
 
 //with redis on kafka-backend
