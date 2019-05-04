@@ -1,16 +1,30 @@
 const express = require("express");
 const router = express.Router();
-
+var UserModel = require("../model/UserSchema");
+var QuestionModel = require("../model/QuestionSchema");
 const mongoose = require("../resources/mongoose");
 const UserSchema = require("../model/UserSchema");
 const AnswerSchema = require("../model/AnswerSchema");
 
-
 // Edit Profile
-router.post("/:userId/edit", (request,response) => {
+router.post("/:userId/edit", (request, response) => {
 	console.log(`\n\nInside Post /:userId/edit`);
 	// body = request.body;
-	let { firstName, lastName, aboutMe, phoneNumber, street, city, state, zipcode, startDate, endDate, gender, isFollowAllowed, topicsFollowed } = request.body;
+	let {
+		firstName,
+		lastName,
+		aboutMe,
+		phoneNumber,
+		street,
+		city,
+		state,
+		zipcode,
+		startDate,
+		endDate,
+		gender,
+		isFollowAllowed,
+		topicsFollowed
+	} = request.body;
 	UserSchema.findOneAndUpdate(
 		{ _id: request.params.userId },
 		{
@@ -21,26 +35,26 @@ router.post("/:userId/edit", (request,response) => {
 				aboutMe: aboutMe,
 				phoneNumber: phoneNumber,
 				credentials: {
-					address:{
+					address: {
 						street: street,
 						city: city,
 						state: state,
 						zipcode: zipcode,
 						startDate: startDate,
-						endDate: endDate,
-					},	
+						endDate: endDate
+					},
 					education: {
 						school: school,
 						concentration: concentration,
 						secConcentration: secConcentration,
 						degree: degree,
-						gradYear: gradYear,
+						gradYear: gradYear
 					},
 					career: {
 						position: position,
 						company: company,
 						startDate: startDate,
-						endDate: endDate,
+						endDate: endDate
 					}
 				},
 				gender: gender,
@@ -57,14 +71,12 @@ router.post("/:userId/edit", (request,response) => {
 					}:\n ${error}`
 				);
 				// response.status(500).json({ error: err, message: "Attaching Files to Course Failed" });
-				response
-					.status(500)
-					.json({
-						error: error,
-						message: `Error while editing or updating user profile ${
-							request.params.userId
-						}`
-					});
+				response.status(500).json({
+					error: error,
+					message: `Error while editing or updating user profile ${
+						request.params.userId
+					}`
+				});
 			} else {
 				console.log(
 					`Sucessfully updated User Profile ${
@@ -77,21 +89,22 @@ router.post("/:userId/edit", (request,response) => {
 	);
 });
 
-
 // Delete User account
 router.delete("/:userId", async (request, response) => {
-    try {
-        let result = await UserSchema.updateOne({ _id: request.params.userId }, {
-            $pull: {
-                _id: request.params.userId
-            }
-        });
-        response.status(200).json(result);
-    } catch (error) {
-        response.send(error);
-    }
+	try {
+		let result = await UserSchema.updateOne(
+			{ _id: request.params.userId },
+			{
+				$pull: {
+					_id: request.params.userId
+				}
+			}
+		);
+		response.status(200).json(result);
+	} catch (error) {
+		response.send(error);
+	}
 });
-
 
 // Deactivate User Account
 router.put("/:userId", (request, response) => {
@@ -100,12 +113,12 @@ router.put("/:userId", (request, response) => {
 		{ _id: request.params.userId },
 		{
 			$set: {
-				isDeactivated: true,
+				isDeactivated: true
 			}
 		},
 		{ new: true },
 		(error, questionDocument) => {
-			if(error){
+			if (error) {
 				console.log(
 					`Error while deactivating user account ${
 						request.params.userId
@@ -117,59 +130,68 @@ router.put("/:userId", (request, response) => {
 						request.params.userId
 					}`
 				});
-			} else if(questionDocument) { 
-				console.log(`Account Deactivated succssfully ${request.params.userId}:\n ${questionDocument}`);
+			} else if (questionDocument) {
+				console.log(
+					`Account Deactivated succssfully ${
+						request.params.userId
+					}:\n ${questionDocument}`
+				);
 				response.status(200).json(questionDocument);
 			} else {
-				response.status(404).json({message: `User not found`});
+				response.status(404).json({ message: `User not found` });
 			}
-		} 
-	)
+		}
+	);
 });
 
-
 // Get Profile
-router.get("/getallusers",(req,res)=>{
-  
-    (async()=>{
-        try {
-       let result=await UserSchema.find();
-        res.status=200;
-        res.setHeader("Content-Type", "application/json");
-        res.send(JSON.stringify(result));
-        } catch (error) {
-            console.log(error);
-        }
-    })();
+router.get("/getallusers", (req, res) => {
+	(async () => {
+		try {
+			let result = await UserSchema.find();
+			res.status = 200;
+			res.setHeader("Content-Type", "application/json");
+			res.send(JSON.stringify(result));
+		} catch (error) {
+			console.log(error);
+		}
+	})();
 });
 
 //Get user by id
-router.get('/:userId', async (request, response) => {
-
+router.get("/:userId", async (request, response) => {
 	console.log(`\n\nInside GET /users/:userId`);
 
 	try {
-		let userDocument = await UserSchema.findOne(
-			{ _id: request.params.userId }
-		);
+		let userDocument = await UserSchema.findOne({
+			_id: request.params.userId
+		});
 
 		//If user present
-		if(userDocument) {
-			console.log(`Sucessfully fetched user ${request.params.userId}:\n ${userDocument}`);
+		if (userDocument) {
+			console.log(
+				`Sucessfully fetched user ${
+					request.params.userId
+				}:\n ${userDocument}`
+			);
 			response.status(200).json(userDocument);
 		} else {
 			console.log(`User ${request.params.userId} not found`);
-			response.status(404).json({messgage: `User ${request.params.userId} not found`});
+			response
+				.status(404)
+				.json({ messgage: `User ${request.params.userId} not found` });
 		}
 	} catch (error) {
 		console.log(`Error fetching user ${request.params.userId}:\n ${error}`);
-		response.status(500).json({ error: error, message: `Error fetching user ${request.params.userId}`});
+		response.status(500).json({
+			error: error,
+			message: `Error fetching user ${request.params.userId}`
+		});
 	}
 });
 
 //Enable user follow
-router.get('/:userId/follow/enable', async (request, response) => {
-
+router.get("/:userId/follow/enable", async (request, response) => {
 	console.log(`\n\nInside GET /users/:userId/follow/enable`);
 
 	try {
@@ -184,23 +206,36 @@ router.get('/:userId/follow/enable', async (request, response) => {
 		);
 
 		//If user present
-		if(userDocument) {
-			console.log(`Sucessfully enabled follow for the user ${request.params.userId}:\n ${userDocument}`);
+		if (userDocument) {
+			console.log(
+				`Sucessfully enabled follow for the user ${
+					request.params.userId
+				}:\n ${userDocument}`
+			);
 			response.status(200).json(userDocument);
 		} else {
 			console.log(`User ${request.params.userId} not found`);
-			response.status(404).json({messgage: `User ${request.params.userId} not found`});
+			response
+				.status(404)
+				.json({ messgage: `User ${request.params.userId} not found` });
 		}
 	} catch (error) {
-		console.log(`Error while enabling follow for the user ${request.params.userId}:\n ${error}`);
-		response.status(500).json({ error: error, message: `Error while enabling follow for the user ${request.params.userId}`});
+		console.log(
+			`Error while enabling follow for the user ${
+				request.params.userId
+			}:\n ${error}`
+		);
+		response.status(500).json({
+			error: error,
+			message: `Error while enabling follow for the user ${
+				request.params.userId
+			}`
+		});
 	}
 });
 
-
 //Disable user follow
-router	.get('/:userId/follow/disable', async (request, response) => {
-
+router.get("/:userId/follow/disable", async (request, response) => {
 	console.log(`\n\nInside GET /users/:userId/follow/disable`);
 
 	try {
@@ -215,91 +250,143 @@ router	.get('/:userId/follow/disable', async (request, response) => {
 		);
 
 		//If user present
-		if(userDocument) {
-			console.log(`Sucessfully disabled follow for the question ${request.params.userId}:\n ${userDocument}`);
+		if (userDocument) {
+			console.log(
+				`Sucessfully disabled follow for the question ${
+					request.params.userId
+				}:\n ${userDocument}`
+			);
 			response.status(200).json(userDocument);
 		} else {
 			console.log(`User ${request.params.userId} not found`);
-			response.status(404).json({messgage: `User ${request.params.userId} not found`});
+			response
+				.status(404)
+				.json({ messgage: `User ${request.params.userId} not found` });
 		}
 	} catch (error) {
-		console.log(`Error while disabling follow for the question ${request.params.userId}:\n ${error}`);
-		response.status(500).json({ error: error, message: `Error while enabling follow for the user ${request.params.userId}` });
+		console.log(
+			`Error while disabling follow for the question ${
+				request.params.userId
+			}:\n ${error}`
+		);
+		response.status(500).json({
+			error: error,
+			message: `Error while enabling follow for the user ${
+				request.params.userId
+			}`
+		});
 	}
 });
 
-
 //Fetch user followers
-router.get('/:userId/followers', async (request, response) => {
-
+router.get("/:userId/followers", async (request, response) => {
 	console.log(`\n\nInside GET /users/:userId/followers`);
 
 	try {
-		let userDocument = await UserSchema.findOne(
-			{ _id: request.params.userId }
-		);
+		let userDocument = await UserSchema.findOne({
+			_id: request.params.userId
+		});
 
 		//If user present
-		if(userDocument) {
-			console.log(`Sucessfully fetched followers for the user ${request.params.userId}:\n ${userDocument}`);
+		if (userDocument) {
+			console.log(
+				`Sucessfully fetched followers for the user ${
+					request.params.userId
+				}:\n ${userDocument}`
+			);
 			response.status(200).json(userDocument.followers);
 		} else {
 			console.log(`User ${request.params.userId} not found`);
-			response.status(404).json({messgage: `User ${request.params.userId} not found`});
+			response
+				.status(404)
+				.json({ messgage: `User ${request.params.userId} not found` });
 		}
 	} catch (error) {
-		console.log(`Error fetching followers for the user ${request.params.userId}:\n ${error}`);
-		response.status(500).json({ error: error, message: `Error fetching followers for the user ${request.params.userId}` });
+		console.log(
+			`Error fetching followers for the user ${
+				request.params.userId
+			}:\n ${error}`
+		);
+		response.status(500).json({
+			error: error,
+			message: `Error fetching followers for the user ${
+				request.params.userId
+			}`
+		});
 	}
 });
 
-
 //Fetch users following user
-router.get('/:userId/following', async (request, response) => {
-
+router.get("/:userId/following", async (request, response) => {
 	console.log(`\n\nInside GET /users/:userId/following`);
 
 	try {
-		let userDocument = await UserSchema.findOne(
-			{ _id: request.params.userId }
-		);
+		let userDocument = await UserSchema.findOne({
+			_id: request.params.userId
+		});
 
 		//If user present
-		if(userDocument) {
-			console.log(`Sucessfully fetched users following ${request.params.userId}:\n ${userDocument}`);
+		if (userDocument) {
+			console.log(
+				`Sucessfully fetched users following ${
+					request.params.userId
+				}:\n ${userDocument}`
+			);
 			response.status(200).json(userDocument.following);
 		} else {
 			console.log(`User ${request.params.userId} not found`);
-			response.status(404).json({messgage: `User ${request.params.userId} not found`});
+			response
+				.status(404)
+				.json({ messgage: `User ${request.params.userId} not found` });
 		}
 	} catch (error) {
-		console.log(`Error fetching users following ${request.params.userId}:\n ${error}`);
-		response.status(500).json({ error: error, message: `Error fetching users following ${request.params.userId}`});
+		console.log(
+			`Error fetching users following ${
+				request.params.userId
+			}:\n ${error}`
+		);
+		response.status(500).json({
+			error: error,
+			message: `Error fetching users following ${request.params.userId}`
+		});
 	}
 });
 
-
 //Fetch answers bookmarked by user
-router.get('/:userId/bookmarks', async (request, response) => {
-
+router.get("/:userId/bookmarks", async (request, response) => {
 	console.log(`\n\nInside GET /users/:userId/bookmarks`);
 
 	try {
-		
-		let answerDocument = await AnswerSchema.find({ 'bookmarks': request.params.userId });
+		let answerDocument = await AnswerSchema.find({
+			bookmarks: request.params.userId
+		});
 
 		//If bookmarked answer present
-		if(answerDocument) {
-			console.log(`Sucessfully fetched bookmarked answers for user ${request.params.userId}:\n ${answerDocument}`);
+		if (answerDocument) {
+			console.log(
+				`Sucessfully fetched bookmarked answers for user ${
+					request.params.userId
+				}:\n ${answerDocument}`
+			);
 			response.status(200).json(answerDocument);
 		} else {
 			console.log(`User ${request.params.userId} not found`);
-			response.status(404).json({messgage: `User ${request.params.userId} not found`});
+			response
+				.status(404)
+				.json({ messgage: `User ${request.params.userId} not found` });
 		}
-
 	} catch (error) {
-		console.log(`Error fetching bookmarked answers for user ${request.params.userId}:\n ${error}`);
-		response.status(500).json({ error: error, message: `Error fetching bookmarked answers for user ${request.params.userId}`});
+		console.log(
+			`Error fetching bookmarked answers for user ${
+				request.params.userId
+			}:\n ${error}`
+		);
+		response.status(500).json({
+			error: error,
+			message: `Error fetching bookmarked answers for user ${
+				request.params.userId
+			}`
+		});
 	}
 });
 
@@ -434,61 +521,161 @@ router.post("/message", (req, res) => {
 	})();
 });
 
-router.post('/credentials', function(req, res){
+router.post("/credentials", function(req, res) {
 	var type = req.body.type;
 	var user_id = req.body.user_id;
-	if(type == "employment"){
+	if (type == "employment") {
 		var position = req.body.position;
 		var company = req.body.company;
 		var startYear = req.body.cstartYear;
 		var endYear = req.body.cendYear;
 		var isCurrentString = req.body.cisCurrentString;
-		if(isCurrentString == "on"){
+		if (isCurrentString == "on") {
 			var isCurrent = true;
 		} else {
 			var isCurrent = false;
 		}
-		UserSchema.update({_id: user_id}, {$push: {career: {position: position, company: company, startDate: startYear, endDate: endYear, isCurrent: isCurrent}}}, function(err, results){
-			if(err){
-				res.status(400);
-			} else {
-				res.status(200).json({});
+		UserSchema.update(
+			{ _id: user_id },
+			{
+				$push: {
+					career: {
+						position: position,
+						company: company,
+						startDate: startYear,
+						endDate: endYear,
+						isCurrent: isCurrent
+					}
+				}
+			},
+			function(err, results) {
+				if (err) {
+					res.status(400);
+				} else {
+					res.status(200).json({});
+				}
 			}
-		})
-	} else if (type == "education"){
+		);
+	} else if (type == "education") {
 		var school = req.body.school;
 		var concentration = req.body.concentration;
 		var secConcentration = req.body.secConcentration;
 		var degree = req.body.degree;
 		var graduationYear = req.body.graduationYear;
-		UserSchema.update({_id: user_id}, {$push: {education: {school: school, concentration: concentration, secConcentration: secConcentration, degree: degree, gradYear: graduationYear}}}, function(err, results){
-			if(err){
-				res.status(400);
-			} else {
-				res.status(200).json({});
+		UserSchema.update(
+			{ _id: user_id },
+			{
+				$push: {
+					education: {
+						school: school,
+						concentration: concentration,
+						secConcentration: secConcentration,
+						degree: degree,
+						gradYear: graduationYear
+					}
+				}
+			},
+			function(err, results) {
+				if (err) {
+					res.status(400);
+				} else {
+					res.status(200).json({});
+				}
 			}
-		})
-	} else if (type == "location"){
+		);
+	} else if (type == "location") {
 		var street = req.body.street;
 		var city = req.body.city;
 		var state = req.body.state;
-		var zipcode = req.body.zipcode
+		var zipcode = req.body.zipcode;
 		var startYear = req.body.lstartYear;
 		var endYear = req.body.lendYear;
 		var isCurrentString = req.body.lisCurrentString;
-		if(isCurrentString == "on"){
+		if (isCurrentString == "on") {
 			var isCurrent = true;
 		} else {
 			var isCurrent = false;
 		}
-		UserSchema.update({_id: user_id}, {$push: {address: {street: street, city: city, state: state, zipcode: zipcode, startDate: startYear, endDate: endYear, isCurrent: isCurrent}}}, function(err, results){
-			if(err){
-				res.status(400);
-			} else {
-				res.status(200).json({});
+		UserSchema.update(
+			{ _id: user_id },
+			{
+				$push: {
+					address: {
+						street: street,
+						city: city,
+						state: state,
+						zipcode: zipcode,
+						startDate: startYear,
+						endDate: endYear,
+						isCurrent: isCurrent
+					}
+				}
+			},
+			function(err, results) {
+				if (err) {
+					res.status(400);
+				} else {
+					res.status(200).json({});
+				}
 			}
-		})
+		);
 	}
-})
+});
+
+//GET ALL QUESTIONS (FOR FEED)
+
+router.get("/:userId/questions", async (req, res) => {
+	try {
+		let userId = req.params.userId;
+
+		let questions = await QuestionModel.find({ followers: userId })
+			.populate({
+				path: "answers",
+				populate: {
+					path: "upvotes downvotes bookmarks"
+				}
+			})
+			.exec();
+		if (questions) {
+			console.log("questions:", questions);
+			res.status(200).json(questions);
+		} else {
+			console.log(`User ${req.params.userId} not found`);
+			response
+				.status(404)
+				.json({ messgage: `User ${req.params.userId} not found` });
+		}
+	} catch (error) {
+		console.log(
+			`Error fetching questions for user${req.params.userId}:\n ${error}`
+		);
+		response.status(500).json({
+			error: error,
+			message: `Error fetching questions for user  ${req.params.userId}`
+		});
+	}
+});
+
+//GET ALL QUESTIONS FOR ALL TOPICS FOLLOWED BY A USER (FOR FEED)
+
+// router.get("/:userId/topics/questions", async (req, res) => {
+
+// 	let userDoc = await UserModel.find({ _id: req.params.userId }).populate({
+// 		path: "topicsFollowed",
+// 		populate : {
+// 				path: "questions"
+// 				// populate : {
+
+// 				// 	path: "questions",
+// 						// populate: {
+// 						// path: "answers"
+// 						// }
+// 				// 	}
+// 		}
+// 	}).exec();
+
+// 	console.log("Result - topicsFollowed: ", userDoc);
+// 	res.end(JSON.stringify(userDoc));
+// });
 
 module.exports = router;
