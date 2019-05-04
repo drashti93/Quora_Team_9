@@ -23,29 +23,7 @@ question.post("/follow", async (req, res) => {
 	}
 });
 
-//GET ALL QUESTIONS (FOR FEED)
 
-question.get("/following", (req, res) => {
-	(async () => {
-		try {
-			let { userId } = req.body;
-
-			let questions = await QuestionModel.find({ followers: userId })
-				.populate({
-					path: "answers",
-					populate: {
-						path: "upvotes downvotes bookmarks"
-					}
-				})
-				.exec();
-			console.log(questions);
-
-			res.status(200).json(questions);
-		} catch (error) {
-			console.log(error);
-		}
-	})();
-});
 
 //GET ALL QUESTIONS FROM A PARTICULAR TOPIC (FOR FEED)
 
