@@ -1,5 +1,5 @@
 import {GET_PROFILE,CALL_COMPLETE} from '../actions/navbarActions';
-export default function navbarReducer(state={chatList:[],userList:[]},{type,payload}){
+export default function navbarReducer(state={chatList:[],userList:[],topics:[]},{type,payload}){
     switch(type){
         case GET_PROFILE:
         return{ 
