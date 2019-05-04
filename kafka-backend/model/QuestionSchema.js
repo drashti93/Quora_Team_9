@@ -17,6 +17,12 @@ const QuestionSchema = new Schema({
 			ref: "users"
 		}
 	],
+	topicsArray:[
+		{
+			type: Schema.Types.ObjectId,
+			ref: "topics"
+		}
+	],
 	answers: [
 		{
 			type: Schema.Types.ObjectId,

@@ -22,4 +22,27 @@ topic.post("/topics/follow", async (req, res) => {
 	}
 });
 
+topic.post("/",async(req,res)=>{
+	try {
+		let { name } = req.body;
+		console.log(name);
+		console.log("here");
+		let topicInstance =new TopicModel({
+			name
+		});
+		let result=await topicInstance.save();
+		res.status(200).json(result);
+	} catch (error) {
+		console.log(error);
+	}
+});
+topic.get("/",async(req,res)=>{
+	try {
+		let result=await TopicModel.find({});
+		res.status(200).json(result);
+	} catch (error) {
+		console.log(error);
+	}
+});
+
 module.exports = topic;

@@ -51,7 +51,7 @@ class TopicBar extends Component{
         "Los Angeles battles huge wildfires."
         ];
         return(
-            <div>
+            <div className="topic-bar">
     <h3 style={{ marginBottom: 0 }}></h3>
     <h3 style={{ margin: "0px 0" }}></h3>
 
