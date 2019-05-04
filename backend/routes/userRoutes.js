@@ -10,7 +10,7 @@ const AnswerSchema = require("../model/AnswerSchema");
 router.post("/:userId/edit", (request,response) => {
 	console.log(`\n\nInside Post /:userId/edit`);
 	// body = request.body;
-	let { firstName, lastName, aboutMe, phoneNumber, street, city, state, zipcode, startDate, endDate, gender, isFollowAllowed, topicsFollowed } = request.body;
+	let { firstName, lastName, aboutMe, phoneNumber, street, city, state, zipcode, startDate, endDate, school, concentration, secConcentration, degree, gradYear, position, company, careerStartDate, careerEndDate, gender, isFollowAllowed, topicsFollowed } = request.body;
 	UserSchema.findOneAndUpdate(
 		{ _id: request.params.userId },
 		{
@@ -39,8 +39,8 @@ router.post("/:userId/edit", (request,response) => {
 					career: {
 						position: position,
 						company: company,
-						startDate: startDate,
-						endDate: endDate,
+						careerStartDate: careerStartDate,
+						careerEndDate: careerEndDate,
 					}
 				},
 				gender: gender,
@@ -81,50 +81,92 @@ router.post("/:userId/edit", (request,response) => {
 // Delete User account
 router.delete("/:userId", async (request, response) => {
     try {
-        let result = await UserSchema.updateOne({ _id: request.params.userId }, {
-            $pull: {
-                _id: request.params.userId
-            }
-        });
-        response.status(200).json(result);
+		let userDocument = await UserSchema.findOneAndDelete({_id: request.params.userId});
+		if(userDocument){
+			console.log(`Sucessfully deleted user ${request.params.userId}:\n ${userDocument}`);
+			response.status(200).json(userDocument);
+		} else{
+			console.log(`User ${request.params.userId} not found`);
+			response.status(404).json({message: `User ${request.params.userId} not found`});
+		}
     } catch (error) {
-        response.send(error);
+		// response.send(error);
+		console.log(`Error fetching user ${request.params.userId}:\n ${error}`);
+		response.status(500).json({ error: error, message: `Error fetching user ${request.params.userId}`});
     }
 });
 
 
 // Deactivate User Account
-router.put("/:userId", (request, response) => {
+router.put("/:userId", async (request, response) => {
 	console.log(`\n\n Inside Post users/:userId/deactivateProfile`);
-	UserSchema.findOneAndUpdate(
-		{ _id: request.params.userId },
-		{
-			$set: {
-				isDeactivated: true,
-			}
-		},
-		{ new: true },
-		(error, questionDocument) => {
-			if(error){
-				console.log(
-					`Error while deactivating user account ${
-						request.params.userId
-					}:\n ${error}`
+	try{
+		let userDoc = await UserSchema.find({ _id: request.params.userId });
+		// console.log(userDoc);
+		if(userDoc){
+			let flag = userDoc[0].isDeactivated;
+			if(flag){
+				await UserSchema.findOneAndUpdate(
+					{ _id: request.params.userId },
+					{ 
+						$set: { 
+							isDeactivated: false
+						}
+					},
 				);
-				response.status(500).json({
-					error: error,
-					message: `Error while deactivating user account ${
-						request.params.userId
-					}`
-				});
-			} else if(questionDocument) { 
-				console.log(`Account Deactivated succssfully ${request.params.userId}:\n ${questionDocument}`);
-				response.status(200).json(questionDocument);
-			} else {
-				response.status(404).json({message: `User not found`});
+			} else{
+				await UserSchema.findOneAndUpdate(
+					{ _id: request.params.userId },
+					{
+						$set: {
+							isDeactivated: true
+						}
+					},
+				);
 			}
-		} 
-	)
+			console.log(`Sucessfully Toggled user account ${request.params.userId}:\n ${userDoc}`);
+			response.status(200).json(userDoc);
+		} else {
+			console.log(`User ${request.params.userId} not found`);
+			response.status(404).json({message: `User ${request.params.userId} not found`});
+		}
+	} catch (error) {
+		console.log(`Error fetching user ${request.params.userId}:\n ${error}`);
+		response.status(500).json({ error: error, message: `Error fetching user ${request.params.userId}`});
+    }
+	
+
+	// UserSchema.findOneAndUpdate(
+	// 	{ _id: request.params.userId },
+	// 	{
+	// 		$set: {
+	// 			isDeactivated: !isDeactivated,
+	// 		}
+	// 	},
+	// 	{ new: true },
+	// 	(error, questionDocument) => {
+	// 		if(error){
+	// 			console.log(
+	// 				`Error while deactivating user account ${
+	// 					request.params.userId
+	// 				}:\n ${error}`
+	// 			);
+	// 			response.status(500).json({
+	// 				error: error,
+	// 				message: `Error while deactivating user account ${
+	// 					request.params.userId
+	// 				}`
+	// 			});
+	// 		} else if(questionDocument) { 
+	// 			console.log(`Account Deactivated succssfully ${request.params.userId}:\n ${questionDocument}`);
+	// 			// console.log("questionDocument.isDeactivated: ",questionDocument.isDeactivated);
+	// 			// questionDocument.isDeactivated ?  :
+	// 			response.status(200).json(questionDocument);
+	// 		} else {
+	// 			response.status(404).json({message: `User not found`});
+	// 		}
+	// 	} 
+	// )
 });
 
 
@@ -133,7 +175,7 @@ router.get("/getallusers",(req,res)=>{
   
     (async()=>{
         try {
-       let result=await UserSchema.find();
+       let result = await UserSchema.find();
         res.status=200;
         res.setHeader("Content-Type", "application/json");
         res.send(JSON.stringify(result));
@@ -168,7 +210,7 @@ router.get('/:userId', async (request, response) => {
 });
 
 //Enable user follow
-router.get('/:userId/follow/enable', async (request, response) => {
+router.put('/:userId/follow/enable', async (request, response) => {
 
 	console.log(`\n\nInside GET /users/:userId/follow/enable`);
 
@@ -199,7 +241,7 @@ router.get('/:userId/follow/enable', async (request, response) => {
 
 
 //Disable user follow
-router	.get('/:userId/follow/disable', async (request, response) => {
+router.put('/:userId/follow/disable', async (request, response) => {
 
 	console.log(`\n\nInside GET /users/:userId/follow/disable`);
 

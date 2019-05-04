@@ -93,10 +93,10 @@ const UserSchema = new Schema({
 				company: {
 					type: String
 				},
-				startDate: {
+				careerStartDate: {
 					type: Date
 				},
-				endDate: {
+				careerEndDate: {
 					type: Date
 				},
 				isCurrent: {
