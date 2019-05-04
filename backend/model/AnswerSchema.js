@@ -65,6 +65,6 @@ const AnswerSchema = new Schema({
 	}
 });
 
-AnswerSchema.set('timestamps', true);
+AnswerSchema.set("timestamps", true);
 const AnswerModel = mongoose.model("answers", AnswerSchema, "Answers");
 module.exports = AnswerModel;
