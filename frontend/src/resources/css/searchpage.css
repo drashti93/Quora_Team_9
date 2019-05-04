@@ -1,0 +1,47 @@
+.searchpage-parent ul.display-list li a{
+    color:black;
+    text-decoration: none;
+}
+.searchpage-parent ul.display-list h4{
+    font-size: 15px;
+    border-bottom: 1px solid #ddd;
+    font-weight: 600;
+    padding-bottom: 13px;
+}
+.searchpage-parent ul.display-list li:hover a{
+    color:#2b6dad;
+}
+.searchpage-parent ul.display-list li{
+    padding: 15px 10px 35px 10px;
+    border-bottom: 1px solid #ddd;
+}
+.searchpage-parent ul.display-list {
+    list-style-type: none;
+    color: #ddd;
+    margin-top: 20px;
+}
+.searchpage-parent .left-header{
+    border-bottom: 1px solid #ddd;
+    margin: 20px 0px;
+    padding-bottom:10px; 
+    font-size: 15px;
+    font-weight: 600;
+
+}
+.searchpage-parent .left-list li:hover{
+    cursor: pointer;
+    color:#2b6dad;
+}
+.searchpage-parent .left-list li{
+    padding: 5px;
+font-size: 15px;
+}
+.searchpage-parent .left-list li.active{
+    background: #e6e6e6;
+    border-radius: 3px;
+}
+.searchpage-parent .left-list{
+    list-style-type: none;
+    padding: 0px;
+    margin-top: 20px;
+}
