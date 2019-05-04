@@ -6,14 +6,17 @@ var QuestionModel = require('../model/QuestionSchema');
 async function handle_request_postquestion(msg, callback) {
   try {
     console.log("Handle request -post a question");
-    let { userId, questionText } = msg;
+    let { userId, questionText,topicsArray } = msg;
     let questionInstance = new QuestionModel({
       questionText,
-      userId
+      userId,
+      topicsArray
     });
     let result = await questionInstance.save();
+    console.log(result);
     callback(null, result);
   } catch (error) {
+    console.log(error);
     callback(error, null);
   }
 }

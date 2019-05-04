@@ -5,10 +5,6 @@ var TopicSchema = new Schema({
 	name: {
 		type: String
 	},
-	topicId: {
-		type: mongoose.Schema.Types.ObjectId,
-		required: true
-	},
 	questions: [
 		{
 			type: Schema.Types.ObjectId,
@@ -19,4 +15,3 @@ var TopicSchema = new Schema({
 
 const TopicModel = mongoose.model("topics", TopicSchema, "Topics");
 module.exports = TopicModel;
-

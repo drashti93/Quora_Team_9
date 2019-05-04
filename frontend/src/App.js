@@ -37,10 +37,12 @@ class App extends Component {
            {/* Routing to different pages */}
               <BrowserRouter>
               <Switch>
-                <Route exact path="/" component={Main}></Route>
                 <Route path="/login" component={Login}></Route>
                 <Route path="/signup" component={Signup}></Route>
-                <Route path="/profile" component={Profile}></Route>
+                <Route path="/profile" component={Profile}></Route> 
+                <Route path="/" component={Main}></Route>
+
+
                 </Switch>
               </BrowserRouter>
           </Provider>
