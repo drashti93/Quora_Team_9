@@ -2,6 +2,7 @@ var express = require("express");
 var topic = express.Router();
 var QuestionModel = require("../model/QuestionSchema");
 var UserModel = require("../model/UserSchema");
+var TopicModel = require("../model/TopicSchema");
 var kafka = require("../kafka/client");
 var client = require("../resources/redis");
 
@@ -38,11 +39,12 @@ topic.post("/", async (req, res) => {
 });
 topic.get("/", async (req, res) => {
 	try {
+		console.log("here");
 		let result = await TopicModel.find({});
 		res.status(200).json(result);
 	} catch (error) {
 		console.log(error);
-	}
+	}	
 });
 // Search topic
 topic.get("/:topicId", (request, response) => {
