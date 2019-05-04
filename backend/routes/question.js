@@ -26,33 +26,25 @@ question.post("/follow", async (req, res) => {
 //GET ALL QUESTIONS (FOR FEED)
 
 question.get("/following", (req, res) => {
-    let { _id } = req.body;
+	(async () => {
+		try {
+			let { userId } = req.body;
 
-    //let questions = await QuestionModel.find({}).populate({path:'chats.uid', select:["firstName"]})
+			let questions = await QuestionModel.find({ followers: userId })
+				.populate({
+					path: "answers",
+					populate: {
+						path: "upvotes downvotes bookmarks"
+					}
+				})
+				.exec();
+			console.log(questions);
 
-
-	QuestionModel.find({}, (err, result) => {
-		if (err) {
-			console.log("Error in retrieving questions", err);
-			res.writeHead(400, {
-				"Content-type": "text/plain"
-			});
-			res.end("Error in retrieving questions");
-		} else {
-			res.writeHead(200, {
-				"Content-type": "application/json"
-			});
-			let finalResult = [];
-			result.forEach(question => {
-				if (question.followers.includes(_id)) {
-					finalResult.push(question);
-				}
-			});
-
-			console.log("questions: ", finalResult);
-			res.end(JSON.stringify(finalResult));
+			res.status(200).json(questions);
+		} catch (error) {
+			console.log(error);
 		}
-	});
+	})();
 });
 
 //GET ALL QUESTIONS FROM A PARTICULAR TOPIC (FOR FEED)

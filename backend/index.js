@@ -11,9 +11,9 @@ var MongoDBStore = require("connect-mongodb-session")(session);
 var answer = require("./routes/answer");
 var question = require("./routes/question");
 var comment = require("./routes/comment");
-var graphs = require('./routes/graphs');
+var graphs = require("./routes/graphs");
 
-var { client } = require('./resources/redis');
+var { client } = require("./resources/redis");
 var bcrypt = require("bcrypt");
 const saltRounds = 10;
 var userModel = require("./model/UserSchema.js");
@@ -21,9 +21,8 @@ var jwt = require("jsonwebtoken");
 const fetch = require("node-fetch");
 const redis = require("redis");
 
-var topics = require('./routes/topic');
+var topics = require("./routes/topic");
 // var { client } = require("./resources/redis");
-
 
 //use cors to allow cross origin resource sharing
 app.use(
@@ -88,25 +87,24 @@ app.use("/uploads", fileUploadRoutes);
 app.use("/answers", answer);
 app.use("/questions", question);
 app.use("/comments", comment);
-app.use('/graphs',graphs);
-app.use('/topics',topics);
+app.use("/graphs", graphs);
+app.use("/topics", topics);
 
-
-//with redis 
-app.post('/login', async function (req, res) {
+//with redis
+app.post("/login", async function(req, res) {
 	// let req = {
 	// 	body: req.body
 	//   }
 	var body = "";
-		// client.get('loginQueryKeynew', async function (err, query_results) {
-		// if (query_results) {
-		// 	body = query_results;
-		// 	res.status(200).json(JSON.parse(body));
-		// }
-		// else {
+	// client.get('loginQueryKeynew', async function (err, query_results) {
+	// if (query_results) {
+	// 	body = query_results;
+	// 	res.status(200).json(JSON.parse(body));
+	// }
+	// else {
 
-	  let loginSuccess = 0;
-	  try {
+	let loginSuccess = 0;
+	try {
 		let { email, password } = req.body;
 		console.log(req.body);
 		console.log("here");
@@ -114,53 +112,57 @@ app.post('/login', async function (req, res) {
 		let result = await userModel.findOne({ email });
 		let data = null;
 		if (!result) {
-		  data = {
-			loginSuccess: 0,
-			message: "Email or Password Incorrect"
-		  };
-		} else {
-		  const match = await bcrypt.compare(password, result.password);
-		  if (match) {
-			var user = {
-			  email: result.email
+			data = {
+				loginSuccess: 0,
+				message: "Email or Password Incorrect"
 			};
-			var token = jwt.sign(user, "There is no substitute for hardwork", {
-			  expiresIn: 10080 // in seconds
-			});
-			res.cookie(
+		} else {
+			const match = await bcrypt.compare(password, result.password);
+			if (match) {
+				var user = {
+					email: result.email
+				};
+				var token = jwt.sign(
+					user,
+					"There is no substitute for hardwork",
+					{
+						expiresIn: 10080 // in seconds
+					}
+				);
+				res.cookie(
 					"cookie",
 					JSON.stringify({
 						id: result._id,
-						email:result.email,
+						email: result.email,
 						role: result.role,
-						token: 'JWT' + token
+						token: "JWT" + token
 					}),
 					{ maxAge: 900000000, httpOnly: false, path: "/" }
 				);
 				req.session.user = result.id;
-			data = {
-			  id: result._id,
-			  role: result.role,
-			  loginSuccess: 1,
-			  message: "Login Successfull!",
-			  token: 'JWT ' + token
-			};
-		  } else {
-			data = {
-			  loginSuccess: 0,
-			  message: "Email or Password Incorrect"
-			};
-		  }
+				data = {
+					id: result._id,
+					role: result.role,
+					loginSuccess: 1,
+					message: "Login Successfull!",
+					token: "JWT " + token
+				};
+			} else {
+				data = {
+					loginSuccess: 0,
+					message: "Email or Password Incorrect"
+				};
+			}
 		}
 		// client.set('loginQueryKeynew', JSON.stringify(data));
 		res.status(200).json(data);
-	  } catch (error) {
-		  console.log(error);
+	} catch (error) {
+		console.log(error);
 		res.status(400).json(error);
 		// callback(error, null);
-	  }
-// 	}
-// })
+	}
+	// 	}
+	// })
 });
 
 //with redis on kafka-backend

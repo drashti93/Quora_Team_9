@@ -12,7 +12,7 @@ const QuestionSchema = new Schema({
 		required: true
 	},
 	followers: [
-		{ 
+		{
 			type: Schema.Types.ObjectId,
 			ref: "users"
 		}
@@ -25,7 +25,7 @@ const QuestionSchema = new Schema({
 	]
 });
 
-QuestionSchema.set('timestamps', true);
+QuestionSchema.set("timestamps", true);
 
 const QuestionModel = mongoose.model("questions", QuestionSchema, "Questions");
 module.exports = QuestionModel;
