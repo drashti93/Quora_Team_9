@@ -7,11 +7,11 @@ export function getUserDetails(user_id) {
             .then(function (response) {
               
                 console.log("User Details");
-                console.log(response);
+                console.log(response.data);
                 
                 if(response.status===200) {
 
-                    dispatch({ type: "USER_DETAILS_SUCCESS", payload: response })
+                    dispatch({ type: "USER_DETAILS_SUCCESS", payload: response.data })
                 }
             })
             .catch(function (error) {
@@ -42,7 +42,9 @@ export function saveProfilePicture(user_id, image_file) {
 
 export function saveCredentials(user_id, type, position, company, cstartYear, cendYear, cisCurrentString, school, concentration, secConcentration, degree, graduationYear, street, city, state, zipcode, lstartYear, lendYear, lisCurrentString){
     return function(dispatch){
-        axios.post("http://localhost:30001/users/credentials", {
+        console.log("Details:");
+        console.log(user_id, type, position, company, cstartYear, cendYear, cisCurrentString, school, concentration, secConcentration, degree, graduationYear, street, city, state, zipcode, lstartYear, lendYear, lisCurrentString)
+        axios.post("http://localhost:3001/users/credentials", {
             user_id, type, position, company, cstartYear, cendYear, cisCurrentString, school, concentration, secConcentration, degree, graduationYear, street, city, state, zipcode, lstartYear, lendYear, lisCurrentString
         })
         .then(function(response){
