@@ -663,14 +663,14 @@ router.get("/:userId/questions", async (req, res) => {
 // 	let userDoc = await UserModel.find({ _id: req.params.userId }).populate({
 // 		path: "topicsFollowed",
 // 		populate : {
-// 				path: "questions"
-// 				// populate : {
+// 				path: "questions" ,
+// 				populate : {
 
-// 				// 	path: "questions",
-// 						// populate: {
-// 						// path: "answers"
-// 						// }
-// 				// 	}
+// 					path: "questions",
+// 						populate: {
+// 						path: "answers"
+// 						}
+// 					}
 // 		}
 // 	}).exec();
 
