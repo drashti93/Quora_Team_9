@@ -11,7 +11,8 @@ var MongoDBStore = require("connect-mongodb-session")(session);
 var answer = require("./routes/answer");
 var question = require("./routes/question");
 var comment = require("./routes/comment");
-var graphs = require("./routes/graphs");
+var graphs = require('./routes/graphs');
+var topics = require('./routes/topic');
 
 var { client } = require("./resources/redis");
 var bcrypt = require("bcrypt");
