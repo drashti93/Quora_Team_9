@@ -23,29 +23,7 @@ question.post("/follow", async (req, res) => {
 	}
 });
 
-//GET ALL QUESTIONS (FOR FEED)
 
-question.get("/following", (req, res) => {
-	(async () => {
-		try {
-			let { userId } = req.body;
-
-			let questions = await QuestionModel.find({ followers: userId })
-				.populate({
-					path: "answers",
-					populate: {
-						path: "upvotes downvotes bookmarks"
-					}
-				})
-				.exec();
-			console.log(questions);
-
-			res.status(200).json(questions);
-		} catch (error) {
-			console.log(error);
-		}
-	})();
-});
 
 //GET ALL QUESTIONS FROM A PARTICULAR TOPIC (FOR FEED)
 
@@ -100,6 +78,16 @@ question.delete("/", async (req, res) => {
 	});
 });
 
+question.get("/allquestions",async (req,res)=>{
+    try {
+        let result=await QuestionModel.find({});       
+        res.status(200).json(result); 
+    } catch (error) {
+        res.status(500).json({message:"error while processing request!"});
+        console.log(error);
+    }
+
+});
 // Search question
 question.get("/:questionId", (request, response) => {
 	console.log(`\n\nInside Get /questions/:questionId`);

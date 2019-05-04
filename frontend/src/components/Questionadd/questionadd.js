@@ -4,7 +4,7 @@ import cookie from 'react-cookies';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {postQuestion} from '../../actions/navbarActions';
-
+import "../../resources/css/questionadd.css"
 class Questionadd extends Component{
     constructor(props){
         super(props)
@@ -45,13 +45,20 @@ changeHandler=(property,e)=>{
    }
     render(){
         
-        return(<div>
-            <input type="text" placeholder={`Start your question with 'What','How','Why' ,etc.`} onChange={(e)=>{this.changeHandler("questionText",e)}}></input>
+        return(<div className="addquestion-parent">
+            <input type="text" className="form-control" placeholder={`Start your question with 'What','How','Why' ,etc.`} value={this.state.questionText} onChange={(e)=>{this.changeHandler("questionText",e)}}></input>
+            <label>Choose Topics</label>
+          <div className="checkbox-parent">
+              <div className="inner-div">
            { this.props.navbar.topics.map((data,index)=>{
            return (<div><input type="checkbox" onChange={(e)=>{this.checkChanged(data,e)}} key={index} value={data.name}></input><label>{data.name}</label></div>)
             })
            }
-           <input type="submit" onClick={this.submit} value="Add Question"></input>
+           </div>
+           </div>
+           <div className="button-parent clearfix">
+           <input className="blue-btn" type="submit" onClick={this.submit} value="Add Question"></input>
+           </div>
         </div>)
     }
 }

@@ -6,7 +6,7 @@ const reducer = (state = initial, action) => {
 
         case "USER_DETAILS_SUCCESS" : {
             console.log(action.payload);
-            return {...state,userDetails:action.payload.data};
+            return {...state,userDetails:action.payload};
 
 			
         }

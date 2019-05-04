@@ -2,6 +2,7 @@ var express = require("express");
 var topic = express.Router();
 var QuestionModel = require("../model/QuestionSchema");
 var UserModel = require("../model/UserSchema");
+var TopicModel = require("../model/TopicSchema");
 var kafka = require("../kafka/client");
 var client = require("../resources/redis");
 
@@ -22,27 +23,28 @@ topic.post("/topics/follow", async (req, res) => {
 	}
 });
 
-topic.post("/",async(req,res)=>{
+topic.post("/", async (req, res) => {
 	try {
 		let { name } = req.body;
 		console.log(name);
 		console.log("here");
-		let topicInstance =new TopicModel({
+		let topicInstance = new TopicModel({
 			name
 		});
-		let result=await topicInstance.save();
+		let result = await topicInstance.save();
 		res.status(200).json(result);
 	} catch (error) {
 		console.log(error);
 	}
 });
-topic.get("/",async(req,res)=>{
+topic.get("/", async (req, res) => {
 	try {
-		let result=await TopicModel.find({});
+		console.log("here");
+		let result = await TopicModel.find({});
 		res.status(200).json(result);
 	} catch (error) {
 		console.log(error);
-	}
+	}	
 });
 // Search topic
 topic.get("/:topicId", (request, response) => {
@@ -77,27 +79,32 @@ topic.get("/:topicId", (request, response) => {
 topic.get("/:topicId/questions/following", async (req, res) => {
 	let topicId = req.params.topicId;
 
-	let result = await QuestionModel.find({ topics: topicId })
-		.populate("answers")
-		.exec();
+	try {
+		let result = await QuestionModel.find({ topicsArray: topicId })
+			.populate("answers")
+			.exec();
 
-	console.log("questions: ", result);
-	res.end(JSON.stringify(result));
+		if (result) {
+			console.log("questions: ", result);
+			res.status(200).json(result);
+			// res.end(JSON.stringify(result));
+		} else {
+			console.log(`Topic ${req.params.topicId} not found`);
+			response
+				.status(404)
+				.json({ messgage: `Topic ${req.params.topicId} not found` });
+		}
+	} catch (error) {
+		console.log(
+			`Error fetching questions for topic ${
+				req.params.topicId
+			}:\n ${error}`
+		);
+		response.status(500).json({
+			error: error,
+			message: `Error fetching questions for topic ${req.params.topicId}`
+		});
+	}
 });
 
-//GET ALL QUESTIONS FOR ALL TOPICS FOLLOWED (FOR FEED)
-
-topic.get("/questions/following", async (req, res) => {
-	let result = await UserModel.find({}, "topicsFollowed")
-		.populate({
-			path: "questions"
-		})
-		.populate({
-			path: "answers"
-		})
-		.exec();
-
-	console.log("questions: ", result);
-	res.end(JSON.stringify(result));
-});
 module.exports = topic;

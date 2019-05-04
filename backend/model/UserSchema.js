@@ -40,71 +40,65 @@ const UserSchema = new Schema({
 		type: String
 	},
 	credentials: {
-		address: [
-			{
-				street: {
-					type: String
-				},
-				city: {
-					type: String
-				},
-				state: {
-					type: String
-				},
-				zipcode: {
-					type: Number
-				},
-				startDate: {
-					type: Date
-				},
-				endDate: {
-					type: Date
-				},
-				isCurrent: {
-					type: Boolean,
-					default: false
-				}
+		address: [{
+			street: {
+				type: String
+			},
+			city: {
+				type: String
+			},
+			state: {
+				type: String
+			},
+			zipcode: {
+				type: Number
+			},
+			startDate: {
+				type: Number
+			},
+			endDate: {
+				type: Number
+			},
+			isCurrent: {
+				type: Boolean,
+				default: false
 			}
-		],
-		education: [
-			{
-				school: {
-					type: String
-				},
-				concentration: {
-					type: String
-				},
-				secConcentration: {
-					type: String
-				},
-				degree: {
-					type: String
-				},
-				gradYear: {
-					type: Date
-				}
+		}],
+		education: [{
+			school: {
+				type: String
+			},
+			concentration: {
+				type: String
+			},
+			secConcentration: {
+				type: String
+			},
+			degree: {
+				type: String
+			},
+			gradYear: {
+				type: Number
 			}
-		],
-		career: [
-			{
-				position: {
-					type: String
-				},
-				company: {
-					type: String
-				},
-				startDate: {
-					type: Date
-				},
-				endDate: {
-					type: Date
-				},
-				isCurrent: {
-					type: Boolean,
-					default: false
-				}
+		}],
+		career: [{
+			position: {
+				type: String
+			},
+			company: {
+				type: String
+			},
+			startDate: {
+				type: Number
+			},
+			endDate: {
+				type: Number
+			},
+			isCurrent: {
+				type: Boolean,
+				default: false
 			}
-		]
+		}]
 	},
 	isFollowAllowed: {
 		type: Boolean,

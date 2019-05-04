@@ -28,6 +28,23 @@ class Profile extends Component {
      show2: false,
      show3: false,
      image_file: "",
+     position: "",
+     company: "",
+     careerStart: "",
+     careerEnd: "",
+     currentCompany: "off",
+     school: "",
+     concentration: "",
+     secConcentration: "",
+     degree: "",
+     gradYear: "",
+     address: "",
+     city: "",
+     locState: "",
+     zipcode: "",
+     locStart: "",
+     locEnd: "",
+     currentLocation: "off"
     }
 
     this.handleShow = this.handleShow.bind(this);
@@ -39,6 +56,7 @@ class Profile extends Component {
     this.handleShow3 = this.handleShow3.bind(this);
     this.handleClose3 = this.handleClose3.bind(this);
     this.fileChange = this.fileChange.bind(this);
+    this.saveCredentialsInternal = this.saveCredentialsInternal.bind(this);
   }
 
   handleClose() {
@@ -79,16 +97,94 @@ class Profile extends Component {
 
   componentDidMount(){
       console.log('id is:');
-      console.log(cookie.load('cookie').email);
+      console.log(cookie.load('cookie').id);
       this.props.getUserDetails(cookie.load('cookie').id)
   }
 
+  onChangePosition(e){
+      this.setState({position: e.target.value})
+  }
+
+  onChangeCompany(e){
+      this.setState({company: e.target.value})
+  }
+
+  onChangeCareerStart(e){
+      console.log(typeof(e.target.value));
+      this.setState({careerStart: e.target.value})
+  }
+
+  onChangeCareerEnd(e){
+      console.log(typeof(e.target.value));
+      this.setState({careerEnd: e.target.value})
+  }
+
+  onChangeCurrentCompany(e){
+      this.setState({currentCompany: e.target.value})
+  }
+
+  onChangeSchool(e){
+      this.setState({school: e.target.value})
+  }
+
+  onChangeConcentration(e){
+      this.setState({concentration: e.target.value})
+  }
+
+  onChangeSecConcentration(e){
+      this.setState({secConcentration: e.target.value})
+  }
+
+  onChangeDegree(e){
+      this.setState({degree: e.target.value})
+  }
+
+  onChangeGradYear(e){
+      this.setState({gradYear: e.target.value})
+  }
+
+  onChangeAddress(e){
+      this.setState({address: e.target.value})
+  }
+
+  onChangeCity(e){
+      this.setState({city: e.target.value})
+  }
+
+  onChangeState(e){
+      this.setState({locState: e.target.value})
+  }
+  
+  onChangeZipcode(e){
+      this.setState({zipcode: e.target.value})
+  }
+
+  onChangeLocationStart(e){
+      this.setState({locStart: e.target.value})
+  }
+
+  onChangeLocationEnd(e){
+      this.setState({locEnd: e.target.value})
+  }
+
+  onChangeCurrentLocation(e){
+      this.setState({currentLocation: e.target.value})
+  }
+
+  saveCredentialsInternal(type){
+      this.props.saveCredentials(cookie.load('cookie').id, type, this.state.position, this.state.company, this.state.careerStart, this.state.careerEnd, this.state.currentCompany,
+      this.state.school, this.state.concentration, this.state.secConcentration, this.state.degree, this.state.gradYear,
+      this.state.address, this.state.city, this.state.locState, this.state.zipcode, this.state.locStart, this.state.locEnd, this.state.currentLocation
+      )
+  }
   render() {
     return(
         <div>
-            <Navigationbar></Navigationbar>
+            <div>
+                <Navigationbar></Navigationbar>
+            </div>
             <Container id="profile_body">
-                <Row >
+                <Row id="profile_body_row">
                     <Col xs={9}>
                         <Row id="profile_main">
                             <Col id="user_image_col" xs={3}>
@@ -168,7 +264,7 @@ class Profile extends Component {
                                         this.state.selectedTab === "Followers" ?
                                             <div>
                                                 <div className="tab_details">
-                                                    <h6>{ this.state.selectedTab }</h6>
+                                                    <h6>{this.props && this.props.followers ? (this.props.followers).length : 0} followers</h6>
                                                 </div>
                                                 <Feed></Feed>
                                             </div>
@@ -179,7 +275,7 @@ class Profile extends Component {
                                         this.state.selectedTab === "Following" ?
                                             <div>
                                                 <div className="tab_details">
-                                                    <h6>{ this.state.selectedTab }</h6>
+                                                    <h6>{this.props && this.props.following ? (this.props.following).length : 0} following</h6>
                                                 </div>
                                                 <Feed></Feed>
                                             </div>
@@ -204,10 +300,14 @@ class Profile extends Component {
                     <Col xs={3} id="credentials_languages">
                         <Row id="credentials">
                             <div id="credentials_title">
-                                <h6 >Credentials</h6>
+                                <h6 >Credentials & Highlights</h6>
                             </div>
                             <ul>
+                                {
+                                    this.props.userDetails.credentials && this.props.userDetails.credentials.career && this.props.userDetails.credentials.career[(this.props.userDetails.credentials.career.length)-1]? <p> Worked at {this.props.userDetails.credentials.career[(this.props.userDetails.credentials.career.length)-1].company} as a  {this.props.userDetails.credentials.career[(this.props.userDetails.credentials.career.length)-1].position}</p>: 
+                                
                                 <li onClick={this.handleShow1}><a>Add employment credential</a></li>
+                                }
                                     <Modal show={this.state.show1} onHide={this.handleClose1}>
                                         <Modal.Header closeButton>
                                             <Modal.Title>Edit credentials</Modal.Title><br/>
@@ -217,15 +317,15 @@ class Profile extends Component {
                                             <h6>Add employment detail</h6>
                                             <Form.Group controlId="exampleForm.ControlTextarea1">
                                                 <Form.Label>Position</Form.Label>
-                                                <Form.Control as="textarea" rows="1" />
+                                                <Form.Control as="textarea" rows="1" onChange={this.onChangePosition.bind(this)}/>
                                             </Form.Group>
                                             <Form.Group controlId="exampleForm.ControlTextarea1">
                                                 <Form.Label>Company</Form.Label>
-                                                <Form.Control as="textarea" rows="1" />
+                                                <Form.Control as="textarea" rows="1" onChange={this.onChangeCompany.bind(this)}/>
                                             </Form.Group>
                                             <Form.Group controlId="exampleForm.ControlSelect1">
                                                 <Form.Label>Start Year</Form.Label>
-                                                <Form.Control as="select">
+                                                <Form.Control as="select" onChange={this.onChangeCareerStart.bind(this)}>
                                                 {
                                                     this.state.years.map((year, index) => {
                                                         return(
@@ -238,7 +338,7 @@ class Profile extends Component {
                                             </Form.Group>
                                             <Form.Group controlId="exampleForm.ControlSelect1">
                                                 <Form.Label>End Year</Form.Label>
-                                                <Form.Control as="select">
+                                                <Form.Control as="select" onChange={this.onChangeCareerEnd.bind(this)}>
                                                 {
                                                     this.state.years.map((year, index) => {
                                                         return(
@@ -252,7 +352,7 @@ class Profile extends Component {
                                             <Form>
                                                 <Form.Check 
                                                     label="I currently work here"
-                                                    
+                                                    onSelect={this.onChangeCurrentCompany}
                                                 />
                                             </Form>
                                         </Modal.Body>
@@ -260,12 +360,16 @@ class Profile extends Component {
                                             <Button variant="secondary" onClick={this.handleClose1}>
                                             Close
                                             </Button>
-                                            <Button variant="primary" onClick={this.handleClose1}>
+                                            <Button variant="primary" onClick={() => this.saveCredentialsInternal("employment")}>
                                             Save Changes
                                             </Button>
                                         </Modal.Footer>
                                     </Modal>
+                                    {
+                                    this.props.userDetails.credentials && this.props.userDetails.credentials.education && this.props.userDetails.credentials.education[(this.props.userDetails.credentials.education.length)-1]? <p> Studied at {this.props.userDetails.credentials.education[(this.props.userDetails.credentials.education.length)-1].school} </p>: 
+                                
                                 <li onClick={this.handleShow2}><a>Add education credential</a></li>
+                                    }
                                     <Modal show={this.state.show2} onHide={this.handleClose2}>
                                         <Modal.Header closeButton>
                                             <Modal.Title>Edit credentials</Modal.Title>
@@ -274,17 +378,17 @@ class Profile extends Component {
                                             <h6>Add education detail</h6>
                                             <Form.Group controlId="exampleForm.ControlTextarea1">
                                                 <Form.Label>School</Form.Label>
-                                                <Form.Control as="textarea" rows="1" />
+                                                <Form.Control as="textarea" rows="1" onChange={this.onChangeSchool.bind(this)}/>
                                                 <Form.Label>Concentration</Form.Label>
-                                                <Form.Control as="textarea" rows="1" />
+                                                <Form.Control as="textarea" rows="1" onChange={this.onChangeConcentration.bind(this)}/>
                                                 <Form.Label>Secondary Concentration</Form.Label>
-                                                <Form.Control as="textarea" rows="1" />
+                                                <Form.Control as="textarea" rows="1" onChange={this.onChangeSecConcentration.bind(this)}/>
                                                 <Form.Label>Degree Type</Form.Label>
-                                                <Form.Control as="textarea" rows="1" />
+                                                <Form.Control as="textarea" rows="1" onChange={this.onChangeDegree.bind(this)}/>
                                             </Form.Group>
                                             <Form.Group controlId="exampleForm.ControlSelect1">
                                                 <Form.Label>Graduation Year</Form.Label>
-                                                <Form.Control as="select">
+                                                <Form.Control as="select" onChange={this.onChangeGradYear.bind(this)}>
                                                 {
                                                     [...this.state.years, 2020, 2021, 2022, 2023].map((year, index) => {
                                                         return(
@@ -300,12 +404,16 @@ class Profile extends Component {
                                             <Button variant="secondary" onClick={this.handleClose2}>
                                             Close
                                             </Button>
-                                            <Button variant="primary" onClick={this.handleClose2}>
+                                            <Button variant="primary" onClick={() => this.saveCredentialsInternal("education")}>
                                             Save Changes
                                             </Button>
                                         </Modal.Footer>
                                     </Modal>
+                                    {
+                                    this.props.userDetails.credentials && this.props.userDetails.credentials.location && this.props.userDetails.credentials.location[(this.props.userDetails.credentials.location.length)-1]? <p> Lived at {this.props.userDetails.credentials.location[(this.props.userDetails.credentials.location.length)-1].address} </p>: 
+                                
                                 <li onClick={this.handleShow3}><a>Add a location credential</a></li>
+                                    }
                                     <Modal show={this.state.show3} onHide={this.handleClose3}>
                                         <Modal.Header closeButton>
                                             <Modal.Title>Edit Credentials</Modal.Title>
@@ -313,12 +421,18 @@ class Profile extends Component {
                                         <Modal.Body>
                                             <h6>Add location detail</h6>
                                             <Form.Group controlId="exampleForm.ControlTextarea1">
-                                                <Form.Label>Company</Form.Label>
-                                                <Form.Control as="textarea" rows="1" />
+                                                <Form.Label>Address</Form.Label>
+                                                <Form.Control as="textarea" rows="1" onChange={this.onChangeAddress.bind(this)}/>
+                                                <Form.Label>City</Form.Label>
+                                                <Form.Control as="textarea" rows="1" onChange={this.onChangeCity.bind(this)}/>
+                                                <Form.Label>State</Form.Label>
+                                                <Form.Control as="textarea" rows="1" onChange={this.onChangeState.bind(this)}/>
+                                                <Form.Label>ZipCode</Form.Label>
+                                                <Form.Control as="textarea" rows="1" onChange={this.onChangeZipcode.bind(this)}/>
                                             </Form.Group>
                                             <Form.Group controlId="exampleForm.ControlSelect1">
                                                 <Form.Label>Start Year</Form.Label>
-                                                <Form.Control as="select">
+                                                <Form.Control as="select" onChange={this.onChangeLocationStart.bind(this)}>
                                                 {
                                                     this.state.years.map((year, index) => {
                                                         return(
@@ -331,7 +445,7 @@ class Profile extends Component {
                                             </Form.Group>
                                             <Form.Group controlId="exampleForm.ControlSelect1">
                                                 <Form.Label>End Year</Form.Label>
-                                                <Form.Control as="select">
+                                                <Form.Control as="select" onChange={this.onChangeLocationEnd.bind(this)}>
                                                 {
                                                     this.state.years.map((year, index) => {
                                                         return(
@@ -344,8 +458,8 @@ class Profile extends Component {
                                             </Form.Group>
                                             <Form>
                                                 <Form.Check 
-                                                    label="I currently work here"
-                                                    
+                                                    label="I currently live here"
+                                                    onSelect={this.onChangeCurrentLocation.bind(this)}
                                                 />
                                             </Form>
                                         </Modal.Body>
@@ -353,7 +467,7 @@ class Profile extends Component {
                                             <Button variant="secondary" onClick={this.handleClose3}>
                                             Close
                                             </Button>
-                                            <Button variant="primary" onClick={this.handleClose3}>
+                                            <Button variant="primary" onClick={() => this.saveCredentialsInternal("location")}>
                                             Save Changes
                                             </Button>
                                         </Modal.Footer>
@@ -363,7 +477,7 @@ class Profile extends Component {
                         </Row>
                         <Row id="languages">
                             <div id="languages_title">
-                                <h6>Languages</h6>
+                                <h6>Knows About</h6>
                             </div>
                         </Row>
                     </Col>
@@ -387,6 +501,9 @@ function mapDispatchToProps(dispatch) {
     return {
         getUserDetails: (user_id) => dispatch(actions.getUserDetails(user_id)),
         saveProfilePicture: (user_id, image_file) => dispatch(actions.saveProfilePicture(user_id, image_file)),
+        saveCredentials: (id, type, position, company, careerStart, careerEnd, currentCompany,
+      school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation) => dispatch(actions.saveCredentials(id, type, position, company, careerStart, careerEnd, currentCompany,
+      school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation))
     };
 }
 
