@@ -54,10 +54,10 @@ const UserSchema = new Schema({
 				type: Number
 			},
 			startDate: {
-				type: Date
+				type: Number
 			},
 			endDate: {
-				type: Date
+				type: Number
 			},
 			isCurrent: {
 				type: Boolean,
@@ -78,7 +78,7 @@ const UserSchema = new Schema({
 				type: String
 			},
 			gradYear: {
-				type: Date
+				type: Number
 			}
 		}],
 		career: [{
@@ -89,10 +89,10 @@ const UserSchema = new Schema({
 				type: String
 			},
 			startDate: {
-				type: Date
+				type: Number
 			},
 			endDate: {
-				type: Date
+				type: Number
 			},
 			isCurrent: {
 				type: Boolean,
