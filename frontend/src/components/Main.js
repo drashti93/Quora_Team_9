@@ -21,14 +21,14 @@ class Main extends Component{
             <div>
                 {redirectVar}
             <Navigationbar/>
-            <div className="container">
+            <div className="container mt70">
                 <div className="row">
-                    <div className="col-lg-2 col-md-2 col-xs-12"><TopicBar/></div>
+                    <div className="col-lg-2 col-md-2 col-xs-12 left-stick"><TopicBar/></div>
                     <div className="col-lg-8 col-md-8 col-xs-12">
                         <Route exact path="/" component={Feed} />
                         <Route path="/questions" component={Questions} />
                     </div>
-                    <div className="col-lg-2 col-md-2 col-xs-12">Right side bar</div>
+                    <div className="col-lg-2 col-md-2 col-xs-12 right-stick">Right side bar</div>
                 </div>
                 </div>
             </div>

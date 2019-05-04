@@ -2,7 +2,7 @@ var bcrypt = require('bcrypt');
 const saltRounds = 10;
 var jwt = require('jsonwebtoken');
 var userModel = require("../model/UserSchema.js");
-var { client } = require('../resources/redis');
+// var { client } = require('../resources/redis');
 
 
 async function handle_request_signup(msg, callback) {
