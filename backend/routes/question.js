@@ -3,9 +3,9 @@ var question = express.Router();
 const UserSchema = require("../model/UserSchema");
 var QuestionModel = require("../model/QuestionSchema");
 var UserModel = require("../model/UserSchema");
+var TopicModel = require("../model/TopicSchema");
 var kafka = require("../kafka/client");
-var client = require('../resources/redis');
-
+var client = require("../resources/redis");
 
 //Follow a Question
 question.post("/follow", async (req, res) => {
@@ -23,90 +23,59 @@ question.post("/follow", async (req, res) => {
 	}
 });
 
-//GET QUESTIONS FROM TOPICS & FOLLOWING - FOR FEED
 
-// question.get("/feed", async (req, res) => {
-// 	try {
-		// let { userId } = req.body;
-		// Model.QuestionModel.find((err, result) => {
-        //     if (err) {
-        //         console.log("Error in retrieving courses ALL data", err);
-        //         res.writeHead(400, {
-        //             "Content-type": "text/plain"
-        //         });
-        //         res.end("Error in retrieving courses All data");
-        //     } else {
-        //         console.log("courses ALL jason Data: ", JSON.stringify(result));
 
-        //         res.writeHead(200, {
-        //             "Content-type": "application/json"
-        //         });
-        //         res.end(JSON.stringify(result));
-        //     }
-        // });
-
-// question.get("/",async (req,res)=>{
-//     try {
-//         res.send("test successfull");
-//        } catch (error) {
-//            res.send(error);
-//        }
-// });
-
+//GET ALL QUESTIONS FROM A PARTICULAR TOPIC (FOR FEED)
 
 question.post("/", async (req, res) => {
-
-    kafka.make_request('post_question', req.body, function (err, results) {
-        console.log("In post question - kafka make request")
-        if (err) {
-            console.log("Inside err");
-            res.json({
-                status: "error",
-                msg: "System Error, Try Again."
-            });
-            res.end();
-        } else {
-            console.log("Inside else");
-            res.status(200).json(results);
-        }
-    })
+	kafka.make_request("post_question", req.body, function(err, results) {
+		console.log("In post question - kafka make request");
+		if (err) {
+			console.log("Inside err");
+			res.json({
+				status: "error",
+				msg: "System Error, Try Again."
+			});
+			res.end();
+		} else {
+			console.log("Inside else");
+			res.status(200).json(results);
+		}
+	});
 });
-
 
 question.post("/edit", async (req, res) => {
-
-    kafka.make_request('edit_question', req.body, function (err, results) {
-        console.log("In edit question - kafka make request")
-        if (err) {
-            console.log("Inside err");
-            res.json({
-                status: "error",
-                msg: "System Error, Try Again."
-            });
-            res.end();
-        } else {
-            console.log("Inside else");
-            res.status(200).json(results);
-        }
-    })
+	kafka.make_request("edit_question", req.body, function(err, results) {
+		console.log("In edit question - kafka make request");
+		if (err) {
+			console.log("Inside err");
+			res.json({
+				status: "error",
+				msg: "System Error, Try Again."
+			});
+			res.end();
+		} else {
+			console.log("Inside else");
+			res.status(200).json(results);
+		}
+	});
 });
 
-
 question.delete("/", async (req, res) => {
-    kafka.make_request('delete_question', req.body, function (err, results) {
-        console.log("In delete question - kafka make request")
-        if (err) {
-            console.log("Inside err");
-            res.json({
-                status: "error",
-                msg: "System Error, Try Again."
-            });
-            res.end();
-        } else {
-            console.log("Inside else");
-            res.status(200).json(results);
-        }
-    })
+	kafka.make_request("delete_question", req.body, function(err, results) {
+		console.log("In delete question - kafka make request");
+		if (err) {
+			console.log("Inside err");
+			res.json({
+				status: "error",
+				msg: "System Error, Try Again."
+			});
+			res.end();
+		} else {
+			console.log("Inside else");
+			res.status(200).json(results);
+		}
+	});
 });
 
 question.get("/allquestions",async (req,res)=>{
@@ -121,36 +90,31 @@ question.get("/allquestions",async (req,res)=>{
 });
 // Search question
 question.get("/:questionId", (request, response) => {
-    console.log(`\n\nInside Get /questions/:questionId`);
-    QuestionModel.find(
-        {},
-        (error,questionDocument) => {
-            if(error) {
-                console.log(
-					`Error while getting questions ${
-						request.params.userId
-					}:\n ${error}`
-                );
-                response
-                .status(500)
-                .json({
-                    error: error,
-                    message: `Error while getting questions ${
-                        request.params.userId
-                    }`
-                });
-            } else if(questionDocument) {
-                console.log(
-					`Successfully got all questions ${
-						request.params.userId
-					}:\n ${questionDocument}`
-                );
-                let result = questionDocument;
-                response.status(200).json(result);                
-            } else {
-                response.status(404).json({message: `Question not found`});
-            }             
-        }
-    )
+	console.log(`\n\nInside Get /questions/:questionId`);
+	QuestionModel.find({}, (error, questionDocument) => {
+		if (error) {
+			console.log(
+				`Error while getting questions ${
+					request.params.userId
+				}:\n ${error}`
+			);
+			response.status(500).json({
+				error: error,
+				message: `Error while getting questions ${
+					request.params.userId
+				}`
+			});
+		} else if (questionDocument) {
+			console.log(
+				`Successfully got all questions ${
+					request.params.userId
+				}:\n ${questionDocument}`
+			);
+			let result = questionDocument;
+			response.status(200).json(result);
+		} else {
+			response.status(404).json({ message: `Question not found` });
+		}
+	});
 });
 module.exports = question;

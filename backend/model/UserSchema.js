@@ -54,10 +54,10 @@ const UserSchema = new Schema({
 				type: Number
 			},
 			startDate: {
-				type: Date
+				type: Number
 			},
 			endDate: {
-				type: Date
+				type: Number
 			},
 			isCurrent: {
 				type: Boolean,
@@ -78,7 +78,7 @@ const UserSchema = new Schema({
 				type: String
 			},
 			gradYear: {
-				type: Date
+				type: Number
 			}
 		}],
 		career: [{
@@ -89,61 +89,102 @@ const UserSchema = new Schema({
 				type: String
 			},
 			startDate: {
-				type: Date
+				type: Number
 			},
 			endDate: {
-				type: Date
+				type: Number
 			},
 			isCurrent: {
 				type: Boolean,
 				default: false
 			}
-		}],
+		}]
 	},
 	isFollowAllowed: {
 		type: Boolean,
 		default: true
 	},
-	isDeactivated:{
+	isDeactivated: {
 		type: Boolean,
 		default: false
 	},
-	topicsFollowed: [{
-		type: Schema.Types.ObjectId,
-		ref: "topics"
-	}],
-	messagesSent: [{
-		text: String,
-		senderId: [{
-			type: Schema.Types.ObjectId,
-			ref: "users"
-		}]
-	}],
-	messagesReceived: [{
-		text: String,
-		receiverId: [{
+	topicsFollowed: [
+		{
 			type: Schema.Types.ObjectId,
 			ref: "topics"
-		}]
-	}],
-	chats: [{
-		uid: { type: Schema.Types.ObjectId, ref: 'users' },
-		messages: [{
-			action: String,
-			messagetext: String
-		}],
-	}],
-	followers: [{
-		type: Schema.Types.ObjectId,
-		ref: "users"
-	}],
-	following: [{
-		type: Schema.Types.ObjectId,
-		ref: "users"
-	}]
+		}
+	],
+	messagesSent: [
+		{
+			text: String,
+			senderId: [
+				{
+					type: Schema.Types.ObjectId,
+					ref: "users"
+				}
+			]
+		}
+	],
+	messagesReceived: [
+		{
+			text: String,
+			receiverId: [
+				{
+					type: Schema.Types.ObjectId,
+					ref: "topics"
+				}
+			]
+		}
+	],
+	chats: [
+		{
+			uid: { type: Schema.Types.ObjectId, ref: "users" },
+			messages: [
+				{
+					action: String,
+					messagetext: String
+				}
+			]
+		}
+	],
+	followers: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: "users"
+		}
+	],
+	following: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: "topics"
+		}
+	],
+	chats: [
+		{
+			uid: { type: Schema.Types.ObjectId, ref: "users" },
+			messages: [
+				{
+					action: String,
+					messagetext: String
+				}
+			]
+		}
+	],
+	followers: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: "users"
+		}
+	],
+	following: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: "users"
+		}
+	]
 });
 
-UserSchema.set('timestamps', true);
+UserSchema.set("timestamps", true);
 
 const UserModel = mongoose.model("users", UserSchema, "Users");
 module.exports = UserModel;
