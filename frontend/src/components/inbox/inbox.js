@@ -9,7 +9,7 @@ import "../../resources/css/inbox.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCoffee,faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 
-class Inbox extends Component{
+class Inbox extends Component{ 
     constructor(props){
         super(props)
         this.state={

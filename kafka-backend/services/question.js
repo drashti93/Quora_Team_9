@@ -30,8 +30,8 @@ async function handle_request_editquestion(msg, callback) {
 
 async function handle_request_deletequestion(msg, callback) {
   try {
-    console.log("Handle request -edit a question");
-
+    console.log("Handle request -edit a question"); 
+ 
     let { _id } = msg;
     let result = await QuestionModel.remove({ _id });
     callback(null,result);
@@ -39,7 +39,7 @@ async function handle_request_deletequestion(msg, callback) {
     callback(error,null);
 }
 }
-module.exports = {
+module.exports = { 
   postquestion: { handle_request: handle_request_postquestion },
   editquestion: { handle_request: handle_request_editquestion },
   deletequestion: { handle_request: handle_request_deletequestion }

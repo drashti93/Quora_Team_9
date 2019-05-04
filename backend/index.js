@@ -12,6 +12,7 @@ var answer = require("./routes/answer");
 var question = require("./routes/question");
 var comment = require("./routes/comment");
 var graphs = require('./routes/graphs');
+var topics = require('./routes/topic')
 
 // var bcrypt = require("bcrypt");
 // const saltRounds = 10;
@@ -19,7 +20,7 @@ var graphs = require('./routes/graphs');
 // var jwt = require("jsonwebtoken");
 // const fetch = require("node-fetch");
 // const redis = require("redis");
-// var { client } = require("./resources/redis");
+var { client } = require("./resources/redis");
 
 
 //use cors to allow cross origin resource sharing
@@ -86,6 +87,7 @@ app.use("/answer", answer);
 app.use("/question", question);
 app.use("/comment", comment);
 app.use('/graphs',graphs);
+app.use("/topics",topics);
 
 
 //with redis 
@@ -93,7 +95,7 @@ app.post('/login', async function (req, res) {
 	// let req = {
 	// 	body: req.body
 	//   }
-	var body = "";
+	var body = ""; 
 		client.get('loginQueryKeynew', async function (err, query_results) {
 		if (query_results) {
 			body = query_results;

@@ -289,7 +289,7 @@ router.post("/message",(req,res)=>{
                 }
                 let ress=await UserSchema.findOneAndUpdate({_id:receiverid},{
                     $push:{
-                        chats:recUpperObj
+                        chats:recUpperObj 
                     }
                 })
                 
@@ -302,5 +302,43 @@ router.post("/message",(req,res)=>{
         }
     })();
 });
+
+
+
+router.get('/:userId/topics', async (request, response) => {
+
+	console.log(`\n\nInside GET /users/:userId/topics`);
+
+	try {
+		var result = await UserSchema
+		.find({ '_id': request.params.userId })
+		.populate(
+			{path:'topicsFollowed'}
+		)
+		.exec(); 
+		//console.log(typeof result[0].credentials)
+		var topics = result[0]['topicsFollowed']
+		console.log(JSON.stringify(topics))     
+		 
+
+		response.status(200).json(topics); 
+ 
+		// //If user present
+		// if(userDocument) {
+		// 	console.log(`Sucessfully enabled follow for the user ${request.params.userId}:\n ${userDocument}`);
+		// 	response.status(200).json(userDocument);
+		// } else {
+		// 	console.log(`User ${request.params.userId} not found`);
+		// 	response.status(404).json({messgage: `User ${request.params.userId} not found`});
+		// }
+	} catch (error) {
+		console.log(`Error while fetching topics for the user ${request.params.userId}:\n ${error}`);
+		response.status(500).json({ error: error, message: `Error while fetching topics for the user ${request.params.userId}`});
+	}
+});
+
+
+
+
 
 module.exports = router;

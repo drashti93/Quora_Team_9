@@ -2,6 +2,7 @@ import axios from 'axios';
 export const SIGNUP_USER="signupuser";
 export const SIGNUP_RESET="signupreset";
 export const CALL_COMPLETE="callcompletesignup";
+export const Topic_Navbar="TopicNavbar"
 let rootUrl=process.env.REACT_APP_BACKEND_API_URL+":"+process.env.REACT_APP_BACKEND_API_PORT;
 export function callcomplete(obj){
     return {
@@ -40,5 +41,12 @@ export function signupuser(data){
                     alert(error);    
                 }
         })();
+    }
+}
+
+export function TopicNavbar(data){
+    return {
+        type: Topic_Navbar,
+        payload:""
     }
 }

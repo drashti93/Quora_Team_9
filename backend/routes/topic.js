@@ -22,4 +22,6 @@ topic.post("/topics/follow", async (req, res) => {
 	}
 });
 
+
+
 module.exports = topic;

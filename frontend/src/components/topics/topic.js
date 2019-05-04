@@ -1,10 +1,9 @@
 import React from "react";
 import "antd/dist/antd.css";
-
-import { List, Row } from "antd";
-import { Icon,message } from "antd";
-import InfiniteScroll from 'react-infinite-scroller';
-
+import axios from 'axios';
+import { List} from "antd";
+import { Icon} from "antd";
+import reqwest from 'reqwest';
 import { Component } from 'react';
 
 class TopicBar extends Component{
@@ -15,72 +14,46 @@ class TopicBar extends Component{
     hasMore: true,
   }
     
-
-    handleInfiniteOnLoad = () => {
-        let data = this.state.data;
-        this.setState({
-          loading: true,
-        });
-        if (data.length > 14) {
-          message.warning('Infinite List loaded all');
-          this.setState({
-            hasMore: false,
-            loading: false,
-          });
-          return;
-        }
-        this.fetchData((res) => {
-          data = data.concat(res.results);
-          this.setState({
-            data,
-            loading: false,
-          });
-        });
+  componentDidMount() {
+    
+    axios.get('http://localhost:3001/users/5cc3f69dd23457601476d016/topics',{
+      params: {
+        
       }
+    })
+            .then(response =>{
+                if(response.status === 200){
+                    console.log("------------->",response.data);
+                    this.setState({
+                        data: [...response.data]
+                    })
+                    console.log('***********')
+
+                }
+            });
+  }
+
+  
+
     render(){
-        const data = [
-        "Racing car sprays burning fuel into crowd.",
-        "Japanese princess to wed commoner.",
-        "Australian walks 100km after outback crash.",
-        "Man charged over missing wedding girl.",
-        "Los Angeles battles huge wildfires.",
-        "Racing car sprays burning fuel into crowd.",
-        "Japanese princess to wed commoner.",
-        "Australian walks 100km after outback crash.",
-        "Man charged over missing wedding girl.",
-        "Los Angeles battles huge wildfires."
-        ];
+    
+        
         return(
             <div>
-    <h3 style={{ marginBottom: 0 }}></h3>
-    <h3 style={{ margin: "0px 0" }}></h3>
 
-    
 
     <List
       size="small"
       header={<div>{<Icon type="copy" />} Feed</div>}
       footer={<div>{<Icon type="book" />} Bookmark</div>}
       split = {false}
-      loadMore
-    
-
-      
-      
-      dataSource={data}
+  
+      dataSource={this.state.data}
       renderItem={item => (
-        <InfiniteScroll
-        initialLoad={false}
-        pageStart={0}
-        loadMore={this.handleInfiniteOnLoad}
-        hasMore={!this.state.loading && this.state.hasMore}
-        useWindow={false}
-      >
         <List.Item>
-          {<Icon type="read" />} {item}
+          {<Icon type="read" />} {item.name}
 
         </List.Item>
-    </InfiniteScroll>
 
       )}
     />

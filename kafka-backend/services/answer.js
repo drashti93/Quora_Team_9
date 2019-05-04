@@ -10,7 +10,7 @@ async function handle_request_getanswers(msg, callback) {
       _id: msg
     }).populate({
       path:'answers',
-     populate:{
+     populate:{ 
         path:"userId",
         select:["firstName","lastName","email"]
      }

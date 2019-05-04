@@ -22,7 +22,7 @@ const AnswerSchema = new Schema({
 			},
 			url: {
 				type: String
-			}
+			} 
 		}
 	],
 	isAnonyomous: {

@@ -111,9 +111,9 @@ const UserSchema = new Schema({
 	},
 	isFollowAllowed: {
 		type: Boolean,
-		default: true
+		default: true 
 	},
-	topicsFollowed: [
+	topicsFollowed: [ 
 		{
 			type: Schema.Types.ObjectId,
 			ref: "topics"
