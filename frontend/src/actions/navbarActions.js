@@ -25,7 +25,7 @@ export function getalltopics() {
         (async () => {
             try {
                 dispatch(requestMade(GET_TOPICS));
-                let result = await axios.get(rootUrl + "/topic");
+                let result = await axios.get(rootUrl + "/topics");
                 if (result.status === 200) {
                     dispatch(callcomplete({ topics: result.data }));
                 } else {
@@ -45,7 +45,7 @@ export function postQuestion(data) {
         (async () => {
             try {
                 dispatch(requestMade(POST_QUESTION));
-                let result = await axios.post(rootUrl + "/question",data);
+                let result = await axios.post(rootUrl + "/questions",data);
                 if (result.status === 200) {
                     alert("Question Posted Successfully!")
                    // dispatch(callcomplete({ topics: result }));

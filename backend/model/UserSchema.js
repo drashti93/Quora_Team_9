@@ -2,9 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
-	userId: {
-		type: mongoose.Schema.Types.ObjectId
-	},
 	firstName: {
 		type: String,
 		required: true
@@ -43,88 +40,98 @@ const UserSchema = new Schema({
 		type: String
 	},
 	credentials: {
-		address: [
-			{
-				street: {
-					type: String
-				},
-				city: {
-					type: String
-				},
-				state: {
-					type: String
-				},
-				zipcode: {
-					type: Number
-				},
-				startDate: {
-					type: Date
-				},
-				endDate: {
-					type: Date
-				},
-				isCurrent: {
-					type: Boolean,
-					default: false
-				}
+		address: [{
+			street: {
+				type: String
+			},
+			city: {
+				type: String
+			},
+			state: {
+				type: String
+			},
+			zipcode: {
+				type: Number
+			},
+			startDate: {
+				type: Date
+			},
+			endDate: {
+				type: Date
+			},
+			isCurrent: {
+				type: Boolean,
+				default: false
 			}
-		],
-		education: [
-			{
-				school: {
-					type: String
-				},
-				concentration: {
-					type: String
-				},
-				secConcentration: {
-					type: String
-				},
-				degree: {
-					type: String
-				},
-				gradYear: {
-					type: Date
-				}
+		}],
+		education: [{
+			school: {
+				type: String
+			},
+			concentration: {
+				type: String
+			},
+			secConcentration: {
+				type: String
+			},
+			degree: {
+				type: String
+			},
+			gradYear: {
+				type: Date
 			}
-		],
-		career: [
-			{
-				position: {
-					type: String
-				},
-				company: {
-					type: String
-				},
-				startDate: {
-					type: Date
-				},
-				endDate: {
-					type: Date
-				},
-				isCurrent: {
-					type: Boolean,
-					default: false
-				}
+		}],
+		career: [{
+			position: {
+				type: String
+			},
+			company: {
+				type: String
+			},
+			startDate: {
+				type: Date
+			},
+			endDate: {
+				type: Date
+			},
+			isCurrent: {
+				type: Boolean,
+				default: false
 			}
-		]
+		}],
 	},
 	isFollowAllowed: {
 		type: Boolean,
 		default: true
 	},
-	topicsFollowed: [
-		{
+	isDeactivated:{
+		type: Boolean,
+		default: false
+	},
+	topicsFollowed: [{
+		type: Schema.Types.ObjectId,
+		ref: "topics"
+	}],
+	messagesSent: [{
+		text: String,
+		senderId: [{
+			type: Schema.Types.ObjectId,
+			ref: "users"
+		}]
+	}],
+	messagesReceived: [{
+		text: String,
+		receiverId: [{
 			type: Schema.Types.ObjectId,
 			ref: "topics"
-		}
-	],
+		}]
+	}],
 	chats: [{
 		uid: { type: Schema.Types.ObjectId, ref: 'users' },
 		messages: [{
 			action: String,
 			messagetext: String
-		}]
+		}],
 	}],
 	followers: [{
 		type: Schema.Types.ObjectId,
@@ -133,18 +140,6 @@ const UserSchema = new Schema({
 	following: [{
 		type: Schema.Types.ObjectId,
 		ref: "users"
-	}],
-	questions: [{
-		type: Schema.Types.ObjectId,
-		ref: "questions"
-	}],
-	answers: [{
-		type: Schema.Types.ObjectId,
-		ref: "answers"
-	}],
-	bookmarkedAnswers: [{
-		type: Schema.Types.ObjectId,
-		ref: "answers"
 	}]
 });
 
