@@ -8,18 +8,41 @@ import stockimg from "../../resources/images/user.png";
 import "../../resources/css/inbox.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCoffee,faAngleLeft } from '@fortawesome/free-solid-svg-icons'
+import _ from "lodash";
 
 class Inbox extends Component{
     constructor(props){
         super(props)
+        this.userlistRef = React.createRef();
+        this.innerlidivRef = React.createRef();
         this.state={
           chatopen:0,
           selectindex:0,
-          searchText:""
+          searchText:"",
+          counter:10
         };
     this.submit=this.submit.bind(this);
     }
+      componentWillUnmount() {
+        this.userlistRef.current.addEventListener('scroll', this.handleScroll);
+          }
+      handleScroll = () => {
+         const node = this.userlistRef.current.offsetHeight+this.userlistRef.current.scrollTop;
+            let currScroll=this.innerlidivRef.current.offsetHeight+2;
+            // console.log("node"+node);
+            // console.log("curr scroll"+currScroll);
+            if(node==currScroll){
+                console.log(true);
+                let {counter}=this.state;
+                this.setState({
+                    counter:counter+=10
+                })
+            }
+            // console.log("doc height"+this.state.docHeight);
+      };
+
 async componentDidMount(){
+    this.userlistRef.current.addEventListener('scroll', this.handleScroll);
    let data=cookie.load("cookie");
     // this.props.ongetAllUsers();
    this.props.ongetChats({uid:data.id});
@@ -28,7 +51,8 @@ changeHandler=(property,e)=>{
     if(property=="searchText"){
         this.setState({
             listOpen:1,
-            userid:""
+            userid:"",
+            counter:10
         });
     }
     this.setState({
@@ -78,7 +102,9 @@ changeHandler=(property,e)=>{
    }
    closeCompose=()=>{
        this.setState({
-           composeOpen:0
+           composeOpen:0,
+           searchText:"",
+           counter:10
        })
    }
 
@@ -135,7 +161,8 @@ changeHandler=(property,e)=>{
                 let name=data.firstName+" "+data.lastName;
                 return name.toLowerCase().startsWith(term.toLowerCase());
             })
-        }            
+        }    
+        let counter=Math.min(this.state.counter,userListChange.length);        
         return(
             <div className="inbox-parent ml90">
                 <div>{redirectVar}</div>
@@ -144,13 +171,20 @@ changeHandler=(property,e)=>{
                 <div className="clearfix"><span onClick={this.closeCompose}>X</span></div>
                 <div className="recepient">
                 <form onSubmit={this.submit}>
-                    <input type="text" value={this.state.searchText} className="input" onChange={(e)=>{this.changeHandler("searchText",e)}}></input>
-                <ul className={`user-list ${this.state.searchText.length>0&&this.state.listOpen?"active":""}` }>
-                    {userListChange.map((data,index)=>{
+                    <input type="text" placeholder="Enter the user name" value={this.state.searchText} className="input" onChange={(e)=>{this.changeHandler("searchText",e)}}></input>
+                <ul ref={this.userlistRef} className={`user-list ${this.state.searchText.length>0&&this.state.listOpen?"active":""}` }>
+                    <div ref={this.innerlidivRef} className="li-inner-div">
+                 {
+                     _.times(counter,(index)=>{
+                        return(<li onClick={()=>{this.nameclicked(userListChange[index])}} key={index}>{` ${userListChange[index].firstName} ${userListChange[index].lastName}`}</li>)  
+                     })
+                 }</div>
+                 
+                    {/* {userListChange.map((data,index)=>{
                         return(<li onClick={()=>{this.nameclicked(data)}} key={index} value={data._id}>{` ${data.firstName} ${data.lastName}`}</li>)
-                    })}
+                    })} */}
                 </ul>
-               <div><textarea required value={this.state.messagetext} onChange={(e)=>{this.changeHandler("messagetext",e)}}></textarea></div>
+               <div><textarea placeholder="Type your message" required value={this.state.messagetext} onChange={(e)=>{this.changeHandler("messagetext",e)}}></textarea></div>
                <input className="primary-btn blue-btn" type="submit" value="Send Message"></input>
                </form>
                 </div>

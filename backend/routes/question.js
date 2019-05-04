@@ -78,6 +78,16 @@ question.delete("/", async (req, res) => {
 	});
 });
 
+question.get("/allquestions",async (req,res)=>{
+    try {
+        let result=await QuestionModel.find({});       
+        res.status(200).json(result); 
+    } catch (error) {
+        res.status(500).json({message:"error while processing request!"});
+        console.log(error);
+    }
+
+});
 // Search question
 question.get("/:questionId", (request, response) => {
 	console.log(`\n\nInside Get /questions/:questionId`);

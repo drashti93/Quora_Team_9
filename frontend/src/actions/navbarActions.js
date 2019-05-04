@@ -4,6 +4,7 @@ export const GET_PROFILE = "getprofile";
 export const CALL_COMPLETE = "callcompletelogin";
 export const GET_CHATS = "getchatsinbox";
 export const GET_USERS = "getusers";
+export const GET_QUESTIONS = "getquestions";
 export const POST_QUESTION = "postquestion";
 export const GET_TOPICS = "gettopics";
 let rootUrl = process.env.REACT_APP_BACKEND_API_URL + ":" + process.env.REACT_APP_BACKEND_API_PORT;
@@ -30,6 +31,26 @@ export function getalltopics() {
                     dispatch(callcomplete({ topics: result.data }));
                 } else {
                     dispatch(callcomplete({ error: "Could not get topic details" }));
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        })();
+
+
+    }
+}
+export function getallquestions() {
+    return (dispatch) => {
+
+        (async () => {
+            try {
+                dispatch(requestMade(GET_QUESTIONS));
+                let result = await axios.get(rootUrl + "/questions/allquestions");
+                if (result.status === 200) {
+                    dispatch(callcomplete({ questions: result.data }));
+                } else {
+                    dispatch(callcomplete({ error: "Could not get questions details" }));
                 }
             } catch (error) {
                 console.log(error);

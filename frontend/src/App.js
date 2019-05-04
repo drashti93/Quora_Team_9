@@ -9,6 +9,7 @@ import thunk from 'redux-thunk';
 import {applyMiddleware,compose,createStore} from 'redux';
 import {Provider} from 'react-redux';
 import allReducers from "./reducers/allReducers";
+import Searchpage from "./components/searchpage/searchpage";
 
 // const allStoreEnchancers=compose(
 //     applyMiddleware(thunk),
@@ -40,6 +41,7 @@ class App extends Component {
                 <Route path="/login" component={Login}></Route>
                 <Route path="/signup" component={Signup}></Route>
                 <Route path="/profile" component={Profile}></Route> 
+                <Route path="/search/:text" component={Searchpage}></Route> 
                 <Route path="/" component={Main}></Route>
 
 
