@@ -73,6 +73,9 @@
 .mt70{
     margin-top: 70px;
 }
+.mt100{
+    margin-top: 100px;
+}
 
 .topic-bar{
     width: 100%;
@@ -96,4 +99,48 @@
 
 .navbar-parent .navbar-search{
     width: 300px;
+}
+.navbar-parent .search-list{
+    display: none
+}
+.navbar-parent .search-list.active .modal-overlay{
+    position: fixed;
+    top: 51px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: rgba(0,0,0,0.65);
+}
+.navbar-parent .search-list.active li:hover{
+    background-color: #ddd;
+}
+.navbar-parent .search-list.active li:hover{
+    cursor: pointer;
+}
+.navbar-parent .search-list.active li{
+    padding: 17px;
+    border-bottom: 1px solid #ddd;
+}
+.navbar-parent .search-list.active li a{
+    width: 100%;
+}
+.navbar-parent .search-list.active li .search-arrows{
+    float: right;
+    position: relative;
+    top: 1px;
+}
+.navbar-parent .search-list.active{
+    display: block;
+    list-style-type: none;
+    position: absolute;
+    top: 55px;
+    background-color: #fff;
+    width: 98%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0px;
+}
+.navbar-parent .search-parent{
+    position: relative;
 }
