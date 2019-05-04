@@ -285,7 +285,7 @@ router.get('/:userId/bookmarks', async (request, response) => {
 	console.log(`\n\nInside GET /users/:userId/bookmarks`);
 
 	try {
-		
+
 		let answerDocument = await AnswerSchema.find({ 'bookmarks': request.params.userId });
 
 		//If bookmarked answer present

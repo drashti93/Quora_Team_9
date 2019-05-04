@@ -4,7 +4,7 @@ import { Redirect } from "react-router";
 import { List, Avatar, Icon, Divider } from "antd";
 import { connect } from "react-redux";
 
-import Navigationbar from "../navbar/Navigationbar";
+import Comments from "../comments/Comments";
 
 export class Feed extends Component {
 	render() {
@@ -85,7 +85,7 @@ export class Feed extends Component {
 									/>
 									{item.content}
 								</List.Item>
-								<div>This is my comment</div>
+								<Comments/>
 
 								<Divider />
 							</div>
