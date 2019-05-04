@@ -180,9 +180,11 @@ class Profile extends Component {
   render() {
     return(
         <div>
-            <Navigationbar></Navigationbar>
+            <div>
+                <Navigationbar></Navigationbar>
+            </div>
             <Container id="profile_body">
-                <Row >
+                <Row id="profile_body_row">
                     <Col xs={9}>
                         <Row id="profile_main">
                             <Col id="user_image_col" xs={3}>
@@ -301,7 +303,11 @@ class Profile extends Component {
                                 <h6 >Credentials & Highlights</h6>
                             </div>
                             <ul>
+                                {
+                                    this.props.userDetails.credentials && this.props.userDetails.credentials.career && this.props.userDetails.credentials.career[(this.props.userDetails.credentials.career.length)-1]? <p> Worked at {this.props.userDetails.credentials.career[(this.props.userDetails.credentials.career.length)-1].company} as a  {this.props.userDetails.credentials.career[(this.props.userDetails.credentials.career.length)-1].position}</p>: 
+                                
                                 <li onClick={this.handleShow1}><a>Add employment credential</a></li>
+                                }
                                     <Modal show={this.state.show1} onHide={this.handleClose1}>
                                         <Modal.Header closeButton>
                                             <Modal.Title>Edit credentials</Modal.Title><br/>
@@ -359,7 +365,11 @@ class Profile extends Component {
                                             </Button>
                                         </Modal.Footer>
                                     </Modal>
+                                    {
+                                    this.props.userDetails.credentials && this.props.userDetails.credentials.education && this.props.userDetails.credentials.education[(this.props.userDetails.credentials.education.length)-1]? <p> Studied at {this.props.userDetails.credentials.education[(this.props.userDetails.credentials.education.length)-1].school} </p>: 
+                                
                                 <li onClick={this.handleShow2}><a>Add education credential</a></li>
+                                    }
                                     <Modal show={this.state.show2} onHide={this.handleClose2}>
                                         <Modal.Header closeButton>
                                             <Modal.Title>Edit credentials</Modal.Title>
@@ -399,7 +409,11 @@ class Profile extends Component {
                                             </Button>
                                         </Modal.Footer>
                                     </Modal>
+                                    {
+                                    this.props.userDetails.credentials && this.props.userDetails.credentials.location && this.props.userDetails.credentials.location[(this.props.userDetails.credentials.location.length)-1]? <p> Lived at {this.props.userDetails.credentials.location[(this.props.userDetails.credentials.location.length)-1].address} </p>: 
+                                
                                 <li onClick={this.handleShow3}><a>Add a location credential</a></li>
+                                    }
                                     <Modal show={this.state.show3} onHide={this.handleClose3}>
                                         <Modal.Header closeButton>
                                             <Modal.Title>Edit Credentials</Modal.Title>

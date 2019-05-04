@@ -7,11 +7,11 @@ export function getUserDetails(user_id) {
             .then(function (response) {
               
                 console.log("User Details");
-                console.log(response);
+                console.log(response.data);
                 
                 if(response.status===200) {
 
-                    dispatch({ type: "USER_DETAILS_SUCCESS", payload: response })
+                    dispatch({ type: "USER_DETAILS_SUCCESS", payload: response.data })
                 }
             })
             .catch(function (error) {
