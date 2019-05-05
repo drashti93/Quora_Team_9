@@ -375,23 +375,48 @@ router.get("/:userId/following", async (request, response) => {
 	}
 });
 
-//Fetch answers bookmarked by user
+//Fetch bookmarked answers by user and its correspondin question
 router.get("/:userId/bookmarks", async (request, response) => {
+
 	console.log(`\n\nInside GET /users/:userId/bookmarks`);
 
 	try {
-		let answerDocument = await AnswerSchema.find({
-			bookmarks: request.params.userId
-		});
+		const bookmarkedAnswerWithQuestion = []
+		let answerDocument = await AnswerSchema
+			.find({
+				bookmarks: request.params.userId
+			})
+			.populate({
+				path: "upvotes downvotes bookmarks comments images"
+			})
+			.exec();
 
 		//If bookmarked answer present
 		if (answerDocument) {
+
 			console.log(
 				`Sucessfully fetched bookmarked answers for user ${
 					request.params.userId
 				}:\n ${answerDocument}`
 			);
-			response.status(200).json(answerDocument);
+
+			for (const answer of answerDocument) {
+
+				let question = await QuestionModel
+					.findOne({ answers: answer._id })
+					.exec();
+
+				question.answers = [];
+				question.answers.push(answer);
+
+				// console.log(`\n\n\n\n\n\nQuestion found for bookmarked answer with id - ${answer._id}`);
+				// console.log(`\n\n\n\n\n\nQuestion found for bookmarked answer with id - \n${question}`);
+
+				bookmarkedAnswerWithQuestion.push(question);
+
+			}
+			response.status(200).json(bookmarkedAnswerWithQuestion);
+
 		} else {
 			console.log(`User ${request.params.userId} not found`);
 			response

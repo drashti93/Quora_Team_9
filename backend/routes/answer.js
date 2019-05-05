@@ -123,9 +123,6 @@ answer.post("/:answerId/downvote", async (req, res) => {
 		let result = await AnswerModel.update(
 			{ _id: req.params.answerId },
 			{
-				$pull: {upvotes: { $elemMatch: userId } }
-			}
-			{
 				$push: { downvotes: userId }
 			}
 		);
