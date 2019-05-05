@@ -696,5 +696,20 @@ router.post("/aboutMe", function(req, res){
 			res.status(200).json({});
 		}
 	})
+});
+
+router.post("/name", function(req, res){
+	
+	var user_id = req.body.user_id;
+	var firstName = req.body.firstName;
+	var lastName = req.body.lastName;
+	console.log(user_id, firstName, lastName);
+	UserSchema.updateOne({_id: user_id}, {$set: {firstName: firstName, lastName: lastName}}, function(err, results){
+		if(err){
+			res.status(400);
+		} else {
+			res.status(200).json({});
+		}
+	})
 })
 module.exports = router;
