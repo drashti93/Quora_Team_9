@@ -13,6 +13,7 @@ import * as actions from '../../actions/profileActions';
 import ReactQuill from 'react-quill'; 
 import 'react-quill/dist/quill.snow.css';
 import ModalHeader from 'react-bootstrap/ModalHeader';
+import { start } from 'repl';
 
 class Profile extends Component {
 
@@ -225,8 +226,8 @@ class Profile extends Component {
       })
   }
 
-  saveCredentialsInternal(type){
-      this.props.saveCredentials(cookie.load('cookie').id, type, this.state.position, this.state.company, this.state.careerStart, this.state.careerEnd, this.state.currentCompany,
+  saveCredentialsInternal(credId, type, kind){
+      this.props.saveCredentials(cookie.load('cookie').id, credId, type, kind, this.state.position, this.state.company, this.state.careerStart, this.state.careerEnd, this.state.currentCompany,
       this.state.school, this.state.concentration, this.state.secConcentration, this.state.degree, this.state.gradYear,
       this.state.address, this.state.city, this.state.locState, this.state.zipcode, this.state.locStart, this.state.locEnd, this.state.currentLocation
       )
@@ -381,12 +382,12 @@ class Profile extends Component {
                                                     <li>{career.position}</li>
                                                     <button onClick={() => this.setState({hideCareer: false})} hidden={!this.state.hideCareer}>Edit</button>
                                                     <div hidden={this.state.hideCareer}>
-                                                        <input type="text" value={this.props.userDetails.credentials.career[index].position}></input>
-                                                        <input type="text" value={this.props.userDetails.credentials.career[index].company}></input>
-                                                        <input type="select" value={this.props.userDetails.credentials.career[index].startDate}></input>
-                                                        <input type="select" value={this.props.userDetails.credentials.career[index].endDate}></input>
-                                                        <input type="checkbox" value={this.props.userDetails.credentials.career[index].isCurrent}></input>
-                                                        <button>Save</button>
+                                                        <input type="text" value={this.props.userDetails.credentials.career[index].position} onChange={this.onChangePosition.bind(this)}></input>
+                                                        <input type="text" value={this.props.userDetails.credentials.career[index].company} onChange={this.onChangeCompany.bind(this)}></input>
+                                                        <input type="select" value={this.props.userDetails.credentials.career[index].startDate} onChange={this.onChangeCareerStart.bind(this)}></input>
+                                                        <input type="select" value={this.props.userDetails.credentials.career[index].endDate} onChange={this.onChangeCareerEnd.bind(this)}></input>
+                                                        <input type="checkbox" value={this.props.userDetails.credentials.career[index].isCurrent} onChange={this.onChangeCurrentCompany.bind(this)}></input>
+                                                        <button onClick={this.saveCredentialsInternal(career._id, "employment", "update")}>Save</button>
                                                     </div>
                                                     </div>
                                                )  
@@ -468,7 +469,7 @@ class Profile extends Component {
                                             <Button variant="secondary" onClick={this.handleClose1}>
                                             Close
                                             </Button>
-                                            <Button variant="primary" onClick={() => this.saveCredentialsInternal("employment")}>
+                                            <Button variant="primary" onClick={() => this.saveCredentialsInternal("", "employment", "save")}>
                                             Save Changes
                                             </Button>
                                         </Modal.Footer>
@@ -512,7 +513,7 @@ class Profile extends Component {
                                             <Button variant="secondary" onClick={this.handleClose2}>
                                             Close
                                             </Button>
-                                            <Button variant="primary" onClick={() => this.saveCredentialsInternal("education")}>
+                                            <Button variant="primary" onClick={() => this.saveCredentialsInternal("","education", "save")}>
                                             Save Changes
                                             </Button>
                                         </Modal.Footer>
@@ -575,7 +576,7 @@ class Profile extends Component {
                                             <Button variant="secondary" onClick={this.handleClose3}>
                                             Close
                                             </Button>
-                                            <Button variant="primary" onClick={() => this.saveCredentialsInternal("location")}>
+                                            <Button variant="primary" onClick={() => this.saveCredentialsInternal("", "location", "save")}>
                                             Save Changes
                                             </Button>
                                         </Modal.Footer>
@@ -610,11 +611,13 @@ function mapDispatchToProps(dispatch) {
     return {
         getUserDetails: (user_id) => dispatch(actions.getUserDetails(user_id)),
         saveProfilePicture: (user_id, image_file) => dispatch(actions.saveProfilePicture(user_id, image_file)),
-        saveCredentials: (id, type, position, company, careerStart, careerEnd, currentCompany,
-      school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation) => dispatch(actions.saveCredentials(id, type, position, company, careerStart, careerEnd, currentCompany,
+        saveCredentials: (id, credId, type, kind, position, company, careerStart, careerEnd, currentCompany,
+      school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation) => dispatch(actions.saveCredentials(id, credId, type, kind, position, company, careerStart, careerEnd, currentCompany,
       school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation)),
         saveAboutMe: (user_id, text) => dispatch(actions.saveAboutMe(user_id, text)),
         saveName: (firstName, lastName, user_id) => dispatch(actions.saveAboutMe(firstName, lastName, user_id)),
+        // updateCareerCredentials:(id, position, company, careerStart, careerEnd, currentCompany) => dispatch(updateCareerCredentials(id, position, company, careerStart, careerEnd, currentCompany)),
+
     };
 }
 

@@ -40,12 +40,12 @@ export function saveProfilePicture(user_id, image_file) {
     }
 }
 
-export function saveCredentials(user_id, type, position, company, cstartYear, cendYear, cisCurrentString, school, concentration, secConcentration, degree, graduationYear, street, city, state, zipcode, lstartYear, lendYear, lisCurrentString){
+export function saveCredentials(user_id, credId, type, kind, position, company, cstartYear, cendYear, cisCurrentString, school, concentration, secConcentration, degree, graduationYear, street, city, state, zipcode, lstartYear, lendYear, lisCurrentString){
     return function(dispatch){
         console.log("Details:");
-        console.log(user_id, type, position, company, cstartYear, cendYear, cisCurrentString, school, concentration, secConcentration, degree, graduationYear, street, city, state, zipcode, lstartYear, lendYear, lisCurrentString)
+        console.log(user_id, credId, type, kind, position, company, cstartYear, cendYear, cisCurrentString, school, concentration, secConcentration, degree, graduationYear, street, city, state, zipcode, lstartYear, lendYear, lisCurrentString)
         axios.post("http://localhost:3001/users/credentials", {
-            user_id, type, position, company, cstartYear, cendYear, cisCurrentString, school, concentration, secConcentration, degree, graduationYear, street, city, state, zipcode, lstartYear, lendYear, lisCurrentString
+            user_id, credId, type, kind, position, company, cstartYear, cendYear, cisCurrentString, school, concentration, secConcentration, degree, graduationYear, street, city, state, zipcode, lstartYear, lendYear, lisCurrentString
         })
         .then(function(response){
             if(response.status === 200){
