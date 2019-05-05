@@ -104,13 +104,37 @@ answer.delete("/", async (req, res) => {
 
 answer.post("/:answerId/upvote", async (req, res) => {
 	try {
-		let { userId } = req.body;
-		let result = await AnswerModel.update(
-			{ _id: req.params.answerId },
-			{
-				$push: { upvotes: userId }
+		console.log(req.body);
+		let userId = req.body.userId;
+		console.log(userId);
+		console.log(typeof(userId))
+		let answerId = req.params.answerId;
+		console.log(answerId);
+		// console.log(typeOf(req.params.answerId));
+		AnswerModel.find({_id: answerId},  {_id: 0, upvotes: 1}, function(err, results){
+			if(results){
+				console.log(results[0].upvotes);
+				console.log(results[0].upvotes.includes(userId));
+				if(results[0].upvotes.includes(userId)){
+					console.log("Upvote exists")
+					AnswerModel.updateOne({_id: answerId}, {$pull: {upvotes: userId}})
+				} else {
+					AnswerModel.find({_id: answerId},  {_id: 0, downvotes: 1}, function(err, results1){
+						if(results1){
+							if(results1[0].downvotes.includes(userId)){
+								console.log("Downvote exists")
+								AnswerModel.updateOne({_id: answerId}, {$pull: {downvotes: userId}});
+								AnswerModel.updateOne({_id: answerId}, {$push: {upvotes: userId}});
+							}
+							else{
+								console.log("None exists")
+								AnswerModel.updateOne({_id: answerId}, {$push: {upvotes: userId}});
+							}
+						}
+					});
+				}
 			}
-		);
+		});
 		res.status(200).json({});
 	} catch (error) {
 		res.send(error);
@@ -120,12 +144,27 @@ answer.post("/:answerId/upvote", async (req, res) => {
 answer.post("/:answerId/downvote", async (req, res) => {
 	try {
 		let { userId } = req.body;
-		let result = await AnswerModel.update(
-			{ _id: req.params.answerId },
-			{
-				$push: { downvotes: userId }
+		let answerId = req.params.answerId
+		AnswerModel.find({_id: answerId},  {_id: 0, downvotes: 1}, function(err, results){
+			if(results){
+				console.log(results[0].upvotes);
+				if(results[0].upvotes.includes(userId)){
+					AnswerModel.update({_id: answerId}, {$pull: {downvotes: userId}})
+				} else {
+					AnswerModel.find({_id: answerId},  {_id: 0, upvotes: 1}, function(err, results1){
+						if(results1){
+							if(results1[0].downvotes.includes(userId)){
+								AnswerModel.update({_id: answerId}, {$pull: {upvotes: userId}});
+								AnswerModel.update({_id: answerId}, {$push: {downvotes: userId}});
+							}
+							else{
+								AnswerModel.update({_id: answerId}, {$push: {downvotes: userId}});
+							}
+						}
+					});
+				}
 			}
-		);
+		});
 		res.status(200).json({});
 	} catch (error) {
 		res.send(error);

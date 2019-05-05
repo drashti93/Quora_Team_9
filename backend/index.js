@@ -11,8 +11,8 @@ var MongoDBStore = require("connect-mongodb-session")(session);
 var answer = require("./routes/answer");
 var question = require("./routes/question");
 var comment = require("./routes/comment");
-var graphs = require("./routes/graphs");
-var topics = require("./routes/topic");
+var graphs = require('./routes/graphs');
+var topics = require('./routes/topic');
 
 var { client } = require("./resources/redis");
 var bcrypt = require("bcrypt");
@@ -108,9 +108,12 @@ app.post("/login", async function(req, res) {
 	try {
 		let { email, password } = req.body;
 		console.log(req.body);
-		console.log("here");
+		console.log("Enter try");
 		email = email.toLowerCase();
 		let result = await userModel.findOne({ email });
+		// console.log("result: ",result);
+		let temp = JSON.parse(JSON.stringify(result));
+		// console.log("temp: ", temp);
 		let data = null;
 		if (!result) {
 			data = {
@@ -118,7 +121,7 @@ app.post("/login", async function(req, res) {
 				message: "Email or Password Incorrect"
 			};
 		} else {
-			const match = await bcrypt.compare(password, result.password);
+			const match = await bcrypt.compare(password, temp.password);
 			if (match) {
 				var user = {
 					email: result.email
