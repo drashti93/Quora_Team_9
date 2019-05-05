@@ -18,6 +18,10 @@ const reducer = (state = initial, action) => {
         case "ABOUT_ME_SUCCESS":{
             return{...state}
         }
+
+        case "NAME_SUCCESS":{
+            return{...state}
+        }
                     
         default :
             return state;
