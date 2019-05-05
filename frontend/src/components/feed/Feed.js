@@ -7,10 +7,6 @@ import {bindActionCreators} from 'redux';
 import { getQuestionsAnswersForFeed } from "../../actions/questionActions";
 
 import axios from "axios";
-
-import answerlogo from "../../resources/images/answer.svg";
-
-import PropTypes from 'prop-types';
 import Comments from "../comments/Comments";
 
 export class Feed extends Component {
@@ -28,19 +24,19 @@ export class Feed extends Component {
 		}
 
 		axios.defaults.withCredentials = true;
-	axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/answers/${answerId}/upvote`, body)
-	.then(response => {
-		console.log(`Response: ${response}`);
-		if(response.status === 200){
-			console.log(`Upvoted answer successfully questionActions->getQuestionsAnswersForFeed(): ${response.data}`);
-			// dispatch({
-			// 	type: FEED,
-			// 	payload: response.data
-			// });
-		}
-	}).catch(error => {
-		console.log(`Upvoting answer failed: questionActions->getQuestionsAnswersForFeed() - ${error}`);
-	});
+		axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/answers/${answerId}/upvote`, body)
+		.then(response => {
+			console.log(`Response: ${response}`);
+			if(response.status === 200){
+				console.log(`Upvoted answer successfully questionActions->getQuestionsAnswersForFeed(): ${response.data}`);
+				// dispatch({
+				// 	type: FEED,
+				// 	payload: response.data
+				// });
+			}
+		}).catch(error => {
+			console.log(`Upvoting answer failed: questionActions->getQuestionsAnswersForFeed() - ${error}`);
+		});
 
 	}
 
