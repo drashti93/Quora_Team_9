@@ -30,7 +30,7 @@ class Main extends Component{
                     </div>
                     <div className="col-lg-2 col-md-2 col-xs-12 right-stick">Right side bar</div>
                 </div>
-                </div>
+            </div>
             </div>
         );
     }
