@@ -10,21 +10,7 @@ const AnswerSchema = require("../model/AnswerSchema");
 router.post("/:userId/edit", (request, response) => {
 	console.log(`\n\nInside Post /:userId/edit`);
 	// body = request.body;
-	let {
-		firstName,
-		lastName,
-		aboutMe,
-		phoneNumber,
-		street,
-		city,
-		state,
-		zipcode,
-		startDate,
-		endDate,
-		gender,
-		isFollowAllowed,
-		topicsFollowed
-	} = request.body;
+	let { firstName, lastName, aboutMe, phoneNumber, street, city, state, zipcode, startDate, endDate, school, concentration, secConcentration, degree, gradYear, position, company, careerStartDate, careerEndDate, gender, isFollowAllowed, topicsFollowed } = request.body;
 	UserSchema.findOneAndUpdate(
 		{ _id: request.params.userId },
 		{
@@ -53,8 +39,8 @@ router.post("/:userId/edit", (request, response) => {
 					career: {
 						position: position,
 						company: company,
-						startDate: startDate,
-						endDate: endDate
+						careerStartDate: careerStartDate,
+						careerEndDate: careerEndDate,
 					}
 				},
 				gender: gender,
@@ -91,57 +77,92 @@ router.post("/:userId/edit", (request, response) => {
 
 // Delete User account
 router.delete("/:userId", async (request, response) => {
-	try {
-		let result = await UserSchema.updateOne(
-			{ _id: request.params.userId },
-			{
-				$pull: {
-					_id: request.params.userId
-				}
-			}
-		);
-		response.status(200).json(result);
-	} catch (error) {
-		response.send(error);
-	}
+    try {
+		let userDocument = await UserSchema.findOneAndDelete({_id: request.params.userId});
+		if(userDocument){
+			console.log(`Sucessfully deleted user ${request.params.userId}:\n ${userDocument}`);
+			response.status(200).json(userDocument);
+		} else{
+			console.log(`User ${request.params.userId} not found`);
+			response.status(404).json({message: `User ${request.params.userId} not found`});
+		}
+    } catch (error) {
+		// response.send(error);
+		console.log(`Error fetching user ${request.params.userId}:\n ${error}`);
+		response.status(500).json({ error: error, message: `Error fetching user ${request.params.userId}`});
+    }
 });
 
 // Deactivate User Account
-router.put("/:userId", (request, response) => {
+router.put("/:userId/profileState", async (request, response) => {
 	console.log(`\n\n Inside Post users/:userId/deactivateProfile`);
-	UserSchema.findOneAndUpdate(
-		{ _id: request.params.userId },
-		{
-			$set: {
-				isDeactivated: true
-			}
-		},
-		{ new: true },
-		(error, questionDocument) => {
-			if (error) {
-				console.log(
-					`Error while deactivating user account ${
-						request.params.userId
-					}:\n ${error}`
+	try{
+		let userDoc = await UserSchema.find({ _id: request.params.userId });
+		// console.log(userDoc);
+		if(userDoc){
+			let flag = userDoc[0].isDeactivated;
+			if(flag){
+				await UserSchema.findOneAndUpdate(
+					{ _id: request.params.userId },
+					{ 
+						$set: { 
+							isDeactivated: false
+						}
+					},
 				);
-				response.status(500).json({
-					error: error,
-					message: `Error while deactivating user account ${
-						request.params.userId
-					}`
-				});
-			} else if (questionDocument) {
-				console.log(
-					`Account Deactivated succssfully ${
-						request.params.userId
-					}:\n ${questionDocument}`
+			} else{
+				await UserSchema.findOneAndUpdate(
+					{ _id: request.params.userId },
+					{
+						$set: {
+							isDeactivated: true
+						}
+					},
 				);
-				response.status(200).json(questionDocument);
-			} else {
-				response.status(404).json({ message: `User not found` });
 			}
+			console.log(`Sucessfully Toggled user account ${request.params.userId}:\n ${userDoc}`);
+			response.status(200).json(userDoc);
+		} else {
+			console.log(`User ${request.params.userId} not found`);
+			response.status(404).json({message: `User ${request.params.userId} not found`});
 		}
-	);
+	} catch (error) {
+		console.log(`Error fetching user ${request.params.userId}:\n ${error}`);
+		response.status(500).json({ error: error, message: `Error fetching user ${request.params.userId}`});
+    }
+	
+
+	// UserSchema.findOneAndUpdate(
+	// 	{ _id: request.params.userId },
+	// 	{
+	// 		$set: {
+	// 			isDeactivated: !isDeactivated,
+	// 		}
+	// 	},
+	// 	{ new: true },
+	// 	(error, questionDocument) => {
+	// 		if(error){
+	// 			console.log(
+	// 				`Error while deactivating user account ${
+	// 					request.params.userId
+	// 				}:\n ${error}`
+	// 			);
+	// 			response.status(500).json({
+	// 				error: error,
+	// 				message: `Error while deactivating user account ${
+	// 					request.params.userId
+	// 				}`
+	// 			});
+	// 		} else if(questionDocument) { 
+	// 			console.log(`Account Deactivated succssfully ${request.params.userId}:\n ${questionDocument}`);
+	// 			// console.log("questionDocument.isDeactivated: ",questionDocument.isDeactivated);
+	// 			// questionDocument.isDeactivated ?  :
+	// 			response.status(200).json(questionDocument);
+	// 		} else {
+	// 			response.status(404).json({message: `User not found`});
+	// 		}
+	// 	} 
+	// )
 });
 
 // Get Profile
@@ -191,7 +212,8 @@ router.get("/:userId", async (request, response) => {
 });
 
 //Enable user follow
-router.get("/:userId/follow/enable", async (request, response) => {
+router.put('/:userId/follow/enable', async (request, response) => {
+
 	console.log(`\n\nInside GET /users/:userId/follow/enable`);
 
 	try {
@@ -235,7 +257,8 @@ router.get("/:userId/follow/enable", async (request, response) => {
 });
 
 //Disable user follow
-router.get("/:userId/follow/disable", async (request, response) => {
+router.put('/:userId/follow/disable', async (request, response) => {
+
 	console.log(`\n\nInside GET /users/:userId/follow/disable`);
 
 	try {
@@ -352,23 +375,48 @@ router.get("/:userId/following", async (request, response) => {
 	}
 });
 
-//Fetch answers bookmarked by user
+//Fetch bookmarked answers by user and its correspondin question
 router.get("/:userId/bookmarks", async (request, response) => {
+
 	console.log(`\n\nInside GET /users/:userId/bookmarks`);
 
 	try {
-		let answerDocument = await AnswerSchema.find({
-			bookmarks: request.params.userId
-		});
+		const bookmarkedAnswerWithQuestion = []
+		let answerDocument = await AnswerSchema
+			.find({
+				bookmarks: request.params.userId
+			})
+			.populate({
+				path: "upvotes downvotes bookmarks comments images"
+			})
+			.exec();
 
 		//If bookmarked answer present
 		if (answerDocument) {
+
 			console.log(
 				`Sucessfully fetched bookmarked answers for user ${
 					request.params.userId
 				}:\n ${answerDocument}`
 			);
-			response.status(200).json(answerDocument);
+
+			for (const answer of answerDocument) {
+
+				let question = await QuestionModel
+					.findOne({ answers: answer._id })
+					.exec();
+
+				question.answers = [];
+				question.answers.push(answer);
+
+				// console.log(`\n\n\n\n\n\nQuestion found for bookmarked answer with id - ${answer._id}`);
+				// console.log(`\n\n\n\n\n\nQuestion found for bookmarked answer with id - \n${question}`);
+
+				bookmarkedAnswerWithQuestion.push(question);
+
+			}
+			response.status(200).json(bookmarkedAnswerWithQuestion);
+
 		} else {
 			console.log(`User ${request.params.userId} not found`);
 			response
@@ -581,7 +629,7 @@ router.post('/credentials', function(req, res){
 	}
 });
 
-//GET ALL QUESTIONS (FOR FEED)
+//GET ALL QUESTIONS THAT USER IS FOLLOWING (FOR FEED)
 
 router.get("/:userId/questions", async (req, res) => {
 	try {
@@ -615,26 +663,78 @@ router.get("/:userId/questions", async (req, res) => {
 	}
 });
 
-//GET ALL QUESTIONS FOR ALL TOPICS FOLLOWED BY A USER (FOR FEED)
+// GET ALL QUESTIONS FOR ALL TOPICS FOLLOWED BY A USER (FOR FEED)
+router.get("/:userId/feed", async (request, response) => {
 
-// router.get("/:userId/topics/questions", async (req, res) => {
+	const questionResult = []
 
-// 	let userDoc = await UserModel.find({ _id: req.params.userId }).populate({
-// 		path: "topicsFollowed",
-// 		populate : {
-// 				path: "questions" ,
-// 				populate : {
+	try {
 
-// 					path: "questions",
-// 						populate: {
-// 						path: "answers"
-// 						}
-// 					}
-// 		}
-// 	}).exec();
+		let user = await UserModel.findOne({'_id': request.params.userId});
 
-// 	console.log("Result - topicsFollowed: ", userDoc);
-// 	res.end(JSON.stringify(userDoc));
-// });
+		// console.log("User: ", user);
+		// console.log("Topics followed by the user: ", user.topicsFollowed);
 
+		if(user) {
+			for (const topic of user.topicsFollowed) {
+				let questions = await QuestionModel.find({ topicsArray: topic })
+				.populate({
+					path: "answers",
+					populate: {
+						path: "upvotes downvotes bookmarks comments"
+					}
+				})
+				.exec();
+				// console.log("questions: ", questions);
+				for(const qstn of questions) {
+					questionResult.push(qstn)
+				}
+				// console.log("questionResult: ", questionResult);
+			}
+
+			//Remove duplicates from the questions array
+			var uniq = {}
+			const uniqueQuestions = questionResult.filter(obj => !uniq[obj._id] && (uniq[obj._id] = true));
+
+			response.status(200).json(uniqueQuestions);
+
+		} else {
+			console.log(`User ${request.params.userId} not found`);
+			response.status(404).json({messgage: `User ${request.params.userId} not found`});
+		}
+	} catch (error) {
+		console.log(`Error while fetching questions-answers for feed for user ${request.params.userId}:\n ${error}`);
+		response.status(500).json({ error: error, message: `Error while fetching questions-answers for feed for user ${request.params.userId}` });
+	}
+});
+
+
+router.post("/aboutMe", function(req, res){
+	
+	var user_id = req.body.user_id;
+	var aboutMe = req.body.text;
+	console.log(user_id, aboutMe);
+	UserSchema.updateOne({_id: user_id}, {$set: {aboutMe: aboutMe}}, function(err, results){
+		if(err){
+			res.status(400);
+		} else {
+			res.status(200).json({});
+		}
+	})
+});
+
+router.post("/name", function(req, res){
+	
+	var user_id = req.body.user_id;
+	var firstName = req.body.firstName;
+	var lastName = req.body.lastName;
+	console.log(user_id, firstName, lastName);
+	UserSchema.updateOne({_id: user_id}, {$set: {firstName: firstName, lastName: lastName}}, function(err, results){
+		if(err){
+			res.status(400);
+		} else {
+			res.status(200).json({});
+		}
+	})
+})
 module.exports = router;

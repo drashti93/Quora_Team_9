@@ -4,12 +4,15 @@ import cookie from "react-cookies";
 import {Link} from 'react-router-dom';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Layout, Container, Grid, Row, Col, Modal, ModalFooter, Button, Form} from 'react-bootstrap';
+import {Layout, Container, Grid, Row, Col, Modal, ModalFooter, Button, Form, ModalBody, ModalTitle} from 'react-bootstrap';
 import Navigationbar from '../navbar/Navigationbar'
 import user_img from "../../resources/images/user.png"
 import "../../resources/css/profile.css"
 import Feed from '../feed/Feed'
 import * as actions from '../../actions/profileActions';
+import ReactQuill from 'react-quill'; 
+import 'react-quill/dist/quill.snow.css';
+import ModalHeader from 'react-bootstrap/ModalHeader';
 
 class Profile extends Component {
 
@@ -27,6 +30,7 @@ class Profile extends Component {
      show1: false,
      show2: false,
      show3: false,
+     show4: false,
      image_file: "",
      position: "",
      company: "",
@@ -44,7 +48,17 @@ class Profile extends Component {
      zipcode: "",
      locStart: "",
      locEnd: "",
-     currentLocation: "off"
+     currentLocation: "off",
+     hideEditor: true,
+     hideEditorName: true,
+     aboutMe: "",
+     hideCareer: true,
+     hideEducation: true,
+     hideAddress: true,
+     career: "",
+     education: "",
+     address: "",
+     credentials: "",
     }
 
     this.handleShow = this.handleShow.bind(this);
@@ -55,8 +69,13 @@ class Profile extends Component {
     this.handleClose2 = this.handleClose2.bind(this);
     this.handleShow3 = this.handleShow3.bind(this);
     this.handleClose3 = this.handleClose3.bind(this);
+    this.handleShow4 = this.handleShow4.bind(this);
+    this.handleClose4 = this.handleClose4.bind(this);
     this.fileChange = this.fileChange.bind(this);
     this.saveCredentialsInternal = this.saveCredentialsInternal.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleChangeFN = this.handleChangeFN.bind(this);
+    this.handleChangeLN = this.handleChangeLN.bind(this);
   }
 
   handleClose() {
@@ -91,6 +110,14 @@ class Profile extends Component {
     this.setState({ show3: true });
   }
 
+  handleClose4() {
+    this.setState({ show4: false });
+  }
+
+  handleShow4() {
+    this.setState({ show4: true });
+  }
+
   fileChange(event){
     this.setState({image_file: event.target.files});
   }
@@ -101,6 +128,17 @@ class Profile extends Component {
       this.props.getUserDetails(cookie.load('cookie').id)
   }
 
+  componentWillReceiveProps(newProps){
+      this.setState({
+          aboutMe: newProps.aboutMe,
+          firstName: newProps.firstName,
+          lastName: newProps.lastName,
+        //   credentials: newProps.credentials,
+        //   career: newProps.career,
+        //   education: newProps.credentials.education,
+        //   location: newProps.credentials.location,
+      })
+  }
   onChangePosition(e){
       this.setState({position: e.target.value})
   }
@@ -171,6 +209,22 @@ class Profile extends Component {
       this.setState({currentLocation: e.target.value})
   }
 
+  handleChange(e) {
+    this.setState({ aboutMe: e.target.value })
+  }
+
+  handleChangeFN(e){
+      this.setState({
+          firstName: e.target.value
+      })
+  }
+
+  handleChangeLN(e){
+      this.setState({
+          lastName: e.target.value
+      })
+  }
+
   saveCredentialsInternal(type){
       this.props.saveCredentials(cookie.load('cookie').id, type, this.state.position, this.state.company, this.state.careerStart, this.state.careerEnd, this.state.currentCompany,
       this.state.school, this.state.concentration, this.state.secConcentration, this.state.degree, this.state.gradYear,
@@ -203,7 +257,20 @@ class Profile extends Component {
                             </Col>
                             <Col xs={9}>
                                 <div>
-                                    <h3>{this.props.userDetails.firstName} {this.props.userDetails.lastName}</h3>
+                                    <span hidden={!this.state.hideEditorName}>{this.props.userDetails.firstName} {this.props.userDetails.lastName}</span>
+                                    <input type="text" hidden={this.state.hideEditorName} value={this.state.firstName} onChange={this.handleChangeFN}></input>
+                                    <input type="text" hidden={this.state.hideEditorName} value={this.state.lastName} onChange={this.handleChangeLN}></input>
+                                    {/* <h3>{this.props.userDetails.firstName} {this.props.userDetails.lastName}</h3> */}
+                                    <button hidden={this.state.hideEditorName} onClick={() => this.setState({hideEditorName: true})}>Cancel</button>
+                                    <button hidden={this.state.hideEditorName} onClick={this.props.saveName(this.state.firstName, this.state.lastName, cookie.load('cookie').id)}>Update</button>
+                                    <button hidden={!this.state.hideEditorName} onClick={() => this.setState({hideEditorName: false})}>Edit</button>
+                                    <p hidden={!this.state.hideEditor}>{this.props.userDetails.aboutMe ? this.props.userDetails.aboutMe : <a onClick={() => this.setState({hideEditor: false})}>Write a description about yourself</a>}</p>
+                                    <span>{this.props.userDetails.aboutMe ? <button onClick={() => this.setState({hideEditor: false})}>Edit</button> : ""}</span>
+                                    <div>
+                                        <input type="text" value={this.state.aboutMe} onChange={this.handleChange} hidden={this.state.hideEditor}/>
+                                        <button onClick={() => this.setState({hideEditor: true})} hidden={this.state.hideEditor}>Cancel</button>
+                                        <button type="button" hidden={this.state.hideEditor} onClick={this.props.saveAboutMe(cookie.load('cookie').id, this.state.aboutMe)}>Update</button>
+                                    </div>
                                     <p>{this.props && this.props.followers ? (this.props.followers).length : 0} followers</p>
                                 </div>
                             </Col>
@@ -301,6 +368,47 @@ class Profile extends Component {
                         <Row id="credentials">
                             <div id="credentials_title">
                                 <h6 >Credentials & Highlights</h6>
+                                <button onClick={this.handleShow4}>Edit</button>
+                                <Modal show={this.state.show4} onHide={this.handleClose4}>
+                                    <ModalHeader closeButton><ModalTitle>Edit Credentials</ModalTitle></ModalHeader>
+                                    <ModalBody>
+                                        <a>Add Credentials</a>
+                                        <ul>
+                                        {
+                                            this.props.userDetails.credentials && this.props.userDetails.credentials.career ? this.props.userDetails.credentials.career.map((career, index) => {
+                                               return(
+                                                   <div>
+                                                    <li>{career.position}</li>
+                                                    <button onClick={() => this.setState({hideCareer: false})} hidden={!this.state.hideCareer}>Edit</button>
+                                                    <div hidden={this.state.hideCareer}>
+                                                        <input type="text" value={this.props.userDetails.credentials.career[index].position}></input>
+                                                        <input type="text" value={this.props.userDetails.credentials.career[index].company}></input>
+                                                        <input type="select" value={this.props.userDetails.credentials.career[index].startDate}></input>
+                                                        <input type="select" value={this.props.userDetails.credentials.career[index].endDate}></input>
+                                                        <input type="checkbox" value={this.props.userDetails.credentials.career[index].isCurrent}></input>
+                                                        <button>Save</button>
+                                                    </div>
+                                                    </div>
+                                               )  
+                                            }) : ""
+                                        }
+                                        {
+                                            this.props.userDetails.credentials && this.props.userDetails.credentials.education ? this.props.userDetails.credentials.education.map((education, index) => {
+                                               return(
+                                                    <li>{education.school}</li>
+                                               )  
+                                            }) : ""
+                                        }
+                                        {
+                                            this.props.userDetails.credentials && this.props.userDetails.credentials.location ? this.props.userDetails.credentials.location.map((location, index) => {
+                                               return(
+                                                    <li>{location.address}</li>
+                                               )  
+                                            }) : ""
+                                        }
+                                        </ul>
+                                    </ModalBody>
+                                </Modal>
                             </div>
                             <ul>
                                 {
@@ -493,6 +601,7 @@ function mapStatetoProps(state) {
         userDetails: state.profile.userDetails,
         firstName: state.profile.userDetails.firstName,
         lastName: state.profile.userDetails.lastName,
+        aboutMe: state.profile.userDetails.aboutMe,
     }
 }
 
@@ -503,7 +612,9 @@ function mapDispatchToProps(dispatch) {
         saveProfilePicture: (user_id, image_file) => dispatch(actions.saveProfilePicture(user_id, image_file)),
         saveCredentials: (id, type, position, company, careerStart, careerEnd, currentCompany,
       school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation) => dispatch(actions.saveCredentials(id, type, position, company, careerStart, careerEnd, currentCompany,
-      school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation))
+      school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation)),
+        saveAboutMe: (user_id, text) => dispatch(actions.saveAboutMe(user_id, text)),
+        saveName: (firstName, lastName, user_id) => dispatch(actions.saveAboutMe(firstName, lastName, user_id)),
     };
 }
 

@@ -11,8 +11,8 @@ var MongoDBStore = require("connect-mongodb-session")(session);
 var answer = require("./routes/answer");
 var question = require("./routes/question");
 var comment = require("./routes/comment");
-var graphs = require("./routes/graphs");
-var topics = require("./routes/topic");
+var graphs = require('./routes/graphs');
+var topics = require('./routes/topic');
 
 var { client } = require("./resources/redis");
 var bcrypt = require("bcrypt");
@@ -93,76 +93,80 @@ app.use("/topics", topics);
 
 //with redis
 app.post("/login", async function(req, res) {
-    // let req = {
-    // 	body: req.body
-    //   }
-    var body = "";
-    // client.get('loginQueryKeynew', async function (err, query_results) {
-    // if (query_results) {
-    // 	body = query_results;
-    // 	res.status(200).json(JSON.parse(body));
-    // }
-    // else {
+	// let req = {
+	// 	body: req.body
+	//   }
+	var body = "";
+	// client.get('loginQueryKeynew', async function (err, query_results) {
+	// if (query_results) {
+	// 	body = query_results;
+	// 	res.status(200).json(JSON.parse(body));
+	// }
+	// else {
 
-    let loginSuccess = 0;
-    try {
-        let { email, password } = req.body;
-        console.log(req.body);
-        console.log("here");
-        email = email.toLowerCase();
-        let result = await userModel.findOne({ email });
-        let data = null;
-        if (!result) {
-            data = {
-                loginSuccess: 0,
-                message: "Email or Password Incorrect"
-            };
-        } else {
-            console.log(result.password);
-            const match = await bcrypt.compare(password, result.password);
-            if (match) {
-                var user = {
-                    email: result.email
-                };
-                var token = jwt.sign(
-                    user,
-                    "There is no substitute for hardwork", {
-                        expiresIn: 10080 // in seconds
-                    }
-                );
-                res.cookie(
-                    "cookie",
-                    JSON.stringify({
-                        id: result._id,
-                        email: result.email,
-                        role: result.role,
-                        token: "JWT" + token
-                    }), { maxAge: 900000000, httpOnly: false, path: "/" }
-                );
-                req.session.user = result.id;
-                data = {
-                    id: result._id,
-                    role: result.role,
-                    loginSuccess: 1,
-                    message: "Login Successfull!",
-                    token: "JWT " + token
-                };
-            } else {
-                data = {
-                    loginSuccess: 0,
-                    message: "Email or Password Incorrect"
-                };
-            }
-        }
-        // client.set('loginQueryKeynew', JSON.stringify(data));
-        res.status(200).json(data);
-    } catch (error) {
-        console.log(error);
-        res.status(400).json(error);
-        // callback(error, null);
-    }
-    // 	}
-    // })
+	let loginSuccess = 0;
+	try {
+		let { email, password } = req.body;
+		console.log(req.body);
+		console.log("Enter try");
+		email = email.toLowerCase();
+		let result = await userModel.findOne({ email });
+		// console.log("result: ",result);
+		let temp = JSON.parse(JSON.stringify(result));
+		// console.log("temp: ", temp);
+		let data = null;
+		if (!result) {
+			data = {
+				loginSuccess: 0,
+				message: "Email or Password Incorrect"
+			};
+		} else {
+			const match = await bcrypt.compare(password, temp.password);
+			if (match) {
+				var user = {
+					email: result.email
+				};
+				var token = jwt.sign(
+					user,
+					"There is no substitute for hardwork",
+					{
+						expiresIn: 10080 // in seconds
+					}
+				);
+				res.cookie(
+					"cookie",
+					JSON.stringify({
+						id: result._id,
+						email: result.email,
+						role: result.role,
+						token: "JWT" + token
+					}),
+					{ maxAge: 900000000, httpOnly: false, path: "/" }
+				);
+				req.session.user = result.id;
+				data = {
+					id: result._id,
+					role: result.role,
+					loginSuccess: 1,
+					message: "Login Successfull!",
+					token: "JWT " + token
+				};
+			} else {
+				data = {
+					loginSuccess: 0,
+					message: "Email or Password Incorrect"
+				};
+			}
+		}
+		// client.set('loginQueryKeynew', JSON.stringify(data));
+		res.status(200).json(data);
+	} catch (error) {
+		console.log(error);
+		res.status(400).json(error);
+		// callback(error, null);
+	}
+	// 	}
+	// })
 });
 
 //with redis on kafka-backend

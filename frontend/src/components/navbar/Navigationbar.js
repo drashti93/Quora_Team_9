@@ -193,6 +193,7 @@ componentWillReceiveProps(nextProps){
               <NavDropdown title={image} id="basic-nav-dropdown">
                 <NavDropdown.Item><Link to="/profile">Profile</Link></NavDropdown.Item>
                 <NavDropdown.Item><Link to="/settings">Settings</Link></NavDropdown.Item>
+                <NavDropdown.Item><Link to="/content">Your Content</Link></NavDropdown.Item>
               </NavDropdown>
               <Button className="question-button" onClick={this.handleShowquestion}>Add Question</Button>
 
