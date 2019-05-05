@@ -637,4 +637,17 @@ router.get("/:userId/questions", async (req, res) => {
 // 	res.end(JSON.stringify(userDoc));
 // });
 
+router.post("/aboutMe", function(req, res){
+	
+	var user_id = req.body.user_id;
+	var aboutMe = req.body.text;
+	console.log(user_id, aboutMe);
+	UserSchema.updateOne({_id: user_id}, {$set: {aboutMe: aboutMe}}, function(err, results){
+		if(err){
+			res.status(400);
+		} else {
+			res.status(200).json({});
+		}
+	})
+})
 module.exports = router;

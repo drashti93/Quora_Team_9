@@ -209,7 +209,7 @@ class UserProfile extends Component {
                             <Col xs={9}>
                                 <div>
                                     <h3>{this.props.userDetails.firstName} {this.props.userDetails.lastName}</h3>
-                                    <p>{this.props.userDetails.aboutMe ? this.props.userDetails.aboutMe : <a>Write a description about yourself</a>}</p>
+                                    <p>{this.props.userDetails.aboutMe ? this.props.userDetails.aboutMe : ""}</p>
                                     <p>{this.props && this.props.followers ? (this.props.followers).length : 0} followers</p>
                                 </div>
                             </Col>
