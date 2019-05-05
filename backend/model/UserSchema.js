@@ -156,29 +156,6 @@ const UserSchema = new Schema({
 	following: [
 		{
 			type: Schema.Types.ObjectId,
-			ref: "topics"
-		}
-	],
-	chats: [
-		{
-			uid: { type: Schema.Types.ObjectId, ref: "users" },
-			messages: [
-				{
-					action: String,
-					messagetext: String
-				}
-			]
-		}
-	],
-	followers: [
-		{
-			type: Schema.Types.ObjectId,
-			ref: "users"
-		}
-	],
-	following: [
-		{
-			type: Schema.Types.ObjectId,
 			ref: "users"
 		}
 	]

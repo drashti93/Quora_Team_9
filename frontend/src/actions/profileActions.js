@@ -57,3 +57,23 @@ export function saveCredentials(user_id, type, position, company, cstartYear, ce
         })
     }
 }
+
+export function saveAboutMe(user_id, text) {
+    console.log("In save about me");
+    console.log(user_id, text);
+    return function(dispatch){
+        axios.post("http://localhost:3001/users/aboutMe", {
+            user_id, text
+        })
+            .then(function (response) {
+                
+                if(response.status===200) {
+
+                    dispatch({ type: "ABOUT_ME_SUCCESS", payload: true })
+                }
+            })
+            .catch(function (error) {
+                dispatch({type: "ABOUT_ME_FAILURE",payload: false})
+            });
+    }
+}

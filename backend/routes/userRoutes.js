@@ -604,7 +604,7 @@ router.post('/credentials', function(req, res){
 	}
 });
 
-//GET ALL QUESTIONS (FOR FEED)
+//GET ALL QUESTIONS THAT USER IS FOLLOWING (FOR FEED)
 
 router.get("/:userId/questions", async (req, res) => {
 	try {
@@ -638,26 +638,63 @@ router.get("/:userId/questions", async (req, res) => {
 	}
 });
 
-//GET ALL QUESTIONS FOR ALL TOPICS FOLLOWED BY A USER (FOR FEED)
+// GET ALL QUESTIONS FOR ALL TOPICS FOLLOWED BY A USER (FOR FEED)
+router.get("/:userId/feed", async (request, response) => {
 
-// router.get("/:userId/topics/questions", async (req, res) => {
+	const questionResult = []
 
-// 	let userDoc = await UserModel.find({ _id: req.params.userId }).populate({
-// 		path: "topicsFollowed",
-// 		populate : {
-// 				path: "questions"
-// 				// populate : {
+	try {
 
-// 				// 	path: "questions",
-// 						// populate: {
-// 						// path: "answers"
-// 						// }
-// 				// 	}
-// 		}
-// 	}).exec();
+		let user = await UserModel.findOne({'_id': request.params.userId});
 
-// 	console.log("Result - topicsFollowed: ", userDoc);
-// 	res.end(JSON.stringify(userDoc));
-// });
+		// console.log("User: ", user);
+		// console.log("Topics followed by the user: ", user.topicsFollowed);
 
+		if(user) {
+			for (const topic of user.topicsFollowed) {
+				let questions = await QuestionModel.find({ topicsArray: topic })
+				.populate({
+					path: "answers",
+					populate: {
+						path: "upvotes downvotes bookmarks comments"
+					}
+				})
+				.exec();
+				// console.log("questions: ", questions);
+				for(const qstn of questions) {
+					questionResult.push(qstn)
+				}
+				// console.log("questionResult: ", questionResult);
+			}
+
+			//Remove duplicates from the questions array
+			var uniq = {}
+			const uniqueQuestions = questionResult.filter(obj => !uniq[obj._id] && (uniq[obj._id] = true));
+
+			response.status(200).json(uniqueQuestions);
+
+		} else {
+			console.log(`User ${request.params.userId} not found`);
+			response.status(404).json({messgage: `User ${request.params.userId} not found`});
+		}
+	} catch (error) {
+		console.log(`Error while fetching questions-answers for feed for user ${request.params.userId}:\n ${error}`);
+		response.status(500).json({ error: error, message: `Error while fetching questions-answers for feed for user ${request.params.userId}` });
+	}
+});
+
+
+router.post("/aboutMe", function(req, res){
+	
+	var user_id = req.body.user_id;
+	var aboutMe = req.body.text;
+	console.log(user_id, aboutMe);
+	UserSchema.updateOne({_id: user_id}, {$set: {aboutMe: aboutMe}}, function(err, results){
+		if(err){
+			res.status(400);
+		} else {
+			res.status(200).json({});
+		}
+	})
+})
 module.exports = router;
