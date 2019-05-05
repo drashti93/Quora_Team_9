@@ -94,7 +94,7 @@ router.delete("/:userId", async (request, response) => {
 });
 
 // Deactivate User Account
-router.put("/:userId", async (request, response) => {
+router.put("/:userId/profileState", async (request, response) => {
 	console.log(`\n\n Inside Post users/:userId/deactivateProfile`);
 	try{
 		let userDoc = await UserSchema.find({ _id: request.params.userId });

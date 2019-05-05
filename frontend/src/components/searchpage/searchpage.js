@@ -22,7 +22,7 @@ class Searchpage extends Component{
           searchText: props.match.params.text,
           searchArray:[],
           searchArrayDup:[],
-          counter:10,
+          counter:20,
           docHeight
 
         };
@@ -53,7 +53,7 @@ class Searchpage extends Component{
       async componentWillReceiveProps(nextProps){
         if(nextProps.match.params.text!==this.props.match.params.text){
           //Perform some operation
-          await this.setState({searchText: nextProps.match.params.text, counter:10});
+          await this.setState({searchText: nextProps.match.params.text, counter:20});
           // this.classMethod();
           this.update();
         }
@@ -119,7 +119,7 @@ class Searchpage extends Component{
          if(data=="all"){
              this.setState({
                  searchArrayDup:searchArray,
-                 counter:10
+                 counter:20
              })
          }else{
             let searchArrayDup=searchArray.filter((elem)=>{
@@ -127,7 +127,7 @@ class Searchpage extends Component{
             })
             this.setState({
                 searchArrayDup,
-                counter:10
+                counter:20
             })
          }
       }
