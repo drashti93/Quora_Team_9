@@ -4,7 +4,7 @@ import { FEED } from './types';
 export const getQuestionsAnswersForFeed = () => dispatch => {
 
 	axios.defaults.withCredentials = true;
-	axios.get(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/topics/5ccc9ce1631fe28128847f7e/questions/following`)
+	axios.get(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/users/5cc3f69dd23457601476d016/feed`)
 	.then(response => {
 		console.log(`Response: ${response}`);
 		if(response.status === 200){

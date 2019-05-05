@@ -2,17 +2,7 @@ import { FEED } from "../actions/types";
 
 
 const initialState = {
-	feed: {
-		followers: [],
-		topicsArray: [],
-		answers: [{
-			upvotes: [],
-			downvotes: [],
-			bookmarks: [],
-			comments: [],
-			images: []
-		}]
-	}
+	feed: []
 }
 
 export default function loginReducer(state = initialState, { type, payload }) {

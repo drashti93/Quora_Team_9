@@ -102,11 +102,11 @@ answer.delete("/", async (req, res) => {
 	}
 });
 
-answer.post("/upvote", async (req, res) => {
+answer.post("/:answerId/upvote", async (req, res) => {
 	try {
-		let { userId, questionId, answerId } = req.body;
+		let { userId } = req.body;
 		let result = await AnswerModel.update(
-			{ _id: answerId },
+			{ _id: req.params.answerId },
 			{
 				$push: { upvotes: userId }
 			}
@@ -117,11 +117,14 @@ answer.post("/upvote", async (req, res) => {
 	}
 });
 
-answer.post("/downvote", async (req, res) => {
+answer.post("/:answerId/downvote", async (req, res) => {
 	try {
-		let { userId, questionId, answerId } = req.body;
+		let { userId } = req.body;
 		let result = await AnswerModel.update(
-			{ _id: answerId },
+			{ _id: req.params.answerId },
+			{
+				$pull: {upvotes: { $elemMatch: userId } }
+			}
 			{
 				$push: { downvotes: userId }
 			}
