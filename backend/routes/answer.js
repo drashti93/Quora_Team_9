@@ -104,40 +104,74 @@ answer.delete("/", async (req, res) => {
 
 answer.post("/:answerId/upvote", async (req, res) => {
 	try {
-		console.log(req.body);
-		let userId = req.body.userId;
-		console.log(userId);
-		console.log(typeof(userId))
-		let answerId = req.params.answerId;
-		console.log(answerId);
-		// console.log(typeOf(req.params.answerId));
-		AnswerModel.find({_id: answerId},  {_id: 0, upvotes: 1}, function(err, results){
-			if(results){
-				console.log(results[0].upvotes);
-				console.log(results[0].upvotes.includes(userId));
-				if(results[0].upvotes.includes(userId)){
-					console.log("Upvote exists")
-					AnswerModel.updateOne({_id: answerId}, {$pull: {upvotes: userId}})
-				} else {
-					AnswerModel.find({_id: answerId},  {_id: 0, downvotes: 1}, function(err, results1){
-						if(results1){
-							if(results1[0].downvotes.includes(userId)){
-								console.log("Downvote exists")
-								AnswerModel.updateOne({_id: answerId}, {$pull: {downvotes: userId}});
-								AnswerModel.updateOne({_id: answerId}, {$push: {upvotes: userId}});
-							}
-							else{
-								console.log("None exists")
-								AnswerModel.updateOne({_id: answerId}, {$push: {upvotes: userId}});
-							}
-						}
-					});
-				}
+		// console.log(req.body);
+		// let userId = req.body.userId;
+		// console.log(userId);
+		// console.log(typeof(userId))
+		// let answerId = req.params.answerId;
+		// console.log(answerId);
+		// // console.log(typeOf(req.params.answerId));
+		// AnswerModel.find({_id: answerId},  {_id: 0, upvotes: 1}, function(err, results){
+		// 	if(results){
+		// 		console.log(results[0].upvotes);
+		// 		console.log(results[0].upvotes.includes(userId));
+		// 		if(results[0].upvotes.includes(userId)){
+		// 			console.log("Upvote exists")
+		// 			AnswerModel.updateOne({_id: answerId}, {$pull: {upvotes: userId}})
+		// 		} else {
+		// 			AnswerModel.find({_id: answerId},  {_id: 0, downvotes: 1}, function(err, results1){
+		// 				if(results1){
+		// 					if(results1[0].downvotes.includes(userId)){
+		// 						console.log("Downvote exists")
+		// 						AnswerModel.updateOne({_id: answerId}, {$pull: {downvotes: userId}});
+		// 						AnswerModel.updateOne({_id: answerId}, {$push: {upvotes: userId}});
+		// 					}
+		// 					else{
+		// 						console.log("None exists")
+		// 						AnswerModel.updateOne({_id: answerId}, {$push: {upvotes: userId}});
+		// 					}
+		// 				}
+		// 			});
+		// 		}
+		// 	}
+		// });
+		// res.status(200).json({});
+
+
+		let checkUserInUpvotes = await AnswerModel.findOne({ _id: req.params.answerId, upvotes: req.body.userId });
+
+		if(checkUserInUpvotes) {
+
+			console.log(`User - ${req.body.userId} already Upvoted this answer - ${req.params.answerId} ! Cannot upvote again!`);
+			res.status(500).json({"message": `User - ${req.body.userId} already Upvoted this answer - ${req.params.answerId}`});
+
+		} else {
+
+			let answer = await AnswerModel.findOneAndUpdate(
+					{ _id: req.params.answerId },
+					{ $push : { upvotes: req.body.userId } },
+					{ new: true }
+				);
+			
+			if(answer) {
+				console.log(`Successfully Upvoted`);
+
+				await AnswerModel
+					.findOneAndUpdate(
+						{ _id: req.params.answerId },
+						{ $pull : { downvotes: req.body.userId } },
+						{ new: true }
+					);
+
+				res.status(200).json({answer});
+
+			} else {
+				console.log(`Upvote failed`);
+				res.status(500).json({"message": "Upvote failed"});
 			}
-		});
-		res.status(200).json({});
+		}
 	} catch (error) {
-		res.send(error);
+		res.status(500).json({"error": error});
 	}
 });
 
