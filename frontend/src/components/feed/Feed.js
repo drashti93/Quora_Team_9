@@ -37,60 +37,45 @@ export class Feed extends Component {
 		return (
 			<div>
 				{redirectVar}
-					<List
-						itemLayout="vertical"
-						size="large"
-						pagination={{
-							onChange: page => {
-								console.log(page);
-							},
-							pageSize: 5
-						}}
-						dataSource={listData}
-						renderItem={item => (
-							<div>
-								<List.Item
-									key={item.title}
-									actions={[
-										<IconText
-											type="star-o"
-											text="156"
-										/>,
-										<IconText
-											type="like-o"
-											text="156"
-										/>,
-										<IconText
-											type="message"
-											text="2"
-										/>
-									]}
-								>
-									<List.Item.Meta
-										// avatar={<Avatar src={item.avatar} />}
-										title={
-											<a href={item.href}>
-												{item.title}
-											</a>
-										}
-										description={
-											<div>
-												<Avatar
-													src={item.avatar}
-												/>
-												&nbsp; &nbsp;
-												{item.description}
-											</div>
-										}
-									/>
-									{item.content}
-								</List.Item>
-								<div>This is my comment</div>
+				<List
+					itemLayout="vertical"
+					size="large"
+					pagination={{
+						onChange: page => {
+							console.log(page);
+						},
+						pageSize: 5
+					}}
+					dataSource={listData}
+					renderItem={item => (
+						<div>
+							<List.Item
+								key={item.title}
+								actions={[
+									<IconText type="star-o" text="156" />,
+									<IconText type="like-o" text="156" />,
+									<IconText type="message" text="2" />
+								]}
+							>
+								<List.Item.Meta
+									// avatar={<Avatar src={item.avatar} />}
+									title={<a href={item.href}>{item.title}</a>}
+									description={
+										<div>
+											<Avatar src={item.avatar} />
+											&nbsp; &nbsp;
+											{item.description}
+										</div>
+									}
+								/>
+								{item.content}
+							</List.Item>
+							<div>This is my comment</div>
 
-								<Divider />
-							</div>
-						)}
-					/>
+							<Divider />
+						</div>
+					)}
+				/>
 			</div>
 		);
 	}
