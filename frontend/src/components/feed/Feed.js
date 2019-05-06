@@ -114,6 +114,37 @@ export class Feed extends Component {
 
 	}
 
+	handleFollowingQuestions = (questionId) =>{
+		console.log(`In handleFollowingQuestions : questionId - ${questionId}`);
+		let data = cookie.load("cookie");
+		let u_id = data.id;
+		console.log(u_id);
+
+		const body = {
+			//TODO: Remove hardcoding of uer_id and comment
+			"userId": u_id,
+			"questionId": questionId,
+		}
+		console.log(body)
+		axios.defaults.withCredentials = true;
+		axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/questions/follow`,body)
+		.then(response =>{
+			console.log(`Response: ${response}`);
+			if(response.status === 200){
+				console.log(`follow question successfully questionActions->postCommentAnswersForFeed(): ${response.data}`);
+				// dispatch({
+				// 	type: FEED,
+				// 	payload: response.data
+				// });
+			}
+		}).catch(error =>{
+			console.log(`follow question failed: questionActions->postCommentAnswersForFeed() - ${error}`)
+		})
+
+
+
+	}
+
 	render() {
 
 		let redirectVar = null;
@@ -141,7 +172,7 @@ export class Feed extends Component {
 								key={question._id}
 								actions={[
 									<Tooltip title="Answers" onClick={()=>{this.handleQuestionAnswer(question._id)}}><Icon type="form" style={{ marginRight: 8 }} />{question.answers.length}</Tooltip>,
-									<Tooltip title="Followers" onClick={()=>{this.handleQuestionAnswer(question._id)}}><Icon type="wifi" style={{ marginRight: 8 }} />{question.followers.length}</Tooltip>
+									<Tooltip title="Followers" onClick={()=>{this.handleFollowingQuestions(question._id)}}><Icon type="wifi" style={{ marginRight: 8 }} />{question.followers.length}</Tooltip>
 								]}
 							>
 								<List.Item.Meta
