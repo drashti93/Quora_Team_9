@@ -256,6 +256,34 @@ router.put('/:userId/follow/enable', async (request, response) => {
 	}
 });
 
+//Get topics followed by a user
+router.get('/:userId/topics', async(request, response) => {
+	console.log(`\n\nInside GET /users/:userId/topics`);
+	try {
+		let userDocument = await UserSchema
+			.findOne({ _id: request.params.userId })
+			.populate("topicsFollowed");
+		if(userDocument) {
+			console.log(`Sucessfully fetched topics for user ${request.params.userId}:\n ${userDocument}`);
+			response.status(200).json(userDocument.topicsFollowed);
+		} else {
+			console.log(`User ${request.params.userId} not found`);
+			response
+				.status(404)
+				.json({ messgage: `User ${request.params.userId} not found` });
+		}
+	} catch (error) {
+		response
+			.status(500)
+			.json({
+				error: error,
+				message: `Error while fetching topics followed for the user ${
+					request.params.userId
+				}`
+			});
+	}
+});
+
 //Disable user follow
 router.put('/:userId/follow/disable', async (request, response) => {
 
@@ -710,7 +738,6 @@ router.post('/credentials', function(req, res){
 });
 
 //GET ALL QUESTIONS THAT USER IS FOLLOWING (FOR FEED)
-
 router.get("/:userId/questions", async (req, res) => {
 	try {
 		let userId = req.params.userId;
@@ -746,6 +773,8 @@ router.get("/:userId/questions", async (req, res) => {
 // GET ALL QUESTIONS FOR ALL TOPICS FOLLOWED BY A USER (FOR FEED)
 router.get("/:userId/feed", async (request, response) => {
 
+	console.log(`\n\nInside GET /users/:userId/feed`);
+
 	const questionResult = []
 
 	try {
@@ -756,18 +785,22 @@ router.get("/:userId/feed", async (request, response) => {
 		// console.log("Topics followed by the user: ", user.topicsFollowed);
 
 		if(user) {
+
 			for (const topic of user.topicsFollowed) {
 				let questions = await QuestionModel.find({ topicsArray: topic })
-				.populate({
-					path: "answers",
-					populate: {
-						path: "upvotes downvotes bookmarks comments"
-					}
-				})
-				.exec();
-				// console.log("questions: ", questions);
+					.populate({
+						path: "answers",
+						populate: {
+							path: "upvotes downvotes bookmarks comments userId"
+						}
+					})
+					.exec();
+
+				// console.log("\n\n\n\n\n\nquestions: \n", JSON.stringify(questions));
 				for(const qstn of questions) {
-					qstn.answers.legth = 1;
+					if(qstn.answers.length > 1) {
+						qstn.answers.length = 1;
+					}
 					questionResult.push(qstn)
 				}
 				// console.log("questionResult: ", questionResult);
@@ -827,11 +860,11 @@ router.get("/questionsAsked/:user_id", function(req, res){
 		if(err){
 			res.status(400);
 		} else {
-			console.log(results);
+			console.log("questions asked: ",results);
 			res.status(200).json({results});
 		}
-	})
-})
+	});
+});
 
 router.get("/questionsAnswered/:user_id", function(req, res){
 	console.log("In answers");

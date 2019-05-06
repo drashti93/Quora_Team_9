@@ -20,7 +20,7 @@ const Editor = ({ onChange, onSubmit, submitting, value }) => (
 				Add Comment
 			</Button>
 		</Form.Item>
-	</div>
+	</div> 
 );
 
 const CommentList = ({ comments }) => (

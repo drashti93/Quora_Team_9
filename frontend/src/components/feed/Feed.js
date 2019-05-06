@@ -7,8 +7,10 @@ import {bindActionCreators} from 'redux';
 import { getQuestionsAnswersForFeed } from "../../actions/questionActions";
 import {Link} from "react-router-dom";
 
+import _ from "lodash";
 import axios from "axios";
 import Comments from "../comments/Comments";
+import stockimage from '../../resources/images/user.png';
 
 export class Feed extends Component {
 
@@ -177,7 +179,7 @@ export class Feed extends Component {
 							>
 								<List.Item.Meta
 								    key={question._id}
-									title = {<Link to = {`/${question._id}/answers`} target="_blank">{question.questionText}</Link>}
+									title = {<Link to = {`/questions/${question._id}`} target="_blank">{question.questionText}</Link>}
 								/>
 								<List
 									itemLayout="vertical"
@@ -195,10 +197,8 @@ export class Feed extends Component {
 												]}
 											>
 												<List.Item.Meta
-													avatar={
-														<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-													}
-													title={answer.userId}
+													avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+													title="Dummy Name"
 												/>
 												{answer.answerText}
 											</List.Item>
