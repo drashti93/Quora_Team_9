@@ -818,6 +818,8 @@ router.post("/name", function(req, res){
 	})
 })
 
+//GET QUESTIONS ASKED BY USER ID
+
 router.get("/questionsAsked/:user_id", function(req, res){
 	console.log("In questions");
 	var user_id = req.params.user_id;
