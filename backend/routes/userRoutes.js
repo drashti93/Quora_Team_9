@@ -767,6 +767,7 @@ router.get("/:userId/feed", async (request, response) => {
 				.exec();
 				// console.log("questions: ", questions);
 				for(const qstn of questions) {
+					qstn.answers.legth = 1;
 					questionResult.push(qstn)
 				}
 				// console.log("questionResult: ", questionResult);
