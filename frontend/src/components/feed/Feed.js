@@ -1,18 +1,27 @@
 import React, { Component } from "react";
 import cookie from "react-cookies";
 import { Redirect } from "react-router";
-import { List, Avatar, Icon, Divider, Tooltip, Skeleton } from "antd";
+import { List, Avatar, Icon, Tooltip, Button, Divider } from "antd";
 import { connect } from "react-redux";
 import {bindActionCreators} from 'redux';
 import { getQuestionsAnswersForFeed } from "../../actions/questionActions";
 import {Link} from "react-router-dom";
+import ReactQuill from 'react-quill';
 
-import _ from "lodash";
 import axios from "axios";
 import Comments from "../comments/Comments";
 import stockimage from '../../resources/images/user.png';
+import Form from "react-bootstrap/FormGroup";
 
 export class Feed extends Component {
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			bodyText: '',
+			plainText: ''
+		};
+	}
 
 	componentDidMount() {
 		this.props.getQuestionsAnswersForFeed();
@@ -107,12 +116,24 @@ export class Feed extends Component {
 
 	}
 
+	handleChange = (content, delta, source, editor) => {
+		const text = editor.getText(content);
+		this.setState({ bodyText: content, plainText:text});
+	}
+
 	render() {
 
 		let redirectVar = null;
 		if (!cookie.load("cookie")) {
 			redirectVar = <Redirect to="/login" />;
 		}
+
+		const toolbarOptions = [
+			['bold', 'italic', 'underline'],        // toggled buttons
+			[{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+			['link', 'image', 'video'],
+			['clean']                                         // remove formatting button
+		];
 
 		return (
 			<div>
@@ -167,6 +188,20 @@ export class Feed extends Component {
 									)}
 								/>
 							</List.Item>
+
+							<div>
+								<ReactQuill 
+									modules={{toolbar:toolbarOptions}}
+									onChange={this.handleChange} 
+									
+								/>
+								<Button type="primary" htmlType="submit">Submit</Button>
+							</div>
+
+							<br/>
+							<br/>
+							<Divider dashed={true}/>
+
 						</div>
 					)}
 				/>

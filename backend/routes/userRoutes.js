@@ -791,7 +791,7 @@ router.get("/:userId/feed", async (request, response) => {
 					.populate({
 						path: "answers",
 						populate: {
-							path: "upvotes downvotes bookmarks comments userId"
+							path: "upvotes downvotes bookmarks comments"
 						}
 					})
 					.exec();
