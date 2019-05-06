@@ -1,7 +1,13 @@
 import React, { Component } from "react";
-import { List, Avatar, Icon, Divider } from 'antd';
-import { connect } from 'react-redux';
-import { Redirect } from 'react-router'
+import cookie from "react-cookies";
+import { Redirect } from "react-router";
+import { List, Avatar, Icon, Divider, Tooltip } from "antd";
+import { connect } from "react-redux";
+import {bindActionCreators} from 'redux';
+import { getQuestionsAnswersForFeed } from "../../actions/questionActions";
+
+import axios from "axios";
+import Comments from "../comments/Comments";
 
 export class Feed extends Component {
 
@@ -151,82 +157,49 @@ export class Feed extends Component {
 
 	render() {
 
-		const listData = [];
-		for (let i = 0; i < 23; i++) {
-			listData.push({
-				href: "http://ant.design",
-				title: `ant design part ${i}`,
-				avatar:
-					"https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
-				description:
-					"Ant Design, a design language for background applications, is refined by Ant UED Team.",
-				content:
-					"We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently."
-			});
+		let redirectVar = null;
+		if (!cookie.load("cookie")) {
+			redirectVar = <Redirect to="/login" />;
 		}
-
-		const IconText = ({ type, text }) => (
-			<span>
-				<Icon type={type} style={{ marginRight: 8 }} />
-				{text}
-			</span>
-		);
 
 		return (
 			<div>
+				{redirectVar}
 				<List
 					itemLayout="vertical"
 					size="large"
+					
 					pagination={{
 						onChange: page => {
 							console.log(page);
 						},
-						pageSize: 3
+						pageSize: 5
 					}}
-					dataSource={listData}
-					renderItem={item => (
+					dataSource={this.props.question.feed}
+					renderItem={question => (
 						<div>
-							<List.Item
-								key={item.title}
+							<List.Item 
+								key={question._id}
 								actions={[
-<<<<<<< Updated upstream
-									<IconText
-										type="star-o"
-										text="156"
-									/>,
-									<IconText
-										type="like-o"
-										text="156"
-									/>,
-									<IconText type="message" text="2" />
-=======
 									<Tooltip title="Answers" onClick={()=>{this.handleQuestionAnswer(question._id)}}><Icon type="form" style={{ marginRight: 8 }} />{question.answers.length}</Tooltip>,
-									<Tooltip title="Followers" onClick={()=>{this.handleQuestionFollowers(question._id)}}><Icon type="wifi" style={{ marginRight: 8 }} />{question.followers.length}</Tooltip>
->>>>>>> Stashed changes
+									<Tooltip title="Followers" onClick={()=>{this.handleQuestionAnswer(question._id)}}><Icon type="wifi" style={{ marginRight: 8 }} />{question.followers.length}</Tooltip>
 								]}
-								// extra={<img width={272} alt="logo" src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png" />}
 							>
 								<List.Item.Meta
-									// avatar={<Avatar src={item.avatar} />}
-									title={
-										<a href={item.href}>
-											{item.title}
-										</a>
-									}
-									description={
+									title={question.questionText}
+								/>
+								<List
+									itemLayout="vertical"
+									dataSource={question.answers}
+									renderItem={answer => (
 										<div>
-<<<<<<< Updated upstream
-											<Avatar src={item.avatar} />
-											&nbsp; &nbsp;
-											{item.description}
-=======
 											<List.Item 
 												split={true}
 												key={answer._id}
 												actions={[
 													<Tooltip title="Upvotes" onClick={()=>{this.handleAnswerUpvote(answer._id)}}><Icon type="like" style={{ marginRight: 8 }} />{answer.upvotes.length}</Tooltip>,
 													<Tooltip title="Downvotes" onClick={()=>{this.handleAnswerDownvote(answer._id)}}><Icon type="dislike" style={{ marginRight: 8 }} />{answer.downvotes.length}</Tooltip>,
-													<Tooltip title="Comments" onClick={()=>{this.handleAnswerComments(answer._id)}}><Icon type="submit" style={{ marginRight: 8 }} />{answer.bookmarks.length}</Tooltip>, 
+													<Tooltip title="Comments" onClick={()=>{this.handleAnswerComments(answer._id)}}><Icon type="message" style={{ marginRight: 8 }} />{answer.bookmarks.length}</Tooltip>, 
 													<Tooltip title="Bookmarks" onClick={()=>{this.handleAnswerBookmarks(answer._id)}}><Icon type="book" style={{ marginRight: 8 }} />{answer.comments.length}</Tooltip>
 												]}
 											>
@@ -238,39 +211,37 @@ export class Feed extends Component {
 												/>
 												{answer.answerText}
 											</List.Item>
-											<Comments answer_id={answer._id}/>
->>>>>>> Stashed changes
+											<Comments />
 										</div>
-									}
+									)}
 								/>
-								{item.content}
 							</List.Item>
-							<div>This is my comment</div>
-
-							<Divider />
 						</div>
 					)}
 				/>
-				,
 			</div>
 		);
 	}
 }
 
-const mapStateToProps = state => ({
-	
-});
-
-Feed.propTypes = {
-	
+const mapStateToProps = (state, props) => {
+	return {
+		...state,
+		...props
+	};
 };
 
-<<<<<<< Updated upstream
-export default connect(mapStateToProps, {  })(Feed);
-=======
+const mapActionToProps = (dispatch, props) => {
+	return bindActionCreators(
+		{
+			getQuestionsAnswersForFeed
+			
+		},
+		dispatch
+	);
+};
+
 export default connect(
 	mapStateToProps,
 	mapActionToProps
 )(Feed);
-
->>>>>>> Stashed changes
