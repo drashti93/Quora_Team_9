@@ -79,7 +79,7 @@ export function saveAboutMe(user_id, text) {
 }
 
 export function saveName(firstName, lastName, user_id) {
-    console.log("In save about me");
+    console.log("In save name");
     console.log(user_id, firstName, lastName);
     return function(dispatch){
         axios.post("http://localhost:3001/users/name", {
@@ -94,6 +94,86 @@ export function saveName(firstName, lastName, user_id) {
             })
             .catch(function (error) {
                 dispatch({type: "NAME_FAILURE",payload: false})
+            });
+    }
+}
+
+export function getQuestionsAsked(user_id) {
+    console.log("In ask questions");
+    console.log(user_id);
+    return function(dispatch){
+        axios.get("http://localhost:3001/users/questionsAsked/"+user_id, {
+            
+        })
+            .then(function (response) {
+                
+                if(response.status===200) {
+
+                    dispatch({ type: "QUESTION_ASKED_SUCCESS", payload: response.data })
+                }
+            })
+            .catch(function (error) {
+                dispatch({type: "QUESTION_ASKED_FAILURE",payload: false})
+            });
+    }
+}
+
+export function getQuestionsAnswered(user_id) {
+    console.log("In get answers");
+    console.log(user_id);
+    return function(dispatch){
+        axios.get("http://localhost:3001/users/questionsAnswered/"+user_id, {
+            
+        })
+            .then(function (response) {
+                
+                if(response.status===200) {
+                    console.log(response);
+                    dispatch({ type: "QUESTION_ANSWERED_SUCCESS", payload: response.data })
+                }
+            })
+            .catch(function (error) {
+                dispatch({type: "QUESTION_ANSWERED_FAILURE",payload: false})
+            });
+    }
+}
+
+export function getFollowers(user_id) {
+    console.log("In get followers");
+    console.log(user_id);
+    return function(dispatch){
+        axios.get("http://localhost:3001/users/followers/"+user_id, {
+            
+        })
+            .then(function (response) {
+                
+                if(response.status===200) {
+                    console.log(response);
+                    dispatch({ type: "FOLLOWERS_SUCCESS", payload: response.data })
+                }
+            })
+            .catch(function (error) {
+                dispatch({type: "FOLLOWERS_FAILURE",payload: false})
+            });
+    }
+}
+
+export function getFollowing(user_id) {
+    console.log("In get following");
+    console.log(user_id);
+    return function(dispatch){
+        axios.get("http://localhost:3001/users/following/"+user_id, {
+            
+        })
+            .then(function (response) {
+                
+                if(response.status===200) {
+                    console.log(response);
+                    dispatch({ type: "FOLLOWING_SUCCESS", payload: response.data })
+                }
+            })
+            .catch(function (error) {
+                dispatch({type: "FOLLOWING_FAILURE",payload: false})
             });
     }
 }

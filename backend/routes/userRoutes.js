@@ -575,7 +575,7 @@ router.post('/credentials', function(req, res){
 	var user_id = req.body.user_id;
 	var credId = req.body.credId;
 	var kind = req.body.kind;
-	if(kind === "update"){
+	if(kind == "update"){
 		if (type == "employment") {
 			var position = req.body.position;
 			var company = req.body.company;
@@ -651,7 +651,7 @@ router.post('/credentials', function(req, res){
 	});
 		}
 	}
-	else if(kind === "save"){
+	else if(kind == "save"){
 	if (type == "employment") {
 		var position = req.body.position;
 		var company = req.body.company;
@@ -790,7 +790,7 @@ router.get("/:userId/feed", async (request, response) => {
 
 
 router.post("/aboutMe", function(req, res){
-	
+	console.log("In save about me")
 	var user_id = req.body.user_id;
 	var aboutMe = req.body.text;
 	console.log(user_id, aboutMe);
@@ -804,7 +804,7 @@ router.post("/aboutMe", function(req, res){
 });
 
 router.post("/name", function(req, res){
-	
+	console.log("In save name")
 	var user_id = req.body.user_id;
 	var firstName = req.body.firstName;
 	var lastName = req.body.lastName;
@@ -817,4 +817,83 @@ router.post("/name", function(req, res){
 		}
 	})
 })
+
+router.get("/questionsAsked/:user_id", function(req, res){
+	console.log("In questions");
+	var user_id = req.params.user_id;
+	console.log(user_id);
+	QuestionModel.find({userId: user_id}, function(err, results){
+		if(err){
+			res.status(400);
+		} else {
+			console.log(results);
+			res.status(200).json({results});
+		}
+	})
+})
+
+router.get("/questionsAnswered/:user_id", function(req, res){
+	console.log("In answers");
+	var user_id = req.params.user_id;
+	var ques = [];
+	console.log(user_id);
+	AnswerSchema.find({userId: user_id}, function(err, results){
+		if(err){
+			res.status(400);
+		} else {
+			console.log(results);
+			for(answer of results){
+				console.log(answer);
+				QuestionModel.find({answerId: answer._id}, function(err, results1){
+					console.log(results1);
+					ques.push(results1.questionText)
+				})
+			}
+			res.status(200).json({results, ques});
+		}
+	})
+})
+
+router.get("/followers/:user_id", function(req, res){
+	console.log("In get followers");
+	var user_id = req.params.user_id;
+	var user_followers = [];
+	console.log(user_id);
+	UserSchema.find({_id: user_id}, function(err, results){
+		if(err){
+			res.status(400);
+		} else {
+			console.log(results);
+			for(follower in results.followers){
+				UserSchema.find({_id: follower.userId}, function(err, results){
+					var name = results.firstName + " " + results.lastName;
+					user_followers.push(name);
+				})
+			}
+			res.status(200).json({user_followers});
+		}
+	})
+})
+
+router.get("/following/:user_id", function(req, res){
+	console.log("In get following");
+	var user_id = req.params.user_id;
+	var user_following = [];
+	console.log(user_id);
+	UserSchema.find({_id: user_id}, function(err, results){
+		if(err){
+			res.status(400);
+		} else {
+			console.log(results);
+			for(following in results.following){
+				UserSchema.find({_id: following.userId}, function(err, results){
+					var name = results.firstName + " " + results.lastName;
+					user_following.push(name);
+				})
+			}
+			res.status(200).json({user_following});
+		}
+	})
+})
+
 module.exports = router;

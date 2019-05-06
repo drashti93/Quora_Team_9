@@ -9,11 +9,15 @@ import Navigationbar from '../navbar/Navigationbar'
 import user_img from "../../resources/images/user.png"
 import "../../resources/css/profile.css"
 import Feed from '../feed/Feed'
+import Questions from './profileQuestions'
+import Answers from './profileAnswers'
 import * as actions from '../../actions/profileActions';
 import ReactQuill from 'react-quill'; 
 import 'react-quill/dist/quill.snow.css';
 import ModalHeader from 'react-bootstrap/ModalHeader';
 import { start } from 'repl';
+import {List, Card} from "antd";
+import { Cookie } from 'cookiejar';
 
 class Profile extends Component {
 
@@ -56,10 +60,13 @@ class Profile extends Component {
      hideCareer: true,
      hideEducation: true,
      hideAddress: true,
-     career: "",
-     education: "",
-     address: "",
-     credentials: "",
+     career: [],
+     education: [],
+     address: [],
+     credentials: {},
+     hidelist: true,
+     followers: [],
+     following: [],
     }
 
     this.handleShow = this.handleShow.bind(this);
@@ -77,6 +84,7 @@ class Profile extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleChangeFN = this.handleChangeFN.bind(this);
     this.handleChangeLN = this.handleChangeLN.bind(this);
+    this.onChangePosition = this.onChangePosition.bind(this);
   }
 
   handleClose() {
@@ -127,17 +135,20 @@ class Profile extends Component {
       console.log('id is:');
       console.log(cookie.load('cookie').id);
       this.props.getUserDetails(cookie.load('cookie').id)
+      this.props.getFollowers(cookie.load('cookie').id)
+      this.props.getFollowing(cookie.load('cookie').id)
   }
 
   componentWillReceiveProps(newProps){
+      console.log(newProps)
       this.setState({
           aboutMe: newProps.aboutMe,
           firstName: newProps.firstName,
           lastName: newProps.lastName,
-        //   credentials: newProps.credentials,
+          credentials: newProps.credentials,
         //   career: newProps.career,
-        //   education: newProps.credentials.education,
-        //   location: newProps.credentials.location,
+        //   education: newProps.education,
+        //   address: newProps.address,
       })
   }
   onChangePosition(e){
@@ -263,14 +274,14 @@ class Profile extends Component {
                                     <input type="text" hidden={this.state.hideEditorName} value={this.state.lastName} onChange={this.handleChangeLN}></input>
                                     {/* <h3>{this.props.userDetails.firstName} {this.props.userDetails.lastName}</h3> */}
                                     <button hidden={this.state.hideEditorName} onClick={() => this.setState({hideEditorName: true})}>Cancel</button>
-                                    <button hidden={this.state.hideEditorName} onClick={this.props.saveName(this.state.firstName, this.state.lastName, cookie.load('cookie').id)}>Update</button>
+                                    <button hidden={this.state.hideEditorName} onClick={() => this.props.saveName(this.state.firstName, this.state.lastName, cookie.load('cookie').id)}>Update</button>
                                     <button hidden={!this.state.hideEditorName} onClick={() => this.setState({hideEditorName: false})}>Edit</button>
                                     <p hidden={!this.state.hideEditor}>{this.props.userDetails.aboutMe ? this.props.userDetails.aboutMe : <a onClick={() => this.setState({hideEditor: false})}>Write a description about yourself</a>}</p>
                                     <span>{this.props.userDetails.aboutMe ? <button onClick={() => this.setState({hideEditor: false})}>Edit</button> : ""}</span>
                                     <div>
                                         <input type="text" value={this.state.aboutMe} onChange={this.handleChange} hidden={this.state.hideEditor}/>
                                         <button onClick={() => this.setState({hideEditor: true})} hidden={this.state.hideEditor}>Cancel</button>
-                                        <button type="button" hidden={this.state.hideEditor} onClick={this.props.saveAboutMe(cookie.load('cookie').id, this.state.aboutMe)}>Update</button>
+                                        <button hidden={this.state.hideEditor} onClick={() => this.props.saveAboutMe(cookie.load('cookie').id, this.state.aboutMe)}>Update</button>
                                     </div>
                                     <p>{this.props && this.props.followers ? (this.props.followers).length : 0} followers</p>
                                 </div>
@@ -301,7 +312,7 @@ class Profile extends Component {
                                                 <div className="tab_details">
                                                     <h6>{ this.state.selectedTab }</h6>
                                                 </div>
-                                                <Feed></Feed>
+                                                <Answers user={cookie.load('cookie').id}></Answers>
                                             </div>
                                             :
                                             <span></span>
@@ -312,7 +323,7 @@ class Profile extends Component {
                                                 <div className="tab_details">
                                                     <h6>{ this.state.selectedTab }</h6>
                                                 </div>
-                                                <Feed></Feed>
+                                                <Questions user={cookie.load('cookie').id}></Questions>
                                             </div>
                                             :
                                             <span></span>
@@ -323,7 +334,7 @@ class Profile extends Component {
                                                 <div className="tab_details">
                                                     <h6>{ this.state.selectedTab }</h6>
                                                 </div>
-                                                <Feed></Feed>
+                                                <Answers user={cookie.load('cookie').id}></Answers>
                                             </div>
                                             :
                                             <span></span>
@@ -334,7 +345,15 @@ class Profile extends Component {
                                                 <div className="tab_details">
                                                     <h6>{this.props && this.props.followers ? (this.props.followers).length : 0} followers</h6>
                                                 </div>
-                                                <Feed></Feed>
+                                                <List
+                                                    grid={{ gutter: 16, column: 2 }}
+                                                    dataSource={this.props.followers}
+                                                    renderItem={item => (
+                                                    <List.Item>
+                                                        <Card title={item}>Card content</Card>
+                                                    </List.Item>
+                                                    )}
+                                                />
                                             </div>
                                             :
                                             <span></span>
@@ -345,7 +364,15 @@ class Profile extends Component {
                                                 <div className="tab_details">
                                                     <h6>{this.props && this.props.following ? (this.props.following).length : 0} following</h6>
                                                 </div>
-                                                <Feed></Feed>
+                                                <List
+                                                    grid={{ gutter: 16, column: 2 }}
+                                                    dataSource={this.props.following}
+                                                    renderItem={item => (
+                                                    <List.Item>
+                                                        <Card title={item}>Card content</Card>
+                                                    </List.Item>
+                                                    )}
+                                                />
                                             </div>
                                             :
                                             <span></span>
@@ -373,22 +400,27 @@ class Profile extends Component {
                                 <Modal show={this.state.show4} onHide={this.handleClose4}>
                                     <ModalHeader closeButton><ModalTitle>Edit Credentials</ModalTitle></ModalHeader>
                                     <ModalBody>
-                                        <a>Add Credentials</a>
+                                        <a onClick={() => this.setState({hidelist: false})}>Add Credentials</a>
+                                        <ul hidden={this.state.hidelist}>
+                                            <li onClick={this.handleShow1}>Employment</li>
+                                            <li onClick={this.handleShow2}>Education</li>
+                                            <li onClick={this.handleShow3}>Location</li>
+                                        </ul>
                                         <ul>
                                         {
                                             this.props.userDetails.credentials && this.props.userDetails.credentials.career ? this.props.userDetails.credentials.career.map((career, index) => {
                                                return(
                                                    <div>
                                                     <li>{career.position}</li>
-                                                    <button onClick={() => this.setState({hideCareer: false})} hidden={!this.state.hideCareer}>Edit</button>
+                                                    {/* <button onClick={() => this.setState({hideCareer: false})} hidden={!this.state.hideCareer}>Edit</button>
                                                     <div hidden={this.state.hideCareer}>
-                                                        <input type="text" value={this.props.userDetails.credentials.career[index].position} onChange={this.onChangePosition.bind(this)}></input>
-                                                        <input type="text" value={this.props.userDetails.credentials.career[index].company} onChange={this.onChangeCompany.bind(this)}></input>
-                                                        <input type="select" value={this.props.userDetails.credentials.career[index].startDate} onChange={this.onChangeCareerStart.bind(this)}></input>
-                                                        <input type="select" value={this.props.userDetails.credentials.career[index].endDate} onChange={this.onChangeCareerEnd.bind(this)}></input>
-                                                        <input type="checkbox" value={this.props.userDetails.credentials.career[index].isCurrent} onChange={this.onChangeCurrentCompany.bind(this)}></input>
-                                                        <button onClick={this.saveCredentialsInternal(career._id, "employment", "update")}>Save</button>
-                                                    </div>
+                                                        <input type="text" name="position" value={this.state.credentials.career[index].position} onChange={this.onChangePosition.bind(this)}></input>
+                                                        <input type="text" name="company" value={this.state.credentials.career[index].company} onChange={this.onChangeCompany.bind(this)}></input>
+                                                        <input type="select" name="careerStart" value={this.state.credentials.career[index].startDate} onChange={this.onChangeCareerStart.bind(this)}></input>
+                                                        <input type="select" name="careerEnd" value={this.state.credentials.career[index].endDate} onChange={this.onChangeCareerEnd.bind(this)}></input>
+                                                        <input type="checkbox" value={this.state.credentials.career[index].isCurrent} onChange={this.onChangeCurrentCompany.bind(this)}></input>
+                                                        <button onClick={() => this.saveCredentialsInternal(career._id, "employment", "update")}>Save</button>
+                                                    </div> */}
                                                     </div>
                                                )  
                                             }) : ""
@@ -603,6 +635,12 @@ function mapStatetoProps(state) {
         firstName: state.profile.userDetails.firstName,
         lastName: state.profile.userDetails.lastName,
         aboutMe: state.profile.userDetails.aboutMe,
+        credentials: state.profile.userDetails.credentials,
+        followers: state.profile.followers,
+        following: state.profile.following,
+        // career: state.profile.userDetails.credentials.career,
+        // education: state.profile.userDetails.credentials.education,
+        // address: state.profile.userDetails.credentials.location,
     }
 }
 
@@ -615,9 +653,9 @@ function mapDispatchToProps(dispatch) {
       school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation) => dispatch(actions.saveCredentials(id, credId, type, kind, position, company, careerStart, careerEnd, currentCompany,
       school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation)),
         saveAboutMe: (user_id, text) => dispatch(actions.saveAboutMe(user_id, text)),
-        saveName: (firstName, lastName, user_id) => dispatch(actions.saveAboutMe(firstName, lastName, user_id)),
-        // updateCareerCredentials:(id, position, company, careerStart, careerEnd, currentCompany) => dispatch(updateCareerCredentials(id, position, company, careerStart, careerEnd, currentCompany)),
-
+        saveName: (firstName, lastName, user_id) => dispatch(actions.saveName(firstName, lastName, user_id)),
+        getFollowers: (user_id) => dispatch(actions.getFollowers(user_id)),
+        getFollowing: (user_id) => dispatch(actions.getFollowing(user_id)),
     };
 }
 
