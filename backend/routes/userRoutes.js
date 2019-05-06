@@ -256,6 +256,34 @@ router.put('/:userId/follow/enable', async (request, response) => {
 	}
 });
 
+//Get topics followed by a user
+router.get('/:userId/topics', async(request, response) => {
+	console.log(`\n\nInside GET /users/:userId/topics`);
+	try {
+		let userDocument = await UserSchema
+			.findOne({ _id: request.params.userId })
+			.populate("topicsFollowed");
+		if(userDocument) {
+			console.log(`Sucessfully fetched topics for user ${request.params.userId}:\n ${userDocument}`);
+			response.status(200).json(userDocument.topicsFollowed);
+		} else {
+			console.log(`User ${request.params.userId} not found`);
+			response
+				.status(404)
+				.json({ messgage: `User ${request.params.userId} not found` });
+		}
+	} catch (error) {
+		response
+			.status(500)
+			.json({
+				error: error,
+				message: `Error while fetching topics followed for the user ${
+					request.params.userId
+				}`
+			});
+	}
+});
+
 //Disable user follow
 router.put('/:userId/follow/disable', async (request, response) => {
 
