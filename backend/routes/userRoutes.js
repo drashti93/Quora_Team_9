@@ -738,7 +738,6 @@ router.post('/credentials', function(req, res){
 });
 
 //GET ALL QUESTIONS THAT USER IS FOLLOWING (FOR FEED)
-
 router.get("/:userId/questions", async (req, res) => {
 	try {
 		let userId = req.params.userId;
@@ -774,6 +773,8 @@ router.get("/:userId/questions", async (req, res) => {
 // GET ALL QUESTIONS FOR ALL TOPICS FOLLOWED BY A USER (FOR FEED)
 router.get("/:userId/feed", async (request, response) => {
 
+	console.log(`\n\nInside GET /users/:userId/feed`);
+
 	const questionResult = []
 
 	try {
@@ -784,18 +785,22 @@ router.get("/:userId/feed", async (request, response) => {
 		// console.log("Topics followed by the user: ", user.topicsFollowed);
 
 		if(user) {
+
 			for (const topic of user.topicsFollowed) {
 				let questions = await QuestionModel.find({ topicsArray: topic })
-				.populate({
-					path: "answers",
-					populate: {
-						path: "upvotes downvotes bookmarks comments"
-					}
-				})
-				.exec();
-				// console.log("questions: ", questions);
+					.populate({
+						path: "answers",
+						populate: {
+							path: "upvotes downvotes bookmarks comments userId"
+						}
+					})
+					.exec();
+
+				// console.log("\n\n\n\n\n\nquestions: \n", JSON.stringify(questions));
 				for(const qstn of questions) {
-					qstn.answers.legth = 1;
+					if(qstn.answers.length > 1) {
+						qstn.answers.length = 1;
+					}
 					questionResult.push(qstn)
 				}
 				// console.log("questionResult: ", questionResult);

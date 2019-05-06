@@ -60,7 +60,7 @@ class TopicBar extends Component {
 					renderItem={item => (
 						<List.Item>
 							<a href="/">
-								{<Icon type="read" />} {item.name} >
+								{<Icon type="read" />} {item.name}
 							</a>
 						</List.Item>
 					)}
