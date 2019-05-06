@@ -18,3 +18,4 @@ export const getQuestionsAnswersForFeed = () => dispatch => {
 		console.log(`Something wrong in questionActions->getQuestionsAnswersForFeed(): ${error}`);
 	});
 }
+

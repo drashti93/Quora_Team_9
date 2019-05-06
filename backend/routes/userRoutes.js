@@ -573,6 +573,85 @@ router.post('/credentials', function(req, res){
 	console.log("Adding credentials");
 	var type = req.body.type;
 	var user_id = req.body.user_id;
+	var credId = req.body.credId;
+	var kind = req.body.kind;
+	if(kind == "update"){
+		if (type == "employment") {
+			var position = req.body.position;
+			var company = req.body.company;
+			var startYear = parseInt(req.body.cstartYear, 10);
+			var endYear = parseInt(req.body.cendYear, 10);
+			var isCurrentString = req.body.cisCurrentString;
+			console.log(user_id, type, position, company, startYear, endYear, isCurrentString);
+			if(isCurrentString == "on"){
+				var isCurrent = true;
+			} else {
+				var isCurrent = false;
+			}
+			console.log(position, company, startYear, endYear, isCurrent);
+			UserSchema.updateOne({_id: user_id}, {$pull: {"credentials.career": {_id: credId}}}, function(err, results){
+				if(err){
+					res.status(400);
+				} else {
+					
+				
+			UserSchema.updateOne({_id: user_id}, {$push: {"credentials.career": {"position": position, "company": company, "startDate": startYear, "endDate": endYear, "isCurrent": isCurrent}}}, function(err, results){
+				if(err){
+					res.status(400);
+				} else {
+					res.status(200).json({});
+				}
+			});
+		}
+	});
+		} else if (type == "education") {
+			var school = req.body.school;
+			var concentration = req.body.concentration;
+			var secConcentration = req.body.secConcentration;
+			var degree = req.body.degree;
+			var graduationYear = parseInt(req.body.graduationYear,10);
+			UserSchema.updateOne({_id: user_id}, {$pull: {"credentials.education": {_id: credId}}}, function(err, results){
+				if(err){
+					res.status(400);
+				} else {
+			UserSchema.updateOne({_id: user_id}, {$push: {"credentials.education": {school: school, concentration: concentration, secConcentration: secConcentration, degree: degree, gradYear: graduationYear}}}, function(err, results){
+				if(err){
+					res.status(400);
+				} else {
+					res.status(200).json({});
+				}
+			});
+		}
+	});
+		} else if (type == "location") {
+			var street = req.body.street;
+			var city = req.body.city;
+			var state = req.body.state;
+			var zipcode = req.body.zipcode
+			var startYear = parseInt(req.body.lstartYear,10);
+			var endYear = parseInt(req.body.lendYear,10);
+			var isCurrentString = req.body.lisCurrentString;
+			if (isCurrentString == "on") {
+				var isCurrent = true;
+			} else {
+				var isCurrent = false;
+			}
+			UserSchema.updateOne({_id: user_id}, {$pull: {"credentials.address": {_id: credId}}}, function(err, results){
+				if(err){
+					res.status(400);
+				} else {
+			UserSchema.updateOne({_id: user_id}, {$push: {"credentials.address": {street: street, city: city, state: state, zipcode: zipcode, startDate: startYear, endDate: endYear, isCurrent: isCurrent}}}, function(err, results){
+				if(err){
+					res.status(400);
+				} else {
+					res.status(200).json({});
+				}
+			});
+		}
+	});
+		}
+	}
+	else if(kind == "save"){
 	if (type == "employment") {
 		var position = req.body.position;
 		var company = req.body.company;
@@ -627,6 +706,7 @@ router.post('/credentials', function(req, res){
 			}
 		});
 	}
+}
 });
 
 //GET ALL QUESTIONS THAT USER IS FOLLOWING (FOR FEED)
@@ -710,7 +790,7 @@ router.get("/:userId/feed", async (request, response) => {
 
 
 router.post("/aboutMe", function(req, res){
-	
+	console.log("In save about me")
 	var user_id = req.body.user_id;
 	var aboutMe = req.body.text;
 	console.log(user_id, aboutMe);
@@ -724,7 +804,7 @@ router.post("/aboutMe", function(req, res){
 });
 
 router.post("/name", function(req, res){
-	
+	console.log("In save name")
 	var user_id = req.body.user_id;
 	var firstName = req.body.firstName;
 	var lastName = req.body.lastName;
@@ -737,4 +817,83 @@ router.post("/name", function(req, res){
 		}
 	})
 })
+
+router.get("/questionsAsked/:user_id", function(req, res){
+	console.log("In questions");
+	var user_id = req.params.user_id;
+	console.log(user_id);
+	QuestionModel.find({userId: user_id}, function(err, results){
+		if(err){
+			res.status(400);
+		} else {
+			console.log(results);
+			res.status(200).json({results});
+		}
+	})
+})
+
+router.get("/questionsAnswered/:user_id", function(req, res){
+	console.log("In answers");
+	var user_id = req.params.user_id;
+	var ques = [];
+	console.log(user_id);
+	AnswerSchema.find({userId: user_id}, function(err, results){
+		if(err){
+			res.status(400);
+		} else {
+			console.log(results);
+			for(answer of results){
+				console.log(answer);
+				QuestionModel.find({answerId: answer._id}, function(err, results1){
+					console.log(results1);
+					ques.push(results1.questionText)
+				})
+			}
+			res.status(200).json({results, ques});
+		}
+	})
+})
+
+router.get("/followers/:user_id", function(req, res){
+	console.log("In get followers");
+	var user_id = req.params.user_id;
+	var user_followers = [];
+	console.log(user_id);
+	UserSchema.find({_id: user_id}, function(err, results){
+		if(err){
+			res.status(400);
+		} else {
+			console.log(results);
+			for(follower in results.followers){
+				UserSchema.find({_id: follower.userId}, function(err, results){
+					var name = results.firstName + " " + results.lastName;
+					user_followers.push(name);
+				})
+			}
+			res.status(200).json({user_followers});
+		}
+	})
+})
+
+router.get("/following/:user_id", function(req, res){
+	console.log("In get following");
+	var user_id = req.params.user_id;
+	var user_following = [];
+	console.log(user_id);
+	UserSchema.find({_id: user_id}, function(err, results){
+		if(err){
+			res.status(400);
+		} else {
+			console.log(results);
+			for(following in results.following){
+				UserSchema.find({_id: following.userId}, function(err, results){
+					var name = results.firstName + " " + results.lastName;
+					user_following.push(name);
+				})
+			}
+			res.status(200).json({user_following});
+		}
+	})
+})
+
 module.exports = router;
