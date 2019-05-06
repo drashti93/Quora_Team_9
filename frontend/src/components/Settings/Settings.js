@@ -12,7 +12,7 @@ import axios from 'axios';
 
 import TopicBar from '../topics/topic'
 // import user_img from "../../resources/images/user.png"
-// import "../../resources/css/settings.css"
+import "../../resources/css/settings.css"
 import Feed from '../feed/Feed'
 import * as actions from '../../actions/profileActions';
 
@@ -97,15 +97,15 @@ export class Settings extends Component{
                     <div className="col-lg-2 col-md-2 col-xs-12 left-stick">
                         <Row>
                             {/* <Col id="list_of_actions" xs={3}> */}
-                                <div id="feeds_title">
+                                <div id="settings_title">
                                     <h6>Settings</h6>
                                 </div>
-                                <div id="feeds_options">
+                                <div id="settings_options">
                                     {
                                         this.state.settings_options.map((option,index) => {
                                             return <div  onClick={() => {
                                                 this.setState({selectedTab : option})
-                                            }} className="single-feeds-option" key={index}>
+                                            }} className="single-settings-option" key={index}>
                                                 <span>{option}</span>
                                             </div>
                                         })
@@ -122,19 +122,18 @@ export class Settings extends Component{
                     </div>
                         <div className="col-lg-8 col-md-8 col-xs-12">
                             <div>
-                                {/* <Row> */}
+                                <Row id="settings_inner_title">
                                 <h6>Account Settings</h6>
-                                {/* </Row> */}
-                                <hr />
+                                </Row>
                                 <span>
-                                    {/* <Row> */}
+                                    <Row>
                                         <p>Enable Follow</p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <Switch defaultChecked onChange={this.onFollowToggle} />
-                                    {/* </Row>
-                                    <Row> */}
+                                    </Row>
+                                    <Row>
                                         <p>Activate/Deactivate Account</p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <Switch defaultChecked onChange={this.onActivationToggle} />
-                                    {/* </Row> */}
+                                    </Row>
                                 </span>
                             </div>
                         </div>
