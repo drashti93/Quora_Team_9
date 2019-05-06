@@ -76,9 +76,9 @@ export class Feed extends Component {
 		const body = {
 			//TODO: Remove hardcoding of uer_id and comment
 			"userId": "5cc3f69dd23457601476d016",
-			"answer_id": answerId,
+			"answerId": answerId,
 		}
-		console.log(answerId)
+		console.log(body)
 		axios.defaults.withCredentials = true;
 		axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/answers/bookmark`,body)
 		.then(response =>{

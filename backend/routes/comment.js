@@ -34,6 +34,9 @@ comment.post('/comment', async (req, res) => {
                 }
             }
         });
+        console.log(req.body)
+
+        console.log(result)
         res.status(200).json({});
     } catch(error) {
         res.send(error);
