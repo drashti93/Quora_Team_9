@@ -1,14 +1,19 @@
-import {combineReducers} from 'redux';
-import {LOGOUT_USER} from "../actions/loginActions";
-import loginReducer from './loginReducer';
-import signupReducer from './signupReducer';
-import profileReducer from './profileReducer';
-import navbarReducer from './navbarReducer';
-const rootReducers=combineReducers({
-    login:loginReducer,
-    signup:signupReducer,
-    profile: profileReducer,
-    navbar:navbarReducer,
+import { combineReducers } from "redux";
+import { LOGOUT_USER } from "../actions/loginActions";
+import loginReducer from "./loginReducer";
+import signupReducer from "./signupReducer";
+import profileReducer from "./profileReducer";
+import navbarReducer from "./navbarReducer";
+import questionReducer from "./questionReducer";
+import topicReducer from "./topicReducer"
+
+const rootReducers = combineReducers({
+	login: loginReducer,
+	signup: signupReducer,
+	profile: profileReducer,
+	navbar: navbarReducer,
+	question: questionReducer,
+	topicfeed: topicReducer
 });
 
 const allReducers = (state, action) => {

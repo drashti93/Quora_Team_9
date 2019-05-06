@@ -10,6 +10,9 @@ import {applyMiddleware,compose,createStore} from 'redux';
 import {Provider} from 'react-redux';
 import allReducers from "./reducers/allReducers";
 
+import Searchpage from "./components/searchpage/searchpage";
+import userProfile from "./components/profile/userProfile";
+import TopicFeed from './components/topicfeed/topicfeed';
 // const allStoreEnchancers=compose(
 //     applyMiddleware(thunk),
 //     // window.devToolsExtension && window.devToolsExtension()
@@ -40,7 +43,11 @@ class App extends Component {
                 <Route exact path="/" component={Main}></Route>
                 <Route path="/login" component={Login}></Route>
                 <Route path="/signup" component={Signup}></Route>
-                <Route path="/profile" component={Profile}></Route>
+                <Route exact path="/profile" component={Profile}></Route>
+                <Route path="/profile/:user_id" component={userProfile}></Route> 
+                <Route path="/search/:text" component={Searchpage}></Route> 
+                <Route exact path="/" component={Main}></Route>
+                <Route exact path="/topicwisefeed" component={TopicFeed}></Route>
                 </Switch>
               </BrowserRouter>
           </Provider>

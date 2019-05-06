@@ -88,43 +88,50 @@ answer.delete("/", async (req, res) => {
     }
 });
 
-answer.post("/answer/upvote", async (req, res) => {
-    try {
-        let { userId, questionId, answerId } = req.body;
-        let result = await AnswerModel.update({ _id: answerId }, {
-            $push:
-                { upvotes: userId }
-        });
-        res.status(200).json({});
-    } catch (error) {
-        res.send(error);
-    }
+answer.post("/:answerId/upvote", async (req, res) => {   
+	try {
+		let { userId } = req.body;
+		let result = await AnswerModel.update(
+			{ _id: req.params.answerId },
+			{
+				$push: { upvotes: userId }
+			}
+		);
+		res.status(200).json({});
+	} catch (error) {
+		res.send(error);
+	}
 });
 
-answer.post("/answer/downvote", async (req, res) => {
-    try {
-        let { userId, questionId, answerId } = req.body;
-        let result = await AnswerModel.update({ _id: answerId }, {
-            $push:
-                { downvotes: userId }
-        });
-        res.status(200).json({});
-    } catch (error) {
-        res.send(error);
-    }
-});
+answer.post("/:answerId/downvote", async (req, res) => {
+	try {
+		let { userId } = req.body;
+		let result = await AnswerModel.update(
+			{ _id: req.params.answerId },
+		
+			{
+				$push: { downvotes: userId }
+			}
+		);
+		res.status(200).json({});
+	} catch (error) {
+		res.send(error);
+	}
+});  
 
-answer.post("/answer/bookmark", async (req, res) => {
-    try {
-        let { userId, questionId, answerId } = req.body;
-        let result = await AnswerModel.update({ _id: answerId }, {
-            $push:
-                { bookmarks: userId }
-        });
-        res.status(200).json({});
-    } catch (error) {
-        res.send(error);
-    }
+answer.post("/bookmark", async (req, res) => {
+	try {
+		let { userId, questionId, answerId } = req.body;
+		let result = await AnswerModel.update(
+			{ _id: answerId },
+			{
+				$push: { bookmarks: userId }  
+			}
+		);
+		res.status(200).json({});
+	} catch (error) {
+		res.send(error);
+	}
 });
 
 // answer.get("/:userId/answers", async(req, res) => {

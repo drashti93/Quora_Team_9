@@ -23,10 +23,10 @@ comment.delete("/", async (req, res) => {
     }
 });
 
-comment.post('/comment', async (req, res) => {
+comment.post('/comment', async (req, res) => { 
     try {
-        let { answerId, userId, comment } = req.body;
-        let result = await AnswerModel.updateOne({_id: answerId}, {
+        let { answer_id, userId, comment } = req.body;
+        let result = await AnswerModel.updateOne({_id: answer_id}, {
             $push: {
                 comments: {
                 userId: userId,
@@ -34,8 +34,9 @@ comment.post('/comment', async (req, res) => {
                 }
             }
         });
+        console.log(result)
         res.status(200).json({});
-    } catch(error) {
+    } catch(error) { 
         res.send(error);
     }
 })
