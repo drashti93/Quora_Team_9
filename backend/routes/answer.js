@@ -8,12 +8,12 @@ var kafka = require("../kafka/client");
 var client = require("../resources/redis");
 
 answer.get("/:question_id/answers", urlencodedParser, function(req, res) {
-	client.get("answersKey", function(err, results) {
-		if (results) {
-			res.json({ answers: results });
+	// client.get("answersKey", function(err, results) {
+	// 	if (results) {
+	// 		res.json({ answers: results });
 
-			res.end();
-		} else {
+	// 		res.end();
+	// 	} else {
 			var question_id = req.params.question_id;
 			console.log(
 				"Inside get all answers request. Question id: " + question_id
@@ -30,16 +30,17 @@ answer.get("/:question_id/answers", urlencodedParser, function(req, res) {
 						msg: "System Error, Try Again."
 					});
 				} else {
-					console.log("Inside else");
-					client.set("answersKey", results);
-					res.json({ answers: results });
+					//console.log("Inside else");
+					// client.set("answersKey", results);
+					res.status(200).json({ answers: results });
 
 					res.end();
 				}
 			});
-		}
+		// }
 	});
-});
+// }
+// );
 
 //to add an answer
 answer.post("/", async (req, res) => {

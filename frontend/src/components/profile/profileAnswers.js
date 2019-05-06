@@ -3,18 +3,28 @@ import cookie from "react-cookies";
 import { Redirect } from "react-router";
 import { List, Avatar, Icon, Divider, Tooltip, Skeleton } from "antd";
 import { connect } from "react-redux";
-import {bindActionCreators} from 'redux';
-import { getQuestionsAnswersForFeed } from "../../actions/questionActions";
-import {Link} from "react-router-dom";
-
+import Comments from "../comments/Comments"
+import * as actions from "../../actions/profileActions"
 import axios from "axios";
-import Comments from "../comments/Comments";
 
-export class Feed extends Component {
+export class ProfileAnswers extends Component {
 
+    constructor(props){
+        super(props);
+        this.state={
+            answers: "",
+            user_id: "",
+        }
+    }
 	componentDidMount() {
-		this.props.getQuestionsAnswersForFeed();
-	}
+		// if(this.props.match.params.user_id){
+		// 	this.props.getQuestionsAnswered(this.props.match.params.user_id);
+		// }
+		// else{
+		// 	this.props.getQuestionsAnswered(cookie.load('cookie').id);
+		// }
+		this.props.getQuestionsAnswered(this.props.user)
+	}	
 
 	handleAnswerUpvote = (answerId) => {
 		console.log(`In handleUpvote: answerId - ${answerId}`);
@@ -38,31 +48,11 @@ export class Feed extends Component {
 		}).catch(error => {
 			console.log(`Upvoting answer failed: questionActions->getQuestionsAnswersForFeed() - ${error}`);
 		});
+
 	}
 
 	handleAnswerDownvote = (answerId) => {
 		console.log(`In handleDownvote: answerId - ${answerId}`);
-
-		console.log(`In handleDownvote: answerId - ${answerId}`);
-		const body = {
-			//TODO: Remove hardcoding
-			"userId": "5cc3f69dd23457601476d016"
-		}
-
-		axios.defaults.withCredentials = true;
-		axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/answers/${answerId}/downvote`, body)
-		.then(response => {
-			console.log(`Response: ${response}`);
-			if(response.status === 200){
-				console.log(`downvoted answer successfully questionActions->getQuestionsAnswersForFeed(): ${response.data}`);
-				// dispatch({
-				// 	type: FEED,
-				// 	payload: response.data
-				// });
-			}
-		}).catch(error => {
-			console.log(`downvoting answer failed: questionActions->getQuestionsAnswersForFeed() - ${error}`);
-		});
 
 	}
 
@@ -72,27 +62,6 @@ export class Feed extends Component {
 	}
 	handleAnswerBookmarks = (answerId) => {
 		console.log(`In handleBookmarks: answerId - ${answerId}`);
-
-		const body = {
-			//TODO: Remove hardcoding of uer_id and comment
-			"userId": "5cc3f69dd23457601476d016",
-			"answer_id": answerId,
-		}
-		console.log(answerId)
-		axios.defaults.withCredentials = true;
-		axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/answers/bookmark`,body)
-		.then(response =>{
-			console.log(`Response: ${response}`);
-			if(response.status === 200){
-				console.log(`comment answer successfully questionActions->postCommentAnswersForFeed(): ${response.data}`);
-				// dispatch({
-				// 	type: FEED,
-				// 	payload: response.data
-				// });
-			}
-		}).catch(error =>{
-			console.log(`comments answer failed: questionActions->postCommentAnswersForFeed() - ${error}`)
-		})
 
 	}
 
@@ -125,7 +94,8 @@ export class Feed extends Component {
 						},
 						pageSize: 5
 					}}
-					dataSource={this.props.question.feed}
+                    
+					dataSource={this.props.answers.ques}
 					renderItem={question => (
 						<div>
 							<List.Item 
@@ -136,12 +106,11 @@ export class Feed extends Component {
 								]}
 							>
 								<List.Item.Meta
-								    key={question._id}
-									title = {<Link to = {`/${question._id}/answers`} target="_blank">{question.questionText}</Link>}
+									title={question.questionText}
 								/>
 								<List
 									itemLayout="vertical"
-									dataSource={question.answers}
+									dataSource={this.props.answers.results[0]}
 									renderItem={answer => (
 										<div>
 											<List.Item 
@@ -162,7 +131,7 @@ export class Feed extends Component {
 												/>
 												{answer.answerText}
 											</List.Item>
-											<Comments answerId={answer._id}/>
+											<Comments />
 										</div>
 									)}
 								/>
@@ -175,24 +144,17 @@ export class Feed extends Component {
 	}
 }
 
-const mapStateToProps = (state, props) => {
-	return {
-		...state,
-		...props
-	};
-};
+function mapStatetoProps(state) {
+    return{
+        answers: state.profile.questionsAnswered
+    }
+}
 
-const mapActionToProps = (dispatch, props) => {
-	return bindActionCreators(
-		{
-			getQuestionsAnswersForFeed
-			
-		},
-		dispatch
-	);
-};
+function mapDispatchToProps(dispatch) {
+    
+    return {
+        getQuestionsAnswered: (user_id) => dispatch(actions.getQuestionsAnswered(user_id))
+    };
+}
 
-export default connect(
-	mapStateToProps,
-	mapActionToProps
-)(Feed);
+export default connect(mapStatetoProps,mapDispatchToProps)(ProfileAnswers);
