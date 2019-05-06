@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 import {Layout, Container, Grid, Row, Col, Modal, ModalFooter, Button, Form} from 'react-bootstrap';
 import Navigationbar from '../navbar/Navigationbar'
 import { Switch } from 'antd';
+import { List } from 'antd';
 import axios from 'axios';
 
 
@@ -23,33 +24,68 @@ export class Content extends Component{
         this.state = {
             checkFollowState: true,
             checkActivationState: true,
-            settings_options: ["Questions Asked", "Topics Following", "Questions Following", "Bookmarked Answers"],
+            settings_options: ["Questions Asked", "Topics Following", "Questions Following"],
             selectedTab: "Questions Asked",
-            payload: "",
+            questionsAskedPayload: "",
+            topicsFollowingPayload: "",
+            questionsFollowingPayload: "",
+            // questionsAnsweredPayload: "",
             user_id: this.props.match.params.question_id,
         }
         
 
-        this.onQuestionsAsked = this.onQuestionsAsked.bind(this);
+        //this.onQuestionsAsked = this.onQuestionsAsked.bind(this);
+        this.userContentHandler = this.userContentHandler.bind(this);
     }
 
-    onQuestionsAsked(){
+    userContentHandler() {
         let data = cookie.load("cookie");
         let userId = data.id;
         console.log(userId);
+        if(this.state.selectedTab === "Questions Asked" )
+        {
         axios.get(`http://localhost:3001/users/questionsAsked/${userId}`).then(response =>{
             console.log("Status Code: ", response.status);
 				if (response.status === 200) {
-					console.log("Questions asked by users");
-					console.log(response.data.results[0].questionText);
+					console.log("Questions asked by the user");
+					console.log(response.data.results);
 					this.setState({
-						payload : response.data.results[0].questionText
+						questionsAskedPayload : response.data
+					});
+				} else {
+					console.log("Some error occurred in the backend");
+			}
+        })  } else if (this.state.selectedTab === "Topics Following")
+    {
+        axios.get(`http://localhost:3001/users/${userId}/topics`).then(response =>{
+            console.log("Status Code: ", response.status);
+				if (response.status === 200) {
+					console.log("Topics followed by the user");
+					console.log(response.data);
+					this.setState({
+						topicsFollowingPayload : response
 					});
 				} else {
 					console.log("Some error occurred in the backend");
 			}
         });
+    } else 
+    {
+        axios.get(`http://localhost:3001/users/${userId}/questions`).then(response =>{
+            console.log("Status Code: ", response.status);
+				if (response.status === 200) {
+					console.log("Questions followed by the user");
+					console.log(response.data);
+					this.setState({
+						questionsFollowingPayload : response
+					});
+				} else {
+					console.log("Some error occurred in the backend");
+			}
+        });
+     
     }
+}
 
     
     render() {
@@ -70,8 +106,8 @@ export class Content extends Component{
                                         this.state.settings_options.map((option,index) => {
                                             return <div  onClick={() => {
                                                 this.setState({selectedTab : option});
-                                            }} className="single-feeds-option" key={index}>
-                                                <span>{option}</span>
+                                            }}  className="single-feeds-option" key={index}>
+                                                <span onClick = {this.userContentHandler}>{option}</span>
                                             </div>
                                         })
                                     }
@@ -89,23 +125,37 @@ export class Content extends Component{
                     <div className="col-lg-8 col-md-8 col-xs-12">
                         <div>
                             {/* <Row> */}
-                            <h6>
                                 {
                                     this.state.selectedTab === "Questions Asked" ?
-                                        <div>
+                                        <div> 
                                             <div className="tab_details">
-                                                <h6 onClick = {this.onQuestionsAsked}>{ this.state.selectedTab }</h6>
+                                                <h6>{ this.state.selectedTab }</h6>
                                             </div>
-                                        </div>
-                                        :
-                                        <span></span>
-                                }
+                                           
+                               <List
+                                dataSource={this.state.questionsAskedPayload.results}
+                                renderItem={result => (
+                                <List.Item>
+                                    {result.questionText}
+                                </List.Item>)}
+                                />
+                                 </div> : <span></span>
+                                }      
+                                
+                                
                                 {
                                     this.state.selectedTab === "Topics Following" ?
                                         <div>
                                             <div className="tab_details">
                                                 <h6>{ this.state.selectedTab }</h6>
                                             </div>
+                                            <List
+                                dataSource={this.state.topicsFollowingPayload.data}
+                                renderItem={dataElement => (
+                                <List.Item>
+                                    {dataElement.name}
+                                </List.Item>)}
+                                />
                                         </div>
                                         :
                                         <span></span>
@@ -116,12 +166,21 @@ export class Content extends Component{
                                             <div className="tab_details">
                                                 <h6>{ this.state.selectedTab }</h6>
                                             </div>
-                                        </div>
-                                        :
-                                        <span></span>
+                                        <List
+                                        dataSource={this.state.questionsFollowingPayload.data}
+                                        renderItem={dataElement => (
+                                        <List.Item>
+                                            {dataElement.questionText}
+                                        </List.Item>)}
+                                        />
+                                         </div> : <span></span>
+                                              
+                                        
+                                        
+                                        
                                 }
-                                {
-                                    this.state.selectedTab === "Bookmarked Answers" ?
+                                {/* {
+                                    this.state.selectedTab === "Questions Answered" ?
                                         <div>
                                             <div className="tab_details">
                                                 <h6>{ this.state.selectedTab }</h6>
@@ -129,24 +188,22 @@ export class Content extends Component{
                                         </div>
                                         :
                                         <span></span>
-                                }
-                            </h6>
+                                } */}
+                            
                             {/* </Row> */}
                             <span>
-                                <Row>
-                                    {this.state.payload}
-                                </Row>
+                                
                                 <hr />
                                 {/* <Row> */}
-                                    <p>Activate/Deactivate Account</p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <Switch defaultChecked onChange={this.onActivationToggle} />
+                                    {/* <p>Activate/Deactivate Account</p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <Switch defaultChecked onChange={this.onActivationToggle} /> */}
                                 {/* </Row> */}
                             </span>
                         </div>
                     </div>
 
                         {/* RIGHT SIDE BAR */}
-                    <div className="col-lg-2 col-md-2 col-xs-12 right-stick">Right side bar</div>
+                    <div className="col-lg-2 col-md-2 col-xs-12 right-stick"></div>
                 </div>
             </div>
             </div>
