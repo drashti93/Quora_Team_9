@@ -23,8 +23,8 @@ export class Settings extends Component{
         this.state = {
             checkFollowState: true,
             checkActivationState: true,
-            settings_options: ["Account", "Privacy", "Email & Notifications"],
-            selectedTab: "Account",
+            settings_options: ["Account Settings", "Privacy", "Email & Notifications"],
+            selectedTab: "Account Settings",
         }
         this.onFollowToggle = this.onFollowToggle.bind(this);
         this.onActivationToggle = this.onActivationToggle.bind(this);
@@ -123,18 +123,54 @@ export class Settings extends Component{
                         <div className="col-lg-8 col-md-8 col-xs-12">
                             <div>
                                 <Row id="settings_inner_title">
-                                <h6>Account Settings</h6>
+                                <h6>
+                                    {
+                                    this.state.selectedTab === "Account Settings" ?
+                                        <div>
+                                            <div className="">
+                                                <h6>{ this.state.selectedTab }</h6>
+                                            </div>
+                                        </div>
+                                        :
+                                        <span></span>
+                                    }
+                                    {
+                                    this.state.selectedTab === "Privacy" ?
+                                        <div>
+                                            <div className="">
+                                                <h6>{ this.state.selectedTab }</h6>
+                                            </div>
+                                        </div>
+                                        :
+                                        <span></span>
+                                    }
+                                    {
+                                    this.state.selectedTab === "Email & Notifications" ?
+                                        <div>
+                                            <div className="">
+                                                <h6>{ this.state.selectedTab }</h6>
+                                            </div>
+                                        </div>
+                                        :
+                                        <span></span>
+                                    }
+                                </h6>
                                 </Row>
-                                <span>
-                                    <Row>
-                                        <p>Enable Follow</p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <Switch defaultChecked onChange={this.onFollowToggle} />
-                                    </Row>
-                                    <Row>
-                                        <p>Activate/Deactivate Account</p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <Switch defaultChecked onChange={this.onActivationToggle} />
-                                    </Row>
-                                </span>
+                                {
+                                    this.state.selectedTab === "Account Settings" ?
+                                    <span>
+                                        <Row>
+                                            <p>Enable Follow</p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <Switch defaultChecked onChange={this.onFollowToggle} />
+                                        </Row>
+                                        <Row>
+                                            <p>Activate/Deactivate Account</p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <Switch defaultChecked onChange={this.onActivationToggle} />
+                                        </Row>
+                                    </span>
+                                    :
+                                    <span></span>
+                                }
                             </div>
                         </div>
                     <div className="col-lg-2 col-md-2 col-xs-12 right-stick">Right side bar</div>

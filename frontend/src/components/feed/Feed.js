@@ -27,10 +27,13 @@ export class Feed extends Component {
 
 	handleAnswerUpvote = (answerId) => {
 		console.log(`In handleUpvote: answerId - ${answerId}`);
+		let data = cookie.load("cookie");
+		let u_id = data.id;
+		console.log(u_id);
 
 		const body = {
 			//TODO: Remove hardcoding
-			"userId": "5cc3f69dd23457601476d016"
+			"userId": u_id
 		}
 
 		axios.defaults.withCredentials = true;
@@ -53,9 +56,12 @@ export class Feed extends Component {
 		console.log(`In handleDownvote: answerId - ${answerId}`);
 
 		console.log(`In handleDownvote: answerId - ${answerId}`);
+		let data = cookie.load("cookie");
+		let u_id = data.id;
+		console.log(u_id);
 		const body = {
 			//TODO: Remove hardcoding
-			"userId": "5cc3f69dd23457601476d016"
+			"userId": u_id
 		}
 
 		axios.defaults.withCredentials = true;
@@ -97,13 +103,16 @@ export class Feed extends Component {
 
 	handleAnswerBookmarks = (answerId) => {
 		console.log(`In handleBookmarks: answerId - ${answerId}`);
+		let data = cookie.load("cookie");
+		let u_id = data.id;
+		console.log(u_id);
 
 		const body = {
 			//TODO: Remove hardcoding of uer_id and comment
-			"userId": "5cc3f69dd23457601476d016",
-			"answer_id": answerId,
+			"userId": u_id,
+			"answerId": answerId,
 		}
-		console.log(answerId)
+		console.log(body)
 		axios.defaults.withCredentials = true;
 		axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/answers/bookmark`,body)
 		.then(response =>{
@@ -133,6 +142,34 @@ export class Feed extends Component {
 	handleChange = (content, delta, source, editor) => {
 		const text = editor.getText(content);
 		this.setState({ bodyText: content, plainText:text});
+	}
+
+	handleQuestionFollow = (questionId) => {
+		console.log(`In handleFollowingQuestions : questionId - ${questionId}`);
+		let data = cookie.load("cookie");
+		let u_id = data.id;
+		console.log(u_id);
+
+		const body = {
+			//TODO: Remove hardcoding of uer_id and comment
+			"userId": u_id,
+			"questionId": questionId,
+		}
+		console.log(body)
+		axios.defaults.withCredentials = true;
+		axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/questions/follow`,body)
+		.then(response =>{
+			console.log(`Response: ${response}`);
+			if(response.status === 200){
+				console.log(`follow question successfully questionActions->postCommentAnswersForFeed(): ${response.data}`);
+				// dispatch({
+				// 	type: FEED,
+				// 	payload: response.data
+				// });
+			}
+		}).catch(error =>{
+			console.log(`follow question failed: questionActions->postCommentAnswersForFeed() - ${error}`)
+		})
 	}
 
 	render() {
