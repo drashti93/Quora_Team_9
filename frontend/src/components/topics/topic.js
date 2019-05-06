@@ -5,6 +5,7 @@ import { List } from "antd";
 import { Icon } from "antd";
 import { Component } from "react";
 import cookie from "react-cookies";
+import {Link} from "react-router-dom";
 import { Redirect } from "react-router";
 import { Button } from "react-bootstrap";
 
@@ -51,9 +52,9 @@ class TopicBar extends Component {
 					size="small"
 					header={<div>{<Icon type="copy" />} Feed</div>}
 					footer={
-						<a href="/">
+						<Link to="/bookmarks">
 							<div>{<Icon type="book" />} Bookmark</div>
-						</a>
+						</Link>
 					}
 					split={false}
 					dataSource={this.state.data}

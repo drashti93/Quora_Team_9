@@ -5,6 +5,7 @@ import { Route } from 'react-router-dom';
 
 import Navigationbar from './navbar/Navigationbar';
 import Feed from './feed/Feed';
+import Bookmarks from './bookmarks/Bookmarks';
 // import Questions, {QuestionDetail }  from './questions/QuestionDetail';
 import TopicBar from './topics/topic'
 
@@ -26,6 +27,7 @@ class Main extends Component{
                     <div className="col-lg-2 col-md-2 col-xs-12 left-stick"><TopicBar/></div>
                     <div className="col-lg-8 col-md-8 col-xs-12">
                         <Route exact path="/" component={Feed} />
+                        <Route exact path="/bookmarks" component={Bookmarks} />
                         {/* <Route exact path="/:question._id/answers" component={QuestionDetail}/> */}
                         {/* <Route path="/questions" component={Questions} /> */}
                     </div>

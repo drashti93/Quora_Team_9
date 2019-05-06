@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import cookie from "react-cookies";
 import { Redirect } from "react-router";
 import { List, Avatar, Icon, Tooltip, Button, Divider } from "antd";
@@ -10,7 +10,11 @@ import ReactQuill from 'react-quill';
 import axios from "axios";
 import Comments from "../comments/Comments";
 
-export class Feed extends Component {
+export class Bookmarks extends Component {
+
+	componentDidMount() {
+		this.props.getQuestionsAnswersForFeed();
+	}
 
 	constructor(props) {
 		super(props);
@@ -19,10 +23,6 @@ export class Feed extends Component {
 			plainText: '',
 			showComments: false
 		};
-	}
-
-	componentDidMount() {
-		this.props.getQuestionsAnswersForFeed();
 	}
 
 	handleAnswerUpvote = (answerId) => {
@@ -135,6 +135,8 @@ export class Feed extends Component {
 		this.setState({ bodyText: content, plainText:text});
 	}
 
+
+
 	render() {
 
 		let redirectVar = null;
@@ -219,9 +221,10 @@ export class Feed extends Component {
 					)}
 				/>
 			</div>
-		);
+		)
 	}
 }
+
 
 const mapStateToProps = (state, props) => {
 	return {
@@ -234,7 +237,6 @@ const mapActionToProps = (dispatch, props) => {
 	return bindActionCreators(
 		{
 			getQuestionsAnswersForFeed
-			
 		},
 		dispatch
 	);
@@ -243,4 +245,4 @@ const mapActionToProps = (dispatch, props) => {
 export default connect(
 	mapStateToProps,
 	mapActionToProps
-)(Feed);
+)(Bookmarks);
