@@ -76,6 +76,7 @@ router.post("/:userId/edit", (request, response) => {
 });
 
 // Delete User account
+
 router.delete("/:userId", async (request, response) => {
     try {
 		let userDocument = await UserSchema.findOneAndDelete({_id: request.params.userId});
@@ -94,6 +95,7 @@ router.delete("/:userId", async (request, response) => {
 });
 
 // Deactivate User Account
+
 router.put("/:userId/profileState", async (request, response) => {
 	console.log(`\n\n Inside Post users/:userId/deactivateProfile`);
 	try{
@@ -180,6 +182,7 @@ router.get("/getallusers", (req, res) => {
 });
 
 //Get user by id
+
 router.get("/:userId", async (request, response) => {
 	console.log(`\n\nInside GET /users/:userId`);
 
@@ -189,6 +192,7 @@ router.get("/:userId", async (request, response) => {
 		});
 
 		//If user present
+		
 		if (userDocument) {
 			console.log(
 				`Sucessfully fetched user ${
