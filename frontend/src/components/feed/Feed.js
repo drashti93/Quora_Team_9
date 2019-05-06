@@ -5,6 +5,7 @@ import { List, Avatar, Icon, Divider, Tooltip, Skeleton } from "antd";
 import { connect } from "react-redux";
 import {bindActionCreators} from 'redux';
 import { getQuestionsAnswersForFeed } from "../../actions/questionActions";
+import {Link} from "react-router-dom";
 
 import axios from "axios";
 import Comments from "../comments/Comments";
@@ -94,7 +95,8 @@ export class Feed extends Component {
 								]}
 							>
 								<List.Item.Meta
-									title={question.questionText}
+								    key={question._id}
+									title = {<Link to = {`/${question._id}/answers`} target="_blank">{question.questionText}</Link>}
 								/>
 								<List
 									itemLayout="vertical"
