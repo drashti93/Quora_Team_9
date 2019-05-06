@@ -57,9 +57,9 @@ class Profile extends Component {
      hideEditor: true,
      hideEditorName: true,
      aboutMe: "",
-     hideCareer: true,
-     hideEducation: true,
-     hideAddress: true,
+     hideCareer: [],
+     hideEducation: [],
+     hideAddress: [],
      career: [],
      education: [],
      address: [],
@@ -85,6 +85,7 @@ class Profile extends Component {
     this.handleChangeFN = this.handleChangeFN.bind(this);
     this.handleChangeLN = this.handleChangeLN.bind(this);
     this.onChangePosition = this.onChangePosition.bind(this);
+    this.handleHideCareer = this.handleHideCareer.bind(this);
   }
 
   handleClose() {
@@ -137,6 +138,27 @@ class Profile extends Component {
       this.props.getUserDetails(cookie.load('cookie').id)
       this.props.getFollowers(cookie.load('cookie').id)
       this.props.getFollowing(cookie.load('cookie').id)
+      var arr = [];
+      for(var i=0; i<20; i++){
+          arr.push(true);
+      }
+      this.setState({
+          hideCareer: arr
+      })
+      var arr1 = [];
+      for(var i=0; i<20; i++){
+        arr1.push(true);
+    }
+      this.setState({
+          hideEducation: arr1
+      })
+      var arr2 = [];
+      for(var i=0; i<20; i++){
+        arr2.push(true);
+    }
+      this.setState({
+          hideAddress: arr2
+      })
   }
 
   componentWillReceiveProps(newProps){
@@ -151,7 +173,33 @@ class Profile extends Component {
         //   address: newProps.address,
       })
   }
+
+  handleHideCareer(i, b){
+    var arr = this.state.hideCareer;
+    arr[i] = b;
+    this.setState({
+        hideCareer: arr
+    })
+  }
+
+  handleHideEducation(i, b){
+    var arr = this.state.hideEducation;
+    arr[i] = b;
+    this.setState({
+        hideEducation: arr
+    })
+  }
+
+  handleHideLocation(i, b){
+    var arr = this.state.hideAddress;
+    arr[i] = b;
+    this.setState({
+        hideAddress: arr
+    })
+  }
+
   onChangePosition(e){
+      console.log(e.target.value);
       this.setState({position: e.target.value})
   }
 
@@ -409,18 +457,22 @@ class Profile extends Component {
                                         <ul>
                                         {
                                             this.props.userDetails.credentials && this.props.userDetails.credentials.career ? this.props.userDetails.credentials.career.map((career, index) => {
+                                               
                                                return(
                                                    <div>
                                                     <li>{career.position}</li>
-                                                    {/* <button onClick={() => this.setState({hideCareer: false})} hidden={!this.state.hideCareer}>Edit</button>
-                                                    <div hidden={this.state.hideCareer}>
-                                                        <input type="text" name="position" value={this.state.credentials.career[index].position} onChange={this.onChangePosition.bind(this)}></input>
-                                                        <input type="text" name="company" value={this.state.credentials.career[index].company} onChange={this.onChangeCompany.bind(this)}></input>
-                                                        <input type="select" name="careerStart" value={this.state.credentials.career[index].startDate} onChange={this.onChangeCareerStart.bind(this)}></input>
-                                                        <input type="select" name="careerEnd" value={this.state.credentials.career[index].endDate} onChange={this.onChangeCareerEnd.bind(this)}></input>
-                                                        <input type="checkbox" value={this.state.credentials.career[index].isCurrent} onChange={this.onChangeCurrentCompany.bind(this)}></input>
+                                                    <button onClick={() => {this.setState({position: this.state.credentials.career[index].position, company: this.state.credentials.career[index].company,
+                                                    careerStart: this.state.credentials.career[index].startDate, careerEnd: this.state.credentials.career[index].endDate,
+                                                    currentCompany: this.state.credentials.career[index].isCurrent}); this.handleHideCareer(index, false)}} hidden={!this.state.hideCareer[index]}>Edit</button>
+                                                    <div hidden={this.state.hideCareer[index]}>
+                                                        <input type="text" name="position" value={this.state.position} onChange={this.onChangePosition.bind(this)}></input>
+                                                        <input type="text" name="company" value={this.state.company} onChange={this.onChangeCompany.bind(this)}></input>
+                                                        <input type="select" name="careerStart" value={this.state.careerStart} onChange={this.onChangeCareerStart.bind(this)}></input>
+                                                        <input type="select" name="careerEnd" value={this.state.careerEnd} onChange={this.onChangeCareerEnd.bind(this)}></input>
+                                                        <input type="checkbox" value={this.state.currentCompany} onChange={this.onChangeCurrentCompany.bind(this)}></input>
+                                                        <button onClick={() => this.handleHideCareer(index, true)}>Cancel</button>
                                                         <button onClick={() => this.saveCredentialsInternal(career._id, "employment", "update")}>Save</button>
-                                                    </div> */}
+                                                    </div>
                                                     </div>
                                                )  
                                             }) : ""
@@ -428,14 +480,44 @@ class Profile extends Component {
                                         {
                                             this.props.userDetails.credentials && this.props.userDetails.credentials.education ? this.props.userDetails.credentials.education.map((education, index) => {
                                                return(
+                                                   <div>
                                                     <li>{education.school}</li>
+                                                    <button onClick={() => {this.setState({school: this.state.credentials.education[index].school, concentration: this.state.credentials.education[index].concentration,
+                                                    secConcentration: this.state.credentials.education[index].secConcentration, gradYear: this.state.credentials.education[index].gradYear,
+                                                    degree: this.state.credentials.education[index].degree}); this.handleHideEducation(index, false)}} hidden={!this.state.hideEducation[index]}>Edit</button>
+                                                    <div hidden={this.state.hideEducation[index]}>
+                                                        <input type="text" name="school" value={this.state.school} onChange={this.onChangeSchool.bind(this)}></input>
+                                                        <input type="text" name="concentration" value={this.state.concentration} onChange={this.onChangeConcentration.bind(this)}></input>
+                                                        <input type="text" name="secConcentration" value={this.state.secConcentration} onChange={this.onChangeSecConcentration.bind(this)}></input>
+                                                        <input type="select" name="gradYear" value={this.state.gradYear} onChange={this.onChangeGradYear.bind(this)}></input>
+                                                        <input type="text" name="degree" value={this.state.degree} onChange={this.onChangeDegree.bind(this)}></input>
+                                                        <button onClick={() => this.handleHideEducation(index, true)}>Cancel</button>
+                                                        <button onClick={() => this.saveCredentialsInternal(education._id, "education", "update")}>Save</button>
+                                                    </div>
+                                                   </div>
+                                                    
                                                )  
                                             }) : ""
                                         }
                                         {
                                             this.props.userDetails.credentials && this.props.userDetails.credentials.location ? this.props.userDetails.credentials.location.map((location, index) => {
                                                return(
+                                                   <div>
                                                     <li>{location.address}</li>
+                                                    <button onClick={() => {this.setState({position: this.state.credentials.career[index].position, company: this.state.credentials.career[index].company,
+                                                    careerStart: this.state.credentials.career[index].startDate, careerEnd: this.state.credentials.career[index].endDate,
+                                                    currentCompany: this.state.credentials.career[index].isCurrent}); this.handleHideCareer(index, false)}} hidden={!this.state.hideCareer[index]}>Edit</button>
+                                                    <div hidden={this.state.hideCareer[index]}>
+                                                        <input type="text" name="address" value={this.state.address} onChange={this.onChangeAddress.bind(this)}></input>
+                                                        <input type="text" name="city" value={this.state.city} onChange={this.onChangeCity.bind(this)}></input>
+                                                        <input type="text" name="state" value={this.state.locState} onChange={this.onChangeState.bind(this)}></input>
+                                                        <input type="select" name="start" value={this.state.locStart} onChange={this.onChangeLocationStart.bind(this)}></input>
+                                                        <input type="select" name="start" value={this.state.locEnd} onChange={this.onChangeLocationEnd.bind(this)}></input>
+                                                        <input type="checkbox" value={this.state.currentLocation} onChange={this.onChangeCurrentLocation.bind(this)}></input>
+                                                        <button onClick={() => this.handleHideLocation(index, true)}>Cancel</button>
+                                                        <button onClick={() => this.saveCredentialsInternal(location._id, "location", "update")}>Save</button>
+                                                    </div>
+                                                    </div>
                                                )  
                                             }) : ""
                                         }

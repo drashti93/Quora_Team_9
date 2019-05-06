@@ -57,7 +57,7 @@ function handleTopicRequest(topic_name, fname) {
 // handleTopicRequest("user_activity",userActivity)
 //handleTopicRequest("signin", signinRequests.signin);
 handleTopicRequest("signup", signinRequests.signup);
-handleTopicRequest("get_answers", answerRequests.getanswers);
+// handleTopicRequest("get_answers", answerRequests.getanswers);
 // handleTopicRequest("post_answer", answerRequests.postanswers);
 handleTopicRequest("post_question", questionRequests.postquestion);
 // handleTopicRequest("edit_question", questionRequests.editquestion);

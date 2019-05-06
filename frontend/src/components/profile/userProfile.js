@@ -200,17 +200,8 @@ class UserProfile extends Component {
                         <Row id="profile_main">
                             <Col id="user_image_col" xs={3}>
                                 <div>
-                                    <span><img id="user_image" src={user_img}></img><div onClick={this.handleShow}>Add Photo</div></span>
+                                    <span><img id="user_image" src={user_img}></img></span>
                                 </div>
-                                <Modal show={this.state.show} onHide={this.handleClose}>
-                                    <Modal.Header closeButton>
-                                        <Modal.Title>Add Profile Photo</Modal.Title>
-                                    </Modal.Header>
-                                    <Modal.Body><input type="file" onChange={this.fileChange}></input></Modal.Body>
-                                    <ModalFooter>
-                                        <Button onClick ={() => {this.props.saveProfilePicture(this.props.userDetails._id, this.state.image_file)}}>Save</Button>
-                                    </ModalFooter>
-                                </Modal>
                             </Col>
                             <Col xs={9}>
                                 <div>
