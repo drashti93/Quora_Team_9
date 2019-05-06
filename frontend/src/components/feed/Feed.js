@@ -18,10 +18,13 @@ export class Feed extends Component {
 
 	handleAnswerUpvote = (answerId) => {
 		console.log(`In handleUpvote: answerId - ${answerId}`);
+		let data = cookie.load("cookie");
+		let u_id = data.id;
+		console.log(u_id);
 
 		const body = {
 			//TODO: Remove hardcoding
-			"userId": "5cc3f69dd23457601476d016"
+			"userId": u_id
 		}
 
 		axios.defaults.withCredentials = true;
@@ -44,9 +47,12 @@ export class Feed extends Component {
 		console.log(`In handleDownvote: answerId - ${answerId}`);
 
 		console.log(`In handleDownvote: answerId - ${answerId}`);
+		let data = cookie.load("cookie");
+		let u_id = data.id;
+		console.log(u_id);
 		const body = {
 			//TODO: Remove hardcoding
-			"userId": "5cc3f69dd23457601476d016"
+			"userId": u_id
 		}
 
 		axios.defaults.withCredentials = true;
@@ -72,10 +78,13 @@ export class Feed extends Component {
 	}
 	handleAnswerBookmarks = (answerId) => {
 		console.log(`In handleBookmarks: answerId - ${answerId}`);
+		let data = cookie.load("cookie");
+		let u_id = data.id;
+		console.log(u_id);
 
 		const body = {
 			//TODO: Remove hardcoding of uer_id and comment
-			"userId": "5cc3f69dd23457601476d016",
+			"userId": u_id,
 			"answerId": answerId,
 		}
 		console.log(body)
