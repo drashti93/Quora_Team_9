@@ -860,11 +860,11 @@ router.get("/questionsAsked/:user_id", function(req, res){
 		if(err){
 			res.status(400);
 		} else {
-			console.log(results);
+			console.log("questions asked: ",results);
 			res.status(200).json({results});
 		}
-	})
-})
+	});
+});
 
 router.get("/questionsAnswered/:user_id", function(req, res){
 	console.log("In answers");
