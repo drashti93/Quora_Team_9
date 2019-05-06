@@ -116,7 +116,7 @@ export class Feed extends Component {
 
 	}
 
-	handleFollowingQuestions = (questionId) =>{
+	QuestionFollow = (questionId) =>{
 		console.log(`In handleFollowingQuestions : questionId - ${questionId}`);
 		let data = cookie.load("cookie");
 		let u_id = data.id;
@@ -174,7 +174,7 @@ export class Feed extends Component {
 								key={question._id}
 								actions={[
 									<Tooltip title="Answers" onClick={()=>{this.handleQuestionAnswer(question._id)}}><Icon type="form" style={{ marginRight: 8 }} />{question.answers.length}</Tooltip>,
-									<Tooltip title="Followers" onClick={()=>{this.handleFollowingQuestions(question._id)}}><Icon type="wifi" style={{ marginRight: 8 }} />{question.followers.length}</Tooltip>
+									<Tooltip title="Followers" onClick={()=>{this.QuestionFollow(question._id)}}><Icon type="wifi" style={{ marginRight: 8 }} />{question.followers.length}</Tooltip>
 								]}
 							>
 								<List.Item.Meta
