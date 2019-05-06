@@ -43,7 +43,8 @@ require("dotenv").config();
 app.use(function(req, res, next) {
 	res.setHeader(
 		"Access-Control-Allow-Origin",
-		`${process.env.FRONT_END_URL}:${process.env.FRONT_END_PORT}`
+		 `${process.env.FRONT_END_URL}:${process.env.FRONT_END_PORT}`
+		// `http://localhost : 3000`
 	);
 	res.setHeader("Access-Control-Allow-Credentials", "true");
 	res.setHeader(

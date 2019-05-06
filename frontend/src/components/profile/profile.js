@@ -10,8 +10,6 @@ import user_img from "../../resources/images/user.png"
 import "../../resources/css/profile.css"
 import Feed from '../feed/Feed'
 import * as actions from '../../actions/profileActions';
-import ReactQuill from 'react-quill'; 
-import 'react-quill/dist/quill.snow.css';
 
 class Profile extends Component {
 
@@ -46,11 +44,7 @@ class Profile extends Component {
      zipcode: "",
      locStart: "",
      locEnd: "",
-     currentLocation: "off",
-     hideEditor: true,
-     hideEditorName: true,
-     aboutMe: "",
-     
+     currentLocation: "off"
     }
 
     this.handleShow = this.handleShow.bind(this);
@@ -63,7 +57,6 @@ class Profile extends Component {
     this.handleClose3 = this.handleClose3.bind(this);
     this.fileChange = this.fileChange.bind(this);
     this.saveCredentialsInternal = this.saveCredentialsInternal.bind(this);
-    this.handleChange = this.handleChange.bind(this)
   }
 
   handleClose() {
@@ -108,13 +101,6 @@ class Profile extends Component {
       this.props.getUserDetails(cookie.load('cookie').id)
   }
 
-  componentWillReceiveProps(newProps){
-      this.setState({
-          aboutMe: newProps.aboutMe,
-          firstName: newProps.firstName,
-          lastName: newProps.lastName,
-      })
-  }
   onChangePosition(e){
       this.setState({position: e.target.value})
   }
@@ -185,22 +171,6 @@ class Profile extends Component {
       this.setState({currentLocation: e.target.value})
   }
 
-  handleChange(e) {
-    this.setState({ aboutMe: e.target.value })
-  }
-
-  handleChangeFN(e){
-      this.setState({
-          firstName: e.target.value
-      })
-  }
-
-  handleChangeLN(e){
-      this.setState({
-          lastName: e.target.value
-      })
-  }
-
   saveCredentialsInternal(type){
       this.props.saveCredentials(cookie.load('cookie').id, type, this.state.position, this.state.company, this.state.careerStart, this.state.careerEnd, this.state.currentCompany,
       this.state.school, this.state.concentration, this.state.secConcentration, this.state.degree, this.state.gradYear,
@@ -234,13 +204,6 @@ class Profile extends Component {
                             <Col xs={9}>
                                 <div>
                                     <h3>{this.props.userDetails.firstName} {this.props.userDetails.lastName}</h3>
-                                    <p>{this.props.userDetails.aboutMe ? this.props.userDetails.aboutMe : <a onClick={() => this.setState({hideEditor: false})}>Write a description about yourself</a>}</p>
-                                    <span>{this.props.userDetails.aboutMe ? <button onClick={() => this.setState({hideEditor: false})}>Edit</button> : ""}</span>
-                                    <div>
-                                        <input type="text" value={this.state.aboutMe} onChange={this.handleChange} hidden={this.state.hideEditor}/>
-                                        <button onClick={() => this.setState({hideEditor: true})} hidden={this.state.hideEditor}>Cancel</button>
-                                        <button type="button" hidden={this.state.hideEditor} onClick={this.props.saveAboutMe(cookie.load('cookie').id, this.state.aboutMe)}>Update</button>
-                                    </div>
                                     <p>{this.props && this.props.followers ? (this.props.followers).length : 0} followers</p>
                                 </div>
                             </Col>
@@ -530,7 +493,6 @@ function mapStatetoProps(state) {
         userDetails: state.profile.userDetails,
         firstName: state.profile.userDetails.firstName,
         lastName: state.profile.userDetails.lastName,
-        aboutMe: state.profile.userDetails.aboutMe,
     }
 }
 
@@ -541,8 +503,7 @@ function mapDispatchToProps(dispatch) {
         saveProfilePicture: (user_id, image_file) => dispatch(actions.saveProfilePicture(user_id, image_file)),
         saveCredentials: (id, type, position, company, careerStart, careerEnd, currentCompany,
       school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation) => dispatch(actions.saveCredentials(id, type, position, company, careerStart, careerEnd, currentCompany,
-      school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation)),
-        saveAboutMe: (user_id, text) => dispatch(actions.saveAboutMe(user_id, text)),
+      school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation))
     };
 }
 

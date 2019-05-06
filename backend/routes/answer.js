@@ -124,7 +124,7 @@ answer.post("/:answerId/downvote", async (req, res) => {
 			{ _id: req.params.answerId },
 			{
 				$pull: {upvotes: { $elemMatch: userId } }
-			}
+			},
 			{
 				$push: { downvotes: userId }
 			}
