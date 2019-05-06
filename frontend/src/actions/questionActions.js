@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FEED } from './types';
+import { FEED, BOOKMARK_FEED } from './types';
 
 export const getQuestionsAnswersForFeed = () => dispatch => {
 
@@ -28,7 +28,7 @@ export const getBookmarkedAnswersWithCorrespondingQuestionsForBookmark = () => d
 		if(response.status === 200){
 			console.log(`Got question-answers for feed in questionActions->getBookmarkedAnswersWithCorrespondingQuestionsForBookmark(): ${response.data}`);
 			dispatch({
-				type: FEED,
+				type: BOOKMARK_FEED,
 				payload: response.data
 			});
 		}

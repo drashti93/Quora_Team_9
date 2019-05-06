@@ -4,7 +4,7 @@ import { Redirect } from "react-router";
 import { List, Avatar, Icon, Tooltip, Button, Divider } from "antd";
 import { connect } from "react-redux";
 import {bindActionCreators} from 'redux';
-import { getQuestionsAnswersForFeed } from "../../actions/questionActions";
+import { getBookmarkedAnswersWithCorrespondingQuestionsForBookmark } from "../../actions/questionActions";
 import {Link} from "react-router-dom";
 import ReactQuill from 'react-quill';
 import axios from "axios";
@@ -13,7 +13,7 @@ import Comments from "../comments/Comments";
 export class Bookmarks extends Component {
 
 	componentDidMount() {
-		this.props.getQuestionsAnswersForFeed();
+		this.props.getBookmarkedAnswersWithCorrespondingQuestionsForBookmark();
 	}
 
 	constructor(props) {
@@ -164,7 +164,7 @@ export class Bookmarks extends Component {
 						},
 						pageSize: 5
 					}}
-					dataSource={this.props.question.feed}
+					dataSource={this.props.question.bookmarkFeed}
 					renderItem={question => (
 						<div>
 							<List.Item 
@@ -236,7 +236,7 @@ const mapStateToProps = (state, props) => {
 const mapActionToProps = (dispatch, props) => {
 	return bindActionCreators(
 		{
-			getQuestionsAnswersForFeed
+			getBookmarkedAnswersWithCorrespondingQuestionsForBookmark
 		},
 		dispatch
 	);
