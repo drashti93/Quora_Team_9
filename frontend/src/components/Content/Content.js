@@ -136,7 +136,6 @@ export class Content extends Component{
                                 <Row>
                                     {this.state.payload}
                                 </Row>
-                                <hr />
                                 {/* <Row> */}
                                     <p>Activate/Deactivate Account</p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <Switch defaultChecked onChange={this.onActivationToggle} />
