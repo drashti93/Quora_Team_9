@@ -27,10 +27,10 @@ var topics = require("./routes/topic");
 
 //use cors to allow cross origin resource sharing
 app.use(
-	cors({
-		origin: `${process.env.FRONT_END_URL}:${process.env.FRONT_END_PORT}`,
-		credentials: true
-	})
+    cors({
+        origin: `${process.env.FRONT_END_URL}:${process.env.FRONT_END_PORT}`,
+        credentials: true
+    })
 );
 require("./config/passport");
 app.use(bodyParser.json());
@@ -41,44 +41,43 @@ require("dotenv").config();
 
 //Allow Access Control
 app.use(function(req, res, next) {
-	res.setHeader(
-		"Access-Control-Allow-Origin",
-		 `${process.env.FRONT_END_URL}:${process.env.FRONT_END_PORT}`
-		// `http://localhost : 3000`
-	);
-	res.setHeader("Access-Control-Allow-Credentials", "true");
-	res.setHeader(
-		"Access-Control-Allow-Methods",
-		"GET,HEAD,OPTIONS,POST,PUT,DELETE"
-	);
-	res.setHeader(
-		"Access-Control-Allow-Headers",
-		"Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, XMLHttpRequest"
-	);
-	res.setHeader("Cache-Control", "no-cache");
-	next();
+    res.setHeader(
+        "Access-Control-Allow-Origin",
+        `${process.env.FRONT_END_URL}:${process.env.FRONT_END_PORT}`
+    );
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader(
+        "Access-Control-Allow-Methods",
+        "GET,HEAD,OPTIONS,POST,PUT,DELETE"
+    );
+    res.setHeader(
+        "Access-Control-Allow-Headers",
+        "Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, XMLHttpRequest"
+    );
+    res.setHeader("Cache-Control", "no-cache");
+    next();
 });
 
 var sessionStore = new MongoDBStore({
-	uri: `${process.env.DB_HOST}`,
-	collection: "q_sessions"
+    uri: `${process.env.DB_HOST}`,
+    collection: "q_sessions"
 });
 
 // create and connect redis client to local instance.
 
 app.use(
-	session({
-		secret: "Iamsupersecretsecret",
-		resave: false,
-		saveUninitialized: false,
-		duration: 600000000000 * 60 * 1000,
-		activeDuration: 6 * 60 * 60 * 1000,
-		cookie: {
-			maxAge: 1000 * 60 * 60 * 24 * 365,
-			expires: 3600000 * 24 * 60
-		},
-		store: sessionStore
-	})
+    session({
+        secret: "Iamsupersecretsecret",
+        resave: false,
+        saveUninitialized: false,
+        duration: 600000000000 * 60 * 1000,
+        activeDuration: 6 * 60 * 60 * 1000,
+        cookie: {
+            maxAge: 1000 * 60 * 60 * 24 * 365,
+            expires: 3600000 * 24 * 60
+        },
+        store: sessionStore
+    })
 );
 
 const userRoutes = require("./routes/userRoutes");
@@ -204,19 +203,19 @@ app.post("/login", async function(req, res) {
 // });
 
 app.post("/signup", function(req, res) {
-	kafka.make_request("signup", req.body, function(err, results) {
-		if (err) {
-			console.log("Inside err");
-			res.json({
-				status: "error",
-				msg: "System Error, Try Again."
-			});
-			res.end();
-		} else {
-			console.log("Inside else");
-			res.status(200).json(results);
-		}
-	});
+    kafka.make_request("signup", req.body, function(err, results) {
+        if (err) {
+            console.log("Inside err");
+            res.json({
+                status: "error",
+                msg: "System Error, Try Again."
+            });
+            res.end();
+        } else {
+            console.log("Inside else");
+            res.status(200).json(results);
+        }
+    });
 });
 
 //start your server on port 3001

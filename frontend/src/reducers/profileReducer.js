@@ -22,6 +22,22 @@ const reducer = (state = initial, action) => {
         case "NAME_SUCCESS":{
             return{...state}
         }
+
+        case "QUESTION_ASKED_SUCCESS":{
+            return{...state,questions: action.payload}
+        }
+
+        case "QUESTION_ANSWERED_SUCCESS":{
+            return{...state, questionsAnswered: action.payload}
+        }
+
+        case "FOLLOWERS_SUCCESS":{
+            return{...state, followers: action.payload.user_followers}
+        }
+
+        case "FOLLOWING_SUCCESS":{
+            return{...state, following: action.payload.user_following}
+        }
                     
         default :
             return state;

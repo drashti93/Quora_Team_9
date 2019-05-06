@@ -11,7 +11,8 @@ import {Provider} from 'react-redux';
 import allReducers from "./reducers/allReducers";
 import Searchpage from "./components/searchpage/searchpage";
 import userProfile from "./components/profile/userProfile";
-import Settings from "./components/Settings/Settings"
+import Settings from "./components/Settings/Settings";
+import QuestionDetail from "./components/questions/QuestionDetail";
 // const allStoreEnchancers=compose(
 //     applyMiddleware(thunk),
 //     // window.devToolsExtension && window.devToolsExtension()
@@ -43,9 +44,10 @@ class App extends Component {
                 <Route path="/signup" component={Signup}></Route>
                 <Route exact path="/profile" component={Profile}></Route>
                 <Route path="/profile/:user_id" component={userProfile}></Route> 
-                <Route path="/settings" component={Settings}></Route> 
+                <Route exact path="/:question_id/answers" component={QuestionDetail}></Route>
+                <Route exact path="/settings" component={Settings}></Route> 
                 <Route path="/search/:text" component={Searchpage}></Route> 
-                <Route path="/" component={Main}></Route>
+                <Route exact path="/" component={Main}></Route>
 
 
                 </Switch>
