@@ -24,16 +24,41 @@ export class Content extends Component{
             checkFollowState: true,
             checkActivationState: true,
             settings_options: ["Questions Asked", "Topics Following", "Questions Following", "Bookmarked Answers"],
-            selectedTab: "Account",
+            selectedTab: "Questions Asked",
+            payload: "",
+            user_id: this.props.match.params.question_id,
         }
+        
+
+        this.onQuestionsAsked = this.onQuestionsAsked.bind(this);
     }
 
+    onQuestionsAsked(){
+        let data = cookie.load("cookie");
+        let userId = data.id;
+        console.log(userId);
+        axios.get(`http://localhost:3001/users/questionsAsked/${userId}`).then(response =>{
+            console.log("Status Code: ", response.status);
+				if (response.status === 200) {
+					console.log("Questions asked by users");
+					console.log(response.data.results[0].questionText);
+					this.setState({
+						payload : response.data.results[0].questionText
+					});
+				} else {
+					console.log("Some error occurred in the backend");
+			}
+        });
+    }
+
+    
     render() {
         return (
             <div>
                 <Navigationbar/>
             <div className="container mt70">
                 <div className="row">
+                    {/* LEFT SIDE BAR */}
                     <div className="col-lg-2 col-md-2 col-xs-12 left-stick">
                         <Row>
                             {/* <Col id="list_of_actions" xs={3}> */}
@@ -44,7 +69,7 @@ export class Content extends Component{
                                     {
                                         this.state.settings_options.map((option,index) => {
                                             return <div  onClick={() => {
-                                                this.setState({selectedTab : option})
+                                                this.setState({selectedTab : option});
                                             }} className="single-feeds-option" key={index}>
                                                 <span>{option}</span>
                                             </div>
@@ -54,39 +79,73 @@ export class Content extends Component{
                             {/* </Col> */}
                             {/* <Col id="tab" xs={9}> */}
                                 <div>
-                                    {
-                                        this.state.selectedTab === "Questions Asked" ?
-                                            <div>
-                                                <div className="tab_details">
-                                                    <h6>{ this.state.selectedTab }</h6>
-                                                </div>
-                                            </div>
-                                            :
-                                            <span></span>
-                                    }
+                                    
                                     
                                 </div>
                             {/* </Col> */}
                         </Row>
                     </div>
-                        <div className="col-lg-8 col-md-8 col-xs-12">
-                            <div>
-                                {/* <Row> */}
-                                <h6>Content</h6>
-                                {/* </Row> */}
+                    {/* MIDDLE PORTION */}
+                    <div className="col-lg-8 col-md-8 col-xs-12">
+                        <div>
+                            {/* <Row> */}
+                            <h6>
+                                {
+                                    this.state.selectedTab === "Questions Asked" ?
+                                        <div>
+                                            <div className="tab_details">
+                                                <h6 onClick = {this.onQuestionsAsked}>{ this.state.selectedTab }</h6>
+                                            </div>
+                                        </div>
+                                        :
+                                        <span></span>
+                                }
+                                {
+                                    this.state.selectedTab === "Topics Following" ?
+                                        <div>
+                                            <div className="tab_details">
+                                                <h6>{ this.state.selectedTab }</h6>
+                                            </div>
+                                        </div>
+                                        :
+                                        <span></span>
+                                }
+                                {
+                                    this.state.selectedTab === "Questions Following" ?
+                                        <div>
+                                            <div className="tab_details">
+                                                <h6>{ this.state.selectedTab }</h6>
+                                            </div>
+                                        </div>
+                                        :
+                                        <span></span>
+                                }
+                                {
+                                    this.state.selectedTab === "Bookmarked Answers" ?
+                                        <div>
+                                            <div className="tab_details">
+                                                <h6>{ this.state.selectedTab }</h6>
+                                            </div>
+                                        </div>
+                                        :
+                                        <span></span>
+                                }
+                            </h6>
+                            {/* </Row> */}
+                            <span>
+                                <Row>
+                                    {this.state.payload}
+                                </Row>
                                 <hr />
-                                <span>
-                                    {/* <Row> */}
-                                        <p>Enable Follow</p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <Switch defaultChecked onChange={this.onFollowToggle} />
-                                    {/* </Row>
-                                    <Row> */}
-                                        <p>Activate/Deactivate Account</p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <Switch defaultChecked onChange={this.onActivationToggle} />
-                                    {/* </Row> */}
-                                </span>
-                            </div>
+                                {/* <Row> */}
+                                    <p>Activate/Deactivate Account</p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <Switch defaultChecked onChange={this.onActivationToggle} />
+                                {/* </Row> */}
+                            </span>
                         </div>
+                    </div>
+
+                        {/* RIGHT SIDE BAR */}
                     <div className="col-lg-2 col-md-2 col-xs-12 right-stick">Right side bar</div>
                 </div>
             </div>
