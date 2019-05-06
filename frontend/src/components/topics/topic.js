@@ -1,83 +1,73 @@
 import React from "react";
 import "antd/dist/antd.css";
-
-import { List, Row } from "antd";
-import { Icon,message } from "antd";
-import InfiniteScroll from 'react-infinite-scroller';
-
-import { Component } from 'react';
+import axios from "axios";
+import { List } from "antd";
+import { Icon } from "antd";
+import { Component } from "react";
+import cookie from "react-cookies";
+import { Redirect } from "react-router";
+import { Button } from "react-bootstrap";
 
 class TopicBar extends Component {
-	state = {
-		data: [],
-		loading: false,
-		hasMore: true
+	constructor(props) {
+		super(props);
+		this.state = {
+			data: []
+		};
+		this.handleClick = this.handleClick.bind(this);
+	}
+
+	// componentDidMount() {
+	// 	let data = cookie.load("cookie");
+	// 	let u_id = data.id;
+	// 	console.log(u_id);
+
+	// 	axios
+	// 		.get("http://localhost:3001/users/" + u_id + "/topics")
+	// 		.then(response => {
+	// 			if (response.status === 200) {
+	// 				console.log("------------->", response.data);
+	// 				this.setState({
+	// 					data: [...response.data]
+	// 				});
+	// 			}
+	// 		});
+	// }
+
+	handleClick = data => {
+		console.log("@@@@@@@", data);
 	};
 
-	handleInfiniteOnLoad = () => {
-		let data = this.state.data;
-		this.setState({
-			loading: true
-		});
-		if (data.length > 14) {
-			message.warning("Infinite List loaded all");
-			this.setState({
-				hasMore: false,
-				loading: false
-			});
-			return;
-		}
-		this.fetchData(res => {
-			data = data.concat(res.results);
-			this.setState({
-				data,
-				loading: false
-			});
-		});
-	};
-	
 	render() {
-		const data = [
-			"Racing car sprays burning fuel into crowd.",
-			"Japanese princess to wed commoner.",
-			"Australian walks 100km after outback crash.",
-			"Man charged over missing wedding girl.",
-			"Los Angeles battles huge wildfires.",
-			"Racing car sprays burning fuel into crowd.",
-			"Japanese princess to wed commoner.",
-			"Australian walks 100km after outback crash.",
-			"Man charged over missing wedding girl.",
-			"Los Angeles battles huge wildfires."
-		];
+		let redirectVar = null;
+		if (cookie.load("cookie")) {
+			redirectVar = <Redirect to="/" />;
+		} else {
+			redirectVar = <Redirect to="/login" />;
+		}
 		return (
-			<div className="topic-bar">
-				<h3 style={{ marginBottom: 0 }} />
-				<h3 style={{ margin: "0px 0" }} />
-
+			<div>
 				<List
 					size="small"
 					header={<div>{<Icon type="copy" />} Feed</div>}
-					footer={<div>{<Icon type="book" />} Bookmark</div>}
+					footer={
+						<a href="/">
+							<div>{<Icon type="book" />} Bookmark</div>
+						</a>
+					}
 					split={false}
-					loadMore
-					dataSource={data}
+					dataSource={this.state.data}
 					renderItem={item => (
-						<InfiniteScroll
-							initialLoad={false}
-							pageStart={0}
-							loadMore={this.handleInfiniteOnLoad}
-							hasMore={!this.state.loading && this.state.hasMore}
-							useWindow={false}
-						>
-							<List.Item>
-								{<Icon type="read" />} {item}
-							</List.Item>
-						</InfiniteScroll>
+						<List.Item>
+							<a href="/">
+								{<Icon type="read" />} {item.name}
+							</a>
+						</List.Item>
 					)}
 				/>
 			</div>
 		);
 	}
 }
-    
-    export default TopicBar;
+
+export default TopicBar;

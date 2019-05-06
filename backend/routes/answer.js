@@ -8,12 +8,12 @@ var kafka = require("../kafka/client");
 var client = require("../resources/redis");
 
 answer.get("/:question_id/answers", urlencodedParser, function(req, res) {
-	client.get("answersKey", function(err, results) {
-		if (results) {
-			res.json({ answers: results });
+	// client.get("answersKey", function(err, results) {
+	// 	if (results) {
+	// 		res.json({ answers: results });
 
-			res.end();
-		} else {
+	// 		res.end();
+	// 	} else {
 			var question_id = req.params.question_id;
 			console.log(
 				"Inside get all answers request. Question id: " + question_id
@@ -30,16 +30,17 @@ answer.get("/:question_id/answers", urlencodedParser, function(req, res) {
 						msg: "System Error, Try Again."
 					});
 				} else {
-					console.log("Inside else");
-					client.set("answersKey", results);
-					res.json({ answers: results });
+					//console.log("Inside else");
+					// client.set("answersKey", results);
+					res.status(200).json({ answers: results });
 
 					res.end();
 				}
 			});
-		}
+		// }
 	});
-});
+// }
+// );
 
 //to add an answer
 answer.post("/", async (req, res) => {
@@ -104,39 +105,6 @@ answer.delete("/", async (req, res) => {
 
 answer.post("/:answerId/upvote", async (req, res) => {
 	try {
-		// console.log(req.body);
-		// let userId = req.body.userId;
-		// console.log(userId);
-		// console.log(typeof(userId))
-		// let answerId = req.params.answerId;
-		// console.log(answerId);
-		// // console.log(typeOf(req.params.answerId));
-		// AnswerModel.find({_id: answerId},  {_id: 0, upvotes: 1}, function(err, results){
-		// 	if(results){
-		// 		console.log(results[0].upvotes);
-		// 		console.log(results[0].upvotes.includes(userId));
-		// 		if(results[0].upvotes.includes(userId)){
-		// 			console.log("Upvote exists")
-		// 			AnswerModel.updateOne({_id: answerId}, {$pull: {upvotes: userId}})
-		// 		} else {
-		// 			AnswerModel.find({_id: answerId},  {_id: 0, downvotes: 1}, function(err, results1){
-		// 				if(results1){
-		// 					if(results1[0].downvotes.includes(userId)){
-		// 						console.log("Downvote exists")
-		// 						AnswerModel.updateOne({_id: answerId}, {$pull: {downvotes: userId}});
-		// 						AnswerModel.updateOne({_id: answerId}, {$push: {upvotes: userId}});
-		// 					}
-		// 					else{
-		// 						console.log("None exists")
-		// 						AnswerModel.updateOne({_id: answerId}, {$push: {upvotes: userId}});
-		// 					}
-		// 				}
-		// 			});
-		// 		}
-		// 	}
-		// });
-		// res.status(200).json({});
-
 
 		let checkUserInUpvotes = await AnswerModel.findOne({ _id: req.params.answerId, upvotes: req.body.userId });
 

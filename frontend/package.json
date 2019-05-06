@@ -10,7 +10,11 @@
     "antd": "^3.16.6",
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
+<<<<<<< HEAD
     "chart.js": "^2.8.0",
+=======
+    "cookiejar": "^2.1.2",
+>>>>>>> master
     "jquery": "^3.4.1",
     "js-cookie": "^2.2.0",
     "lodash": "^4.17.11",
@@ -34,6 +38,7 @@
     "redux": "^4.0.1",
     "redux-promise": "^0.6.0",
     "redux-thunk": "^2.3.0",
+    "repl": "^0.1.3",
     "styled-components": "^4.1.3"
   },
   "scripts": {

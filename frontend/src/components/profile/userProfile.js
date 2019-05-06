@@ -12,6 +12,9 @@ import * as actions from '../../actions/profileActions';
 import queryString from 'query-string';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
+import Questions from './profileQuestions'
+import Answers from './profileAnswers'
+import {List, Card} from "antd";
 
 class UserProfile extends Component {
 
@@ -47,7 +50,9 @@ class UserProfile extends Component {
      locStart: "",
      locEnd: "",
      currentLocation: "off",
-     user_id: ""
+     user_id: "",
+     followers: [],
+     following: [],
     }
 
     this.handleShow = this.handleShow.bind(this);
@@ -101,7 +106,8 @@ class UserProfile extends Component {
   componentDidMount(){
     console.log(this.props.match.params);
     this.props.getUserDetails(this.props.match.params.user_id);
-    
+    this.props.getFollowers(this.props.match.params.user_id)
+    this.props.getFollowing(this.props.match.params.user_id)
   }
 
   onChangePosition(e){
@@ -194,17 +200,8 @@ class UserProfile extends Component {
                         <Row id="profile_main">
                             <Col id="user_image_col" xs={3}>
                                 <div>
-                                    <span><img id="user_image" src={user_img}></img><div onClick={this.handleShow}>Add Photo</div></span>
+                                    <span><img id="user_image" src={user_img}></img></span>
                                 </div>
-                                <Modal show={this.state.show} onHide={this.handleClose}>
-                                    <Modal.Header closeButton>
-                                        <Modal.Title>Add Profile Photo</Modal.Title>
-                                    </Modal.Header>
-                                    <Modal.Body><input type="file" onChange={this.fileChange}></input></Modal.Body>
-                                    <ModalFooter>
-                                        <Button onClick ={() => {this.props.saveProfilePicture(this.props.userDetails._id, this.state.image_file)}}>Save</Button>
-                                    </ModalFooter>
-                                </Modal>
                             </Col>
                             <Col xs={9}>
                                 <div>
@@ -239,7 +236,7 @@ class UserProfile extends Component {
                                                 <div className="tab_details">
                                                     <h6>{ this.state.selectedTab }</h6>
                                                 </div>
-                                                <Feed></Feed>
+                                                <Answers user={this.props.match.params.user_id}></Answers>
                                             </div>
                                             :
                                             <span></span>
@@ -250,7 +247,7 @@ class UserProfile extends Component {
                                                 <div className="tab_details">
                                                     <h6>{ this.state.selectedTab }</h6>
                                                 </div>
-                                                <Feed></Feed>
+                                                <Questions user={this.props.match.params.user_id}></Questions>
                                             </div>
                                             :
                                             <span></span>
@@ -261,7 +258,7 @@ class UserProfile extends Component {
                                                 <div className="tab_details">
                                                     <h6>{ this.state.selectedTab }</h6>
                                                 </div>
-                                                <Feed></Feed>
+                                                <Answers user={this.props.match.params.user_id}></Answers>
                                             </div>
                                             :
                                             <span></span>
@@ -272,7 +269,15 @@ class UserProfile extends Component {
                                                 <div className="tab_details">
                                                     <h6>{this.props && this.props.followers ? (this.props.followers).length : 0} followers</h6>
                                                 </div>
-                                                <Feed></Feed>
+                                                <List
+                                                    grid={{ gutter: 16, column: 2 }}
+                                                    dataSource={this.props.followers}
+                                                    renderItem={item => (
+                                                    <List.Item>
+                                                        <Card title={item}>Card content</Card>
+                                                    </List.Item>
+                                                    )}
+                                                />
                                             </div>
                                             :
                                             <span></span>
@@ -283,7 +288,15 @@ class UserProfile extends Component {
                                                 <div className="tab_details">
                                                     <h6>{this.props && this.props.following ? (this.props.following).length : 0} following</h6>
                                                 </div>
-                                                <Feed></Feed>
+                                                <List
+                                                    grid={{ gutter: 16, column: 2 }}
+                                                    dataSource={this.props.following}
+                                                    renderItem={item => (
+                                                    <List.Item>
+                                                        <Card title={item}>Card content</Card>
+                                                    </List.Item>
+                                                    )}
+                                                />
                                             </div>
                                             :
                                             <span></span>
@@ -345,6 +358,8 @@ function mapStatetoProps(state) {
         userDetails: state.profile.userDetails,
         firstName: state.profile.userDetails.firstName,
         lastName: state.profile.userDetails.lastName,
+        followers: state.profile.followers,
+        following: state.profile.following,
     }
 }
 
@@ -355,7 +370,9 @@ function mapDispatchToProps(dispatch) {
         saveProfilePicture: (user_id, image_file) => dispatch(actions.saveProfilePicture(user_id, image_file)),
         saveCredentials: (id, type, position, company, careerStart, careerEnd, currentCompany,
       school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation) => dispatch(actions.saveCredentials(id, type, position, company, careerStart, careerEnd, currentCompany,
-      school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation))
+      school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation)),
+      getFollowers: (user_id) => dispatch(actions.getFollowers(user_id)),
+        getFollowing: (user_id) => dispatch(actions.getFollowing(user_id)),
     };
 }
 
