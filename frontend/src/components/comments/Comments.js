@@ -70,7 +70,7 @@ export class Comments extends Component {
 		const body = {
 			//TODO: Remove hardcoding of uer_id and comment
 			"userId": "5cc3f69dd23457601476d016",
-			"answer_id": this.props.answer_id,
+			"answerId": this.props.answerId,
 			"comment":this.state.value
 
 		}
