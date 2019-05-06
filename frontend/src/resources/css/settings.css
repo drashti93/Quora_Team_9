@@ -27,14 +27,11 @@
     text-align: left;
     border-bottom: 1px solid #e2e2e2;
     width: 95%;
-    margin-bottom: 20px;
 }
-
-.tab_details{
+/* .tab_details{
     border-bottom: 1px solid #e2e2e2;
 }
 
-/* 
 #tab{
     padding: 5px;
 }

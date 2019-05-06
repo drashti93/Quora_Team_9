@@ -9,7 +9,6 @@ var client = require("../resources/redis");
 
 //Follow a Question
 question.post("/follow", async (req, res) => {
-	console.log(req.body)
 	try {
 		let { userId, questionId } = req.body;
 		let result = await QuestionModel.update(

@@ -191,7 +191,6 @@ answer.post("/bookmark", async (req, res) => {
 				$push: { bookmarks: userId }
 			}
 		);
-		console.log(req.body)
 		res.status(200).json({});
 	} catch (error) {
 		res.send(error);

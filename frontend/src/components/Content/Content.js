@@ -20,12 +20,7 @@ import { Switch } from "antd";
 import { List } from "antd";
 import axios from "axios";
 
-<<<<<<< HEAD
 import TopicBar from "../topics/topic";
-=======
-
-import TopicBar from '../topics/topic' 
->>>>>>> master
 // import user_img from "../../resources/images/user.png"
 import "../../resources/css/content.css";
 import Feed from "../feed/Feed";
@@ -230,7 +225,6 @@ export class Content extends Component {
                                         </div>
                                         :
                                         <span></span>
-<<<<<<< HEAD
                                 } */}
 
 								{/* </Row> */}
@@ -243,22 +237,6 @@ export class Content extends Component {
 								</span>
 							</div>
 						</div>
-=======
-                                }
-                            </h6>
-                            {/* </Row> */}
-                            <span>
-                                <Row>
-                                    {this.state.payload}
-                                </Row>
-                                {/* <Row> */}
-                                    <p>Activate/Deactivate Account</p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <Switch defaultChecked onChange={this.onActivationToggle} />
-                                {/* </Row> */}
-                            </span>
-                        </div>
-                    </div>
->>>>>>> master
 
 						{/* RIGHT SIDE BAR */}
 						<div className="col-lg-2 col-md-2 col-xs-12 right-stick" />
