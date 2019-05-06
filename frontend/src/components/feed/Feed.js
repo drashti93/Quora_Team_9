@@ -37,11 +37,31 @@ export class Feed extends Component {
 		}).catch(error => {
 			console.log(`Upvoting answer failed: questionActions->getQuestionsAnswersForFeed() - ${error}`);
 		});
-
 	}
 
 	handleAnswerDownvote = (answerId) => {
 		console.log(`In handleDownvote: answerId - ${answerId}`);
+
+		console.log(`In handleDownvote: answerId - ${answerId}`);
+		const body = {
+			//TODO: Remove hardcoding
+			"userId": "5cc3f69dd23457601476d016"
+		}
+
+		axios.defaults.withCredentials = true;
+		axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/answers/${answerId}/downvote`, body)
+		.then(response => {
+			console.log(`Response: ${response}`);
+			if(response.status === 200){
+				console.log(`downvoted answer successfully questionActions->getQuestionsAnswersForFeed(): ${response.data}`);
+				// dispatch({
+				// 	type: FEED,
+				// 	payload: response.data
+				// });
+			}
+		}).catch(error => {
+			console.log(`downvoting answer failed: questionActions->getQuestionsAnswersForFeed() - ${error}`);
+		});
 
 	}
 
@@ -51,6 +71,27 @@ export class Feed extends Component {
 	}
 	handleAnswerBookmarks = (answerId) => {
 		console.log(`In handleBookmarks: answerId - ${answerId}`);
+
+		const body = {
+			//TODO: Remove hardcoding of uer_id and comment
+			"userId": "5cc3f69dd23457601476d016",
+			"answer_id": answerId,
+		}
+		console.log(answerId)
+		axios.defaults.withCredentials = true;
+		axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/answers/bookmark`,body)
+		.then(response =>{
+			console.log(`Response: ${response}`);
+			if(response.status === 200){
+				console.log(`comment answer successfully questionActions->postCommentAnswersForFeed(): ${response.data}`);
+				// dispatch({
+				// 	type: FEED,
+				// 	payload: response.data
+				// });
+			}
+		}).catch(error =>{
+			console.log(`comments answer failed: questionActions->postCommentAnswersForFeed() - ${error}`)
+		})
 
 	}
 
@@ -119,7 +160,7 @@ export class Feed extends Component {
 												/>
 												{answer.answerText}
 											</List.Item>
-											<Comments />
+											<Comments answerId={answer._id}/>
 										</div>
 									)}
 								/>

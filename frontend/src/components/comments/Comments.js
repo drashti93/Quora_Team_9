@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Comment, Avatar, Form, Button, List, Input } from 'antd';
 import moment from 'moment';
+import axios from 'axios';
 
 const TextArea = Input.TextArea;
 
@@ -65,6 +66,30 @@ export class Comments extends Component {
 				]
 			});
 		}, 1000);
+
+		const body = {
+			//TODO: Remove hardcoding of uer_id and comment
+			"userId": "5cc3f69dd23457601476d016",
+			"answer_id": this.props.answer_id,
+			"comment":this.state.value
+
+		}
+		console.log(body)
+		axios.defaults.withCredentials = true;
+		axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/comments/comment`,body)
+		.then(response =>{
+			console.log(`Response: ${response}`);
+			if(response.status === 200){
+				console.log(`comment answer successfully questionActions->postCommentAnswersForFeed(): ${response.data}`);
+				// dispatch({
+				// 	type: FEED,
+				// 	payload: response.data
+				// });
+			}
+		}).catch(error =>{
+			console.log(`comments answer failed: questionActions->postCommentAnswersForFeed() - ${error}`)
+		})
+
 	};
 
 	handleChange = e => {
