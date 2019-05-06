@@ -17,22 +17,22 @@ class TopicBar extends Component {
 		this.handleClick = this.handleClick.bind(this);
 	}
 
-	componentDidMount() {
-		let data = cookie.load("cookie");
-		let u_id = data.id;
-		console.log(u_id);
+	// componentDidMount() {
+	// 	let data = cookie.load("cookie");
+	// 	let u_id = data.id;
+	// 	console.log(u_id);
 
-		axios
-			.get("http://localhost:3001/users/" + u_id + "/topics")
-			.then(response => {
-				if (response.status === 200) {
-					console.log("------------->", response.data);
-					this.setState({
-						data: [...response.data]
-					});
-				}
-			});
-	}
+	// 	axios
+	// 		.get("http://localhost:3001/users/" + u_id + "/topics")
+	// 		.then(response => {
+	// 			if (response.status === 200) {
+	// 				console.log("------------->", response.data);
+	// 				this.setState({
+	// 					data: [...response.data]
+	// 				});
+	// 			}
+	// 		});
+	// }
 
 	handleClick = data => {
 		console.log("@@@@@@@", data);
@@ -60,7 +60,7 @@ class TopicBar extends Component {
 					renderItem={item => (
 						<List.Item>
 							<a href="/">
-								{<Icon type="read" />} {item.name} >
+								{<Icon type="read" />} {item.name}
 							</a>
 						</List.Item>
 					)}
