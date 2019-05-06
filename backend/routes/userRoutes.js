@@ -375,23 +375,48 @@ router.get("/:userId/following", async (request, response) => {
 	}
 });
 
-//Fetch answers bookmarked by user
+//Fetch bookmarked answers by user and its correspondin question
 router.get("/:userId/bookmarks", async (request, response) => {
+
 	console.log(`\n\nInside GET /users/:userId/bookmarks`);
 
 	try {
-		let answerDocument = await AnswerSchema.find({
-			bookmarks: request.params.userId
-		});
+		const bookmarkedAnswerWithQuestion = []
+		let answerDocument = await AnswerSchema
+			.find({
+				bookmarks: request.params.userId
+			})
+			.populate({
+				path: "upvotes downvotes bookmarks comments images"
+			})
+			.exec();
 
 		//If bookmarked answer present
 		if (answerDocument) {
+
 			console.log(
 				`Sucessfully fetched bookmarked answers for user ${
 					request.params.userId
 				}:\n ${answerDocument}`
 			);
-			response.status(200).json(answerDocument);
+
+			for (const answer of answerDocument) {
+
+				let question = await QuestionModel
+					.findOne({ answers: answer._id })
+					.exec();
+
+				question.answers = [];
+				question.answers.push(answer);
+
+				// console.log(`\n\n\n\n\n\nQuestion found for bookmarked answer with id - ${answer._id}`);
+				// console.log(`\n\n\n\n\n\nQuestion found for bookmarked answer with id - \n${question}`);
+
+				bookmarkedAnswerWithQuestion.push(question);
+
+			}
+			response.status(200).json(bookmarkedAnswerWithQuestion);
+
 		} else {
 			console.log(`User ${request.params.userId} not found`);
 			response
@@ -690,6 +715,21 @@ router.post("/aboutMe", function(req, res){
 	var aboutMe = req.body.text;
 	console.log(user_id, aboutMe);
 	UserSchema.updateOne({_id: user_id}, {$set: {aboutMe: aboutMe}}, function(err, results){
+		if(err){
+			res.status(400);
+		} else {
+			res.status(200).json({});
+		}
+	})
+});
+
+router.post("/name", function(req, res){
+	
+	var user_id = req.body.user_id;
+	var firstName = req.body.firstName;
+	var lastName = req.body.lastName;
+	console.log(user_id, firstName, lastName);
+	UserSchema.updateOne({_id: user_id}, {$set: {firstName: firstName, lastName: lastName}}, function(err, results){
 		if(err){
 			res.status(400);
 		} else {

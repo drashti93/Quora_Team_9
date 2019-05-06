@@ -77,3 +77,23 @@ export function saveAboutMe(user_id, text) {
             });
     }
 }
+
+export function saveName(firstName, lastName, user_id) {
+    console.log("In save about me");
+    console.log(user_id, firstName, lastName);
+    return function(dispatch){
+        axios.post("http://localhost:3001/users/name", {
+            firstName, lastName, user_id
+        })
+            .then(function (response) {
+                
+                if(response.status===200) {
+
+                    dispatch({ type: "NAME_SUCCESS", payload: true })
+                }
+            })
+            .catch(function (error) {
+                dispatch({type: "NAME_FAILURE",payload: false})
+            });
+    }
+}
