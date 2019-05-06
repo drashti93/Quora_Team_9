@@ -114,6 +114,7 @@ const UserSchema = new Schema({
 			ref: "topics"
 		}
 	],
+	Profile_views:[{type:Number}],
 	messagesSent: [
 		{
 			text: String,

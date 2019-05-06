@@ -144,3 +144,20 @@
 .navbar-parent .search-parent{
     position: relative;
 }
+canvas.chartjs-render-monitor {
+    /* width: 46% !important; */
+    margin-right: 24px;
+    margin-left: 24px;
+    height: 600px !important;
+    float: left;
+    margin-top: 52px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+.chart-super-parent{
+    width: 70%;
+    margin: auto;
+    margin-bottom:50px;
+    
+}

@@ -1,11 +1,10 @@
-var AnswersModel = require('../../../backend/model/AnswerSchema');
+var AnswersModel = require('../../model/AnswerSchema');
 
 
 function  handle_request(msg, callback){
-    AnswersModel.find({'userId': msg}.sort({$natural:1}).limit(10)
-
-    , function(err,result){
-
+    
+    AnswersModel.find({'userId': msg}).sort({ views: -1 }).limit(10).exec(function(err,result){
+        
         if(err){
             console.log(err);
             callback(null, {

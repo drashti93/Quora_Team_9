@@ -11,7 +11,8 @@ import {Provider} from 'react-redux';
 import allReducers from "./reducers/allReducers";
 import Searchpage from "./components/searchpage/searchpage";
 import userProfile from "./components/profile/userProfile";
-import Settings from "./components/Settings/Settings"
+import Settings from "./components/Settings/Settings";
+import RecruiterDashoard from "./components/AnalyticsDashboard/RecruiterDashboard";
 // const allStoreEnchancers=compose(
 //     applyMiddleware(thunk),
 //     // window.devToolsExtension && window.devToolsExtension()
@@ -45,6 +46,7 @@ class App extends Component {
                 <Route path="/profile/:user_id" component={userProfile}></Route> 
                 <Route path="/settings" component={Settings}></Route> 
                 <Route path="/search/:text" component={Searchpage}></Route> 
+                <Route path="/dashboard" component={RecruiterDashoard}></Route> 
                 <Route path="/" component={Main}></Route>
 
 
