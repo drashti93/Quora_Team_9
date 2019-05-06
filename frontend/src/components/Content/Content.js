@@ -10,7 +10,7 @@ import { Switch } from 'antd';
 import axios from 'axios';
 
 
-import TopicBar from '../topics/topic'
+import TopicBar from '../topics/topic' 
 // import user_img from "../../resources/images/user.png"
 import "../../resources/css/content.css"
 import Feed from '../feed/Feed'

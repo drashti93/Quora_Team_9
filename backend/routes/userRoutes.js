@@ -909,7 +909,7 @@ router.get("/followers/:user_id", function(req, res){
 	})
 })
 
-router.get("/following/:user_id", function(req, res){
+router.get("/following/:user_id", function(req, res){ 
 	console.log("In get following");
 	var user_id = req.params.user_id;
 	var user_following = [];
