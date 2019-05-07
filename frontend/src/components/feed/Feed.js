@@ -178,7 +178,15 @@ export class Feed extends Component {
 			console.log(`follow question failed: questionActions->postCommentAnswersForFeed() - ${error}`)
 		})
 	}
+	postAnswer=(qid)=>{
+		(async()=>{
+			let obj={ answerText:this.state.bodyText, userId:cookie.load('cookie').id, isAnonymous:false, credentials:null, questionId:qid }
 
+			let result=await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/answers`,obj);
+			alert("Answer Submitted successfully!")
+			this.update();
+		})();
+	}
 	render() {
 
 		let redirectVar = null;
@@ -235,10 +243,12 @@ export class Feed extends Component {
 												]}
 											>
 												<List.Item.Meta
-													avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-													title="Dummy Name"
+													avatar={<Avatar src={answer.userId?answer.userId.profileImage.url:"https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"} />}
+													title={answer.userId?answer.userId.firstName+" "+answer.userId.lastName:"" }
 												/>
-												{answer.answerText}
+												<p dangerouslySetInnerHTML={{__html: answer.answerText}}></p>
+
+											
 											</List.Item>
 											<Comments answerId={answer._id} showComments={this.state.showComments} commentsList={answer.comments}/>
 										</div>
@@ -250,7 +260,7 @@ export class Feed extends Component {
 									modules={{toolbar:toolbarOptions}}
 									onChange={this.handleChange} 
 								/>
-								<Button type="primary" htmlType="submit">Submit</Button>
+								<Button type="primary" onClick={()=>{this.postAnswer(question._id)}} htmlType="submit">Submit</Button>
 							</div>
 
 							<br/>
