@@ -67,6 +67,7 @@ class Profile extends Component {
      hidelist: true,
      followers: [],
      following: [],
+     pictureURL: "",
     }
 
     this.handleShow = this.handleShow.bind(this);
@@ -86,6 +87,7 @@ class Profile extends Component {
     this.handleChangeLN = this.handleChangeLN.bind(this);
     this.onChangePosition = this.onChangePosition.bind(this);
     this.handleHideCareer = this.handleHideCareer.bind(this);
+    this.saveDisplayPic = this.saveDisplayPic.bind(this);
   }
 
   handleClose() {
@@ -129,7 +131,7 @@ class Profile extends Component {
   }
 
   fileChange(event){
-    this.setState({image_file: event.target.files});
+    this.setState({image_file: event.target.files[0]});
   }
 
   componentDidMount(){
@@ -168,9 +170,6 @@ class Profile extends Component {
           firstName: newProps.firstName,
           lastName: newProps.lastName,
           credentials: newProps.credentials,
-        //   career: newProps.career,
-        //   education: newProps.education,
-        //   address: newProps.address,
       })
   }
 
@@ -291,6 +290,22 @@ class Profile extends Component {
       this.state.address, this.state.city, this.state.locState, this.state.zipcode, this.state.locStart, this.state.locEnd, this.state.currentLocation
       )
   }
+
+  saveDisplayPic(){
+    const data = new FormData()
+    data.append('profileImage', this.state.image_file, this.state.image_file.name);
+    data.set('uid', cookie.load('cookie').id);
+    data.set('name', this.state.image_file.name);
+    const config = {
+        "headers": {
+            'accept': 'application/json',
+            'Accept-Language': 'en-US,en;q=0.8',
+            'Content-Type': `multipart/form-data; boundary=${data._boundary}`
+        }
+    }
+    this.props.saveProfilePicture(data, config)
+  }
+
   render() {
     return(
         <div>
@@ -303,7 +318,7 @@ class Profile extends Component {
                         <Row id="profile_main">
                             <Col id="user_image_col" xs={3}>
                                 <div>
-                                    <span><img id="user_image" src={user_img}></img><div onClick={this.handleShow}>Add Photo</div></span>
+                                    <span><img id="user_image" src={this.props.userDetails && this.props.userDetails.profileImage && this.props.userDetails.profileImage.url ? this.props.userDetails.profileImage.url: user_img}></img><div onClick={this.handleShow}>Add Photo</div></span>
                                 </div>
                                 <Modal show={this.state.show} onHide={this.handleClose}>
                                     <Modal.Header closeButton>
@@ -311,12 +326,13 @@ class Profile extends Component {
                                     </Modal.Header>
                                     <Modal.Body><input type="file" onChange={this.fileChange}></input></Modal.Body>
                                     <ModalFooter>
-                                        <Button onClick ={() => {this.props.saveProfilePicture(this.props.userDetails._id, this.state.image_file)}}>Save</Button>
+                                        <Button onClick={() => {this.saveDisplayPic(); this.handleClose()}}>Save</Button>
                                     </ModalFooter>
                                 </Modal>
                             </Col>
-                            <Col xs={9}>
-                                <div>
+                            <Col xs={8}>
+                                <div className="profile-div">
+                                    <div>
                                     <span hidden={!this.state.hideEditorName}>{this.props.userDetails.firstName} {this.props.userDetails.lastName}</span>
                                     <input type="text" hidden={this.state.hideEditorName} value={this.state.firstName} onChange={this.handleChangeFN}></input>
                                     <input type="text" hidden={this.state.hideEditorName} value={this.state.lastName} onChange={this.handleChangeLN}></input>
@@ -324,7 +340,8 @@ class Profile extends Component {
                                     <button hidden={this.state.hideEditorName} onClick={() => this.setState({hideEditorName: true})}>Cancel</button>
                                     <button hidden={this.state.hideEditorName} onClick={() => {this.props.saveName(this.state.firstName, this.state.lastName, cookie.load('cookie').id); this.setState({hideEditorName: true})}}>Update</button>
                                     <button hidden={!this.state.hideEditorName} onClick={() => this.setState({hideEditorName: false})}>Edit</button>
-                                    <p hidden={!this.state.hideEditor}>{this.props.userDetails.aboutMe ? this.props.userDetails.aboutMe : <a onClick={() => this.setState({hideEditor: false})}>Write a description about yourself</a>}</p>
+                                    </div>
+                                    <p className="profile-desc" hidden={!this.state.hideEditor}>{this.props.userDetails.aboutMe ? this.props.userDetails.aboutMe : <a onClick={() => this.setState({hideEditor: false})}>Write a description about yourself</a>}</p>
                                     <span>{this.props.userDetails.aboutMe ? <button onClick={() => this.setState({hideEditor: false})}>Edit</button> : ""}</span>
                                     <div>
                                         <input type="text" value={this.state.aboutMe} onChange={this.handleChange} hidden={this.state.hideEditor}/>
@@ -427,12 +444,8 @@ class Profile extends Component {
                                     }
                                     {
                                         this.state.selectedTab === "Activity" ?
-                                            <div>
-                                                <div className="tab_details">
-                                                    <h6>{ this.state.selectedTab }</h6>
-                                                </div>
-                                                
-                                            </div>
+                                            
+                                            <Redirect to="/content">Content</Redirect>
                                             :
                                             <span></span>
                                     }
@@ -459,9 +472,9 @@ class Profile extends Component {
                                             this.props.userDetails.credentials && this.props.userDetails.credentials.career ? this.props.userDetails.credentials.career.map((career, index) => {
                                                
                                                return(
-                                                   <div>
+                                                   <div className="mt100">
                                                     <li hidden={!this.state.hideCareer[index]}>{career.position}</li>
-                                                    <button onClick={() => {this.setState({position: this.state.credentials.career[index].position, company: this.state.credentials.career[index].company,
+                                                    <button className="btn-quora-custom" onClick={() => {this.setState({position: this.state.credentials.career[index].position, company: this.state.credentials.career[index].company,
                                                     careerStart: this.state.credentials.career[index].startDate, careerEnd: this.state.credentials.career[index].endDate,
                                                     currentCompany: this.state.credentials.career[index].isCurrent}); this.handleHideCareer(index, false)}} hidden={!this.state.hideCareer[index]}>Edit</button>
                                                     <div hidden={this.state.hideCareer[index]}>
@@ -811,6 +824,7 @@ function mapStatetoProps(state) {
         credentials: state.profile.userDetails.credentials,
         followers: state.profile.followers,
         following: state.profile.following,
+        pictureURL: state.profile.userDetails.profileImage
         // career: state.profile.userDetails.credentials.career,
         // education: state.profile.userDetails.credentials.education,
         // address: state.profile.userDetails.credentials.location,
@@ -821,7 +835,7 @@ function mapDispatchToProps(dispatch) {
     
     return {
         getUserDetails: (user_id) => dispatch(actions.getUserDetails(user_id)),
-        saveProfilePicture: (user_id, image_file) => dispatch(actions.saveProfilePicture(user_id, image_file)),
+        saveProfilePicture: (file, config) => dispatch(actions.saveProfilePicture(file, config)),
         saveCredentials: (id, credId, type, kind, position, company, careerStart, careerEnd, currentCompany,
       school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation) => dispatch(actions.saveCredentials(id, credId, type, kind, position, company, careerStart, careerEnd, currentCompany,
       school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation)),

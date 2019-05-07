@@ -34,6 +34,7 @@ const CommentList = ( {comments} ) => (
 			<List.Item 
 				key={comment._id}
 			>
+
 				<List.Item.Meta
 					avatar={<Avatar src={comment.userId.profileImage ? comment.userId.profileImage.url : "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"} />}
 					title={<div>{comment.userId.firstName} {comment.userId.lastName}</div>}
@@ -41,6 +42,7 @@ const CommentList = ( {comments} ) => (
 				{/* <Comment style={{float: "left"}} content={comment.comment}/> */}
 				{comment.comment}
 			</List.Item>
+
 		)}
 	/>
 );
@@ -101,6 +103,9 @@ export class Comments extends Component {
 				// 	type: FEED,
 				// 	payload: response.data
 				// });
+				if(this.props.updateFunc){
+				this.props.updateFunc();
+				}
 			}
 		}).catch(error =>{
 			console.log(`comments answer failed: questionActions->postCommentAnswersForFeed() - ${error}`)
@@ -120,7 +125,9 @@ export class Comments extends Component {
 
 		return (
 			<div>
+
 				{this.props.showComments === false && (
+
 					<CommentList comments={this.props.commentsList} />
 				)}
 				<Comment

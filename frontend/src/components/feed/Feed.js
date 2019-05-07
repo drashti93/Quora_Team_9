@@ -12,11 +12,10 @@ import Comments from "../comments/Comments";
 
 export class Feed extends Component {
 
-
-	update=()=>{
-		this.props.getQuestionsAnswersForFeed();
-		
+	update(){
+		this.props.getQuestionsAnswersForFeed();		
 	}
+	
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -26,6 +25,7 @@ export class Feed extends Component {
 			showComments1: [],
 			showAnswers: []
 		};
+		this.update=this.update.bind(this);
 	}
 
 	componentDidMount() {
@@ -133,6 +133,7 @@ export class Feed extends Component {
 	handleChange = (content, delta, source, editor) => {
 		const text = editor.getText(content);
 		this.setState({ bodyText: content, plainText:text});
+
 	}
 
 	handleQuestionFollow = (questionId) => {
@@ -167,12 +168,10 @@ export class Feed extends Component {
 		})();
 	}
 	render() {
-
 		let redirectVar = null;
 		if (!cookie.load("cookie")) {
 			redirectVar = <Redirect to="/login" />;
 		}
-
 		const toolbarOptions = [
 			['bold', 'italic', 'underline'],
 			[{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
@@ -180,14 +179,12 @@ export class Feed extends Component {
 			['clean']
 		];
 		let state=this.state;
-
 		return (
 			<div>
 				{redirectVar}
 				<List
 					itemLayout="vertical"
 					size="large"
-					
 					pagination={{
 						onChange: page => {
 							console.log(page);
@@ -196,8 +193,9 @@ export class Feed extends Component {
 					}}
 					dataSource={this.props.question.feed}
 					renderItem={(question, index) => (
-						<div>
+						<div className="feed-container">
 							<List.Item 
+							
 								key={question._id}
 								actions={[
 									<Tooltip title="Answers" onClick={()=>{this.handleQuestionAnswer(index, question._id)}}><Icon type="form" style={{ marginRight: 8 }} />{question.answers.length}</Tooltip>,
@@ -205,6 +203,7 @@ export class Feed extends Component {
 								]}
 							>
 								<List.Item.Meta
+								className="card-heading"
 								    key={question._id}
 									title = {<Link to = {`/questions/${question._id}`} target="_blank">{question.questionText}</Link>}
 								/>
@@ -218,7 +217,9 @@ export class Feed extends Component {
 												actions={[
 													<Tooltip title="Upvotes" onClick={()=>{this.handleAnswerUpvote(answer._id)}}><Icon type="like" style={{ marginRight: 8 }} />{answer.upvotes.length}</Tooltip>,
 													<Tooltip title="Downvotes" onClick={()=>{this.handleAnswerDownvote(answer._id)}}><Icon type="dislike" style={{ marginRight: 8 }} />{answer.downvotes.length}</Tooltip>,
+
 													<Tooltip title="Comments" onClick={()=>{this.handleAnswerComments(index, answer)}}><Icon type="message" style={{ marginRight: 8 }} />{answer.comments.length}</Tooltip>, 
+
 													<Tooltip title="Bookmarks" onClick={()=>{this.handleAnswerBookmarks(answer._id)}}><Icon type="book" style={{ marginRight: 8 }} />{answer.bookmarks.length}</Tooltip>
 												]}
 											>
@@ -228,7 +229,7 @@ export class Feed extends Component {
 												/>
 												<p dangerouslySetInnerHTML={{__html: answer.answerText}}></p>
 											</List.Item>
-											<Comments answerId={answer._id} showComments={state.showComments1[index]} commentsList={answer.comments}/>
+											<Comments updateFunc={this.update} answerId={answer._id} showComments={state.showComments1[index]} commentsList={answer.comments}/>
 										</div>
 									)}
 								/>
@@ -240,7 +241,7 @@ export class Feed extends Component {
 										modules={{toolbar:toolbarOptions}}
 										onChange={this.handleChange} 
 									/>
-									<Button type="primary" onClick={()=>{this.postAnswer(question._id)}} htmlType="submit">Submit</Button>
+									<Button className="btn-quora" type="primary" onClick={()=>{this.postAnswer(question._id)}} htmlType="submit">Submit</Button>
 								</div>
 							}
 						</div>
