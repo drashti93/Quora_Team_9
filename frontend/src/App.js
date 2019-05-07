@@ -12,10 +12,13 @@ import allReducers from "./reducers/allReducers";
 import Searchpage from "./components/searchpage/searchpage";
 import userProfile from "./components/profile/userProfile";
 import Settings from "./components/Settings/Settings";
+
 import RecruiterDashoard from "./components/AnalyticsDashboard/RecruiterDashboard";
+
 import QuestionDetail from "./components/questions/QuestionDetails";
 import Content from "./components/Content/Content";
 import Bookmarks from './components/bookmarks/Bookmarks';
+
 
 const allStoreEnchancers=compose(
     applyMiddleware(thunk),
@@ -32,6 +35,7 @@ const store=createStore(
 //   allReducers,
 //   composeEnhancer(applyMiddleware(thunk))
 // ); 
+
 
 const composePlugin = window._REDUX_DEVTOOLS_EXTENSION_COMPOSE_ || compose;
 

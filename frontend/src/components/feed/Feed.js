@@ -14,6 +14,7 @@ export class Feed extends Component {
 
 
 	update=()=>{
+
 		this.props.getQuestionsAnswersForFeed();
 		
 	}
@@ -100,6 +101,7 @@ export class Feed extends Component {
 
 	}
 
+
 	handleAnswerComments = (i, answer) => {
 		console.log(`In handleComments: answerId - ${answer._id}`);
 		let {showComments1}=this.state;
@@ -123,6 +125,7 @@ export class Feed extends Component {
 		// 		showComments1: arr
 		// 	})
 		// }
+
 
 
 		console.log(`Answer Comments - ${answer.comments}`)
@@ -173,6 +176,7 @@ export class Feed extends Component {
 	handleChange = (content, delta, source, editor) => {
 		const text = editor.getText(content);
 		this.setState({ bodyText: content, plainText:text});
+
 	}
 
 	handleQuestionFollow = (questionId) => {
@@ -225,7 +229,9 @@ export class Feed extends Component {
 			['link', 'image', 'video'],
 			['clean']
 		];
+
 		let state=this.state;
+
 
 		return (
 			<div>
@@ -266,20 +272,26 @@ export class Feed extends Component {
 												actions={[
 													<Tooltip title="Upvotes" onClick={()=>{this.handleAnswerUpvote(answer._id)}}><Icon type="like" style={{ marginRight: 8 }} />{answer.upvotes.length}</Tooltip>,
 													<Tooltip title="Downvotes" onClick={()=>{this.handleAnswerDownvote(answer._id)}}><Icon type="dislike" style={{ marginRight: 8 }} />{answer.downvotes.length}</Tooltip>,
+
 													<Tooltip title="Comments" onClick={()=>{this.handleAnswerComments(index, answer)}}><Icon type="message" style={{ marginRight: 8 }} />{answer.comments.length}</Tooltip>, 
+
 													<Tooltip title="Bookmarks" onClick={()=>{this.handleAnswerBookmarks(answer._id)}}><Icon type="book" style={{ marginRight: 8 }} />{answer.bookmarks.length}</Tooltip>
 												]}
 											>
 												<List.Item.Meta
+
 													avatar={<Avatar src={answer.userId && answer.userId.profileImage?answer.userId.profileImage.url:"https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"} />}
 													title={answer.userId?answer.userId.firstName+" "+answer.userId.lastName:"" }
+
 												/>
 												<p dangerouslySetInnerHTML={{__html: answer.answerText}}></p>
 
 												
 											</List.Item>
+
 											<Comments answerId={answer._id} showComments={state.showComments1[index]} commentsList={answer.comments}/>
 											
+
 										</div>
 									)}
 								/>
@@ -289,7 +301,9 @@ export class Feed extends Component {
 									modules={{toolbar:toolbarOptions}}
 									onChange={this.handleChange} 
 								/>
+
 								<Button type="primary" onClick={()=>{this.postAnswer(question._id)}} htmlType="submit">Submit</Button>
+
 							</div>
 
 							<br/>

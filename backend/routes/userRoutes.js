@@ -415,7 +415,9 @@ router.get("/:userId/bookmarks", async (request, response) => {
 				bookmarks: request.params.userId
 			})
 			.populate({
+
 				path: "upvotes downvotes bookmarks images userId comments.userId"
+
 			})
 			.exec();
 
@@ -791,7 +793,9 @@ router.get("/:userId/feed", async (request, response) => {
 					.populate({
 						path: "answers",
 						populate: {
+
 							path: "upvotes downvotes bookmarks images userId comments.userId"
+
 						}
 					})
 					.exec();
@@ -866,6 +870,7 @@ router.get("/questionsAsked/:user_id", function(req, res){
 	});
 });
 
+
 // router.get("/questionsAnswered/:user_id", function(req, res){
 // 	console.log("In answers");
 // 	var user_id = req.params.user_id;
@@ -931,6 +936,7 @@ router.get("/questionsAnswered/:user_id", async (request, response) => {
 				// console.log(`\n\n\n\n\n\nQuestion found for bookmarked answer with id - \n${question}`);
 
 				bookmarkedAnswerWithQuestion.push(question);
+
 
 			}
 			response.status(200).json(bookmarkedAnswerWithQuestion);
