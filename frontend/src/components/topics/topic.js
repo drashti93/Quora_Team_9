@@ -59,7 +59,11 @@ class TopicBar extends Component {
 				{/* {redirectVar} */}
 				<List
 					size="small"
-					header={<div>{<Icon type="copy" />} Feed</div>}
+					header={
+						<Link to="/">
+							<div>{<Icon type="copy" />} Feed</div>
+						</Link>
+					}
 					footer={
 						<Link to="/bookmarks">
 							<div>{<Icon type="book" />} Bookmark</div>

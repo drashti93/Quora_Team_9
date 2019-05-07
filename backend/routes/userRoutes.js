@@ -415,7 +415,7 @@ router.get("/:userId/bookmarks", async (request, response) => {
 				bookmarks: request.params.userId
 			})
 			.populate({
-				path: "upvotes downvotes bookmarks images"
+				path: "upvotes downvotes bookmarks images userId comments.userId"
 			})
 			.exec();
 
@@ -746,7 +746,7 @@ router.get("/:userId/questions", async (req, res) => {
 			.populate({
 				path: "answers",
 				populate: {
-					path: "upvotes downvotes bookmarks"
+					path: "upvotes downvotes bookmarks images userId comments.userId"
 				}
 			})
 			.exec();
@@ -791,7 +791,7 @@ router.get("/:userId/feed", async (request, response) => {
 					.populate({
 						path: "answers",
 						populate: {
-							path: "upvotes downvotes bookmarks userId"
+							path: "upvotes downvotes bookmarks images userId comments.userId"
 						}
 					})
 					.exec();
