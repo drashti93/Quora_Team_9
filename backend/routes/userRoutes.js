@@ -979,41 +979,105 @@ router.get("/questionsAnswered/:user_id", async (request, response) => {
 router.get("/followers/:user_id", function(req, res){
 	console.log("In get followers");
 	var user_id = req.params.user_id;
-	var user_followers = [];
+	
 	console.log(user_id);
-	UserSchema.find({_id: user_id}, function(err, results){
+	UserSchema.find({_id: user_id}, async function(err, results){
+		var user_followers = [];
+		var user_followers_id = [];
 		if(err){
 			res.status(400);
 		} else {
-			// console.log(results);
-			for(follower in results.followers){
-				UserSchema.find({_id: follower.userId}, function(err, results){
-					var name = results.firstName + " " + results.lastName;
+			console.log("**********")
+			console.log(results[0].followers.length);
+			console.log("**********")
+			for(let i=0; i<results[0].followers.length; i++){
+				var user = results[0].followers[i];
+				user_followers_id.push(user);
+				console.log("**********")
+				console.log(user);
+			  console.log("**********")
+			var results =	await UserSchema.find({_id: user});
+				console.log(results[0]);
+					var name = results[0].firstName + " " + results[0].lastName;
 					user_followers.push(name);
-				})
 			}
-			res.status(200).json({user_followers});
+			console.log(user_followers);
+			res.status(200).json({user_followers, user_followers_id});
 		}
 	})
 })
 
-router.get("/following/:user_id", function(req, res){ 
+router.get("/following/:user_id", function(req, res){
 	console.log("In get following");
 	var user_id = req.params.user_id;
-	var user_following = [];
+	
 	console.log(user_id);
-	UserSchema.find({_id: user_id}, function(err, results){
+	UserSchema.find({_id: user_id}, async function(err, results){
+		
 		if(err){
 			res.status(400);
 		} else {
-			// console.log(results);
-			for(following in results.following){
-				UserSchema.find({_id: following.userId}, function(err, results){
-					var name = results.firstName + " " + results.lastName;
+			var user_following = [];
+			console.log("**********")
+			console.log(results[0].following.length);
+			console.log("**********")
+			for(let i=0; i<results[0].following.length; i++){
+				var user = results[0].following[i]
+				console.log("**********")
+				console.log(user);
+			  console.log("**********")
+			var results =	await UserSchema.find({_id: user});
+				console.log(results[0]);
+					var name = results[0].firstName + " " + results[0].lastName;
 					user_following.push(name);
-				})
 			}
+			console.log(user_following);
 			res.status(200).json({user_following});
+		}
+	})
+})
+
+router.post("/follow", function(req, res){
+	var user_id=req.body.user_id;
+	console.log(user_id)
+	console.log(req.body.following)
+	var following = req.body.following;
+	UserSchema.updateOne({_id: following}, {$push: {followers: user_id.id}}, function(err, results){
+		if(err){
+			console.log(err)
+		}
+		else{
+			UserSchema.updateOne({_id: user_id.id}, {$push: {following: following}}, function(err, results){
+				if(err){
+					console.log(err)
+				}
+				else{
+					res.status(200).json({});
+				}
+				
+			})
+			
+		}
+	})
+})
+
+router.post("/unfollow", function(req, res){
+	var user_id=req.body.user_id;
+	var following = req.body.following;
+	UserSchema.updateOne({_id: following}, {$pull: {followers: user_id.id}}, function(err, results){
+		if(err){
+			console.log(err)
+		}
+		else{
+			UserSchema.updateOne({_id: user_id.id}, {$pull: {following: following}}, function(err, results){
+				if(err){
+					console.log(err)
+				}
+				else {
+					res.status(200).json({});
+				}
+			})
+			
 		}
 	})
 })

@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import cookie from "react-cookies";
 import { Redirect } from "react-router";
-import { List, Avatar, Icon, Divider, Tooltip, Skeleton } from "antd";
+import { List, Avatar, Icon, Divider, Tooltip, Button } from "antd";
 import { connect } from "react-redux";
 import Comments from "../comments/Comments"
 import * as actions from "../../actions/profileActions"
 import axios from "axios";
+import ReactQuill from 'react-quill';
 
 export class ProfileAnswers extends Component {
 
@@ -234,7 +235,7 @@ export class ProfileAnswers extends Component {
 		let state=this.state;
 		console.log(this.props.answers)
 		return (
-			<div>
+			<div className="main-div">
 				{redirectVar}
 				<List
 					itemLayout="vertical"
@@ -249,15 +250,17 @@ export class ProfileAnswers extends Component {
                     
 					dataSource={this.props.answers}
 					renderItem={(question, index) => (
-						<div>
+						<div className="feed-container">
 							<List.Item 
 								key={question._id}
 								actions={[
-									<Tooltip title="Answers" onClick={()=>{this.handleQuestionAnswer(question._id)}}><Icon type="form" style={{ marginRight: 8 }} />{question.answers.length}</Tooltip>,
+									<Tooltip title="Answers" onClick={()=>{this.postAnswer(question._id)}}><Icon type="form" style={{ marginRight: 8 }} />{question.answers.length}</Tooltip>,
 									<Tooltip title="Followers" onClick={()=>{this.handleQuestionAnswer(question._id)}}><Icon type="wifi" style={{ marginRight: 8 }} />{question.followers.length}</Tooltip>
 								]}
 							>
 								<List.Item.Meta
+								className="card-heading"
+
 									title={question.questionText}
 								/>
 								<List
@@ -271,8 +274,8 @@ export class ProfileAnswers extends Component {
 												actions={[
 													<Tooltip title="Upvotes" onClick={()=>{this.handleAnswerUpvote(answer._id)}}><Icon type="like" style={{ marginRight: 8 }} />{answer.upvotes.length}</Tooltip>,
 													<Tooltip title="Downvotes" onClick={()=>{this.handleAnswerDownvote(answer._id)}}><Icon type="dislike" style={{ marginRight: 8 }} />{answer.downvotes.length}</Tooltip>,
-													<Tooltip title="Comments" onClick={()=>{this.handleAnswerComments(index, answer)}}><Icon type="message" style={{ marginRight: 8 }} />{answer.bookmarks.length}</Tooltip>, 
-													<Tooltip title="Bookmarks" onClick={()=>{this.handleAnswerBookmarks(answer._id)}}><Icon type="book" style={{ marginRight: 8 }} />{answer.comments.length}</Tooltip>
+													<Tooltip title="Comments" onClick={()=>{this.handleAnswerComments(index, answer)}}><Icon type="message" style={{ marginRight: 8 }} />{answer.comments.length}</Tooltip>, 
+													<Tooltip title="Bookmarks" onClick={()=>{this.handleAnswerBookmarks(answer._id)}}><Icon type="book" style={{ marginRight: 8 }} />{answer.bookmarks.length}</Tooltip>
 												]}
 											>
 												<List.Item.Meta
@@ -281,13 +284,24 @@ export class ProfileAnswers extends Component {
 													}
 													title={answer.userId?answer.userId.firstName+" "+answer.userId.lastName:""}
 												/>
-												{answer.answerText}
+												<p dangerouslySetInnerHTML={{__html: answer.answerText}}></p>
 											</List.Item>
 											<Comments answerId={answer._id} showComments={state.showComments1[index]} commentsList={answer.comments}/>
 										</div>
 									)}
 								/>
 							</List.Item>
+							<div>
+								<ReactQuill 
+									modules={{toolbar:toolbarOptions}}
+									onChange={this.handleChange} 
+								/>
+								<Button className="btn-quora" type="primary" onClick={()=>{this.postAnswer(question._id)}} htmlType="submit">Submit</Button>
+							</div>
+
+							<br/>
+							<br/>
+							<Divider dashed={true}/>
 						</div>
 					)}
 				/>

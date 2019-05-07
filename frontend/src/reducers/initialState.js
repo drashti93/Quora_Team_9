@@ -3,6 +3,7 @@ export default {
     questions: "",
     questionsAnswered: [],
     followers: [],
+    followers_id: [],
     following: [],
     pictureURL: "",
 }

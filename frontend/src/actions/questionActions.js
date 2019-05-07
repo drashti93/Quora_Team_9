@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FEED, BOOKMARK_FEED, TOPIC_FEED, QUESTIONS_FEED } from './types';
+import { FEED, BOOKMARK_FEED, TOPIC_FEED, QUESTIONS_FEED, TOPICDETAILS } from './types';
 
 export const getQuestionsAnswersForFeed = () => dispatch => {
 
@@ -72,6 +72,25 @@ export const getQuestionsAnswersByQuestionId = (questionId) => dispatch => {
 		}
 	}).catch(error => {
 		console.log(`Something wrong in questionActions->getQuestionsAnswersByQuestionId(): ${error}`);
+	});
+
+}
+
+export const getTopicNameAndNumberOfFollowersById = (topicId) => dispatch => {
+
+	axios.defaults.withCredentials = true;
+	axios.get(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/topics/${topicId}/details`)
+	.then(response => {
+		console.log(`Response: ${response}`);
+		if(response.status === 200){
+			console.log(`Got topic details in questionActions->getTopicNameAndNumberOfFollowersById(): ${response.data}`);
+			dispatch({
+				type: TOPICDETAILS,
+				payload: response.data
+			});
+		}
+	}).catch(error => {
+		console.log(`Something wrong in questionActions->getTopicNameAndNumberOfFollowersById(): ${error}`);
 	});
 
 }

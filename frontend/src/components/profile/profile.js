@@ -330,8 +330,9 @@ class Profile extends Component {
                                     </ModalFooter>
                                 </Modal>
                             </Col>
-                            <Col xs={9}>
-                                <div>
+                            <Col xs={8}>
+                                <div className="profile-div">
+                                    <div>
                                     <span hidden={!this.state.hideEditorName}>{this.props.userDetails.firstName} {this.props.userDetails.lastName}</span>
                                     <input type="text" hidden={this.state.hideEditorName} value={this.state.firstName} onChange={this.handleChangeFN}></input>
                                     <input type="text" hidden={this.state.hideEditorName} value={this.state.lastName} onChange={this.handleChangeLN}></input>
@@ -339,7 +340,8 @@ class Profile extends Component {
                                     <button hidden={this.state.hideEditorName} onClick={() => this.setState({hideEditorName: true})}>Cancel</button>
                                     <button hidden={this.state.hideEditorName} onClick={() => {this.props.saveName(this.state.firstName, this.state.lastName, cookie.load('cookie').id); this.setState({hideEditorName: true})}}>Update</button>
                                     <button hidden={!this.state.hideEditorName} onClick={() => this.setState({hideEditorName: false})}>Edit</button>
-                                    <p hidden={!this.state.hideEditor}>{this.props.userDetails.aboutMe ? this.props.userDetails.aboutMe : <a onClick={() => this.setState({hideEditor: false})}>Write a description about yourself</a>}</p>
+                                    </div>
+                                    <p className="profile-desc" hidden={!this.state.hideEditor}>{this.props.userDetails.aboutMe ? this.props.userDetails.aboutMe : <a onClick={() => this.setState({hideEditor: false})}>Write a description about yourself</a>}</p>
                                     <span>{this.props.userDetails.aboutMe ? <button onClick={() => this.setState({hideEditor: false})}>Edit</button> : ""}</span>
                                     <div>
                                         <input type="text" value={this.state.aboutMe} onChange={this.handleChange} hidden={this.state.hideEditor}/>
@@ -347,6 +349,7 @@ class Profile extends Component {
                                         <button hidden={this.state.hideEditor} onClick={() => {this.props.saveAboutMe(cookie.load('cookie').id, this.state.aboutMe); this.setState({hideEditor: true})}}>Update</button>
                                     </div>
                                     <p>{this.props && this.props.followers ? (this.props.followers).length : 0} followers</p>
+                                    
                                 </div>
                             </Col>
                         </Row>
@@ -442,12 +445,8 @@ class Profile extends Component {
                                     }
                                     {
                                         this.state.selectedTab === "Activity" ?
-                                            <div>
-                                                <div className="tab_details">
-                                                    <h6>{ this.state.selectedTab }</h6>
-                                                </div>
-                                                
-                                            </div>
+                                            
+                                            <Redirect to="/content">Content</Redirect>
                                             :
                                             <span></span>
                                     }
@@ -474,9 +473,9 @@ class Profile extends Component {
                                             this.props.userDetails.credentials && this.props.userDetails.credentials.career ? this.props.userDetails.credentials.career.map((career, index) => {
                                                
                                                return(
-                                                   <div>
+                                                   <div className="mt100">
                                                     <li hidden={!this.state.hideCareer[index]}>{career.position}</li>
-                                                    <button onClick={() => {this.setState({position: this.state.credentials.career[index].position, company: this.state.credentials.career[index].company,
+                                                    <button className="btn-quora-custom" onClick={() => {this.setState({position: this.state.credentials.career[index].position, company: this.state.credentials.career[index].company,
                                                     careerStart: this.state.credentials.career[index].startDate, careerEnd: this.state.credentials.career[index].endDate,
                                                     currentCompany: this.state.credentials.career[index].isCurrent}); this.handleHideCareer(index, false)}} hidden={!this.state.hideCareer[index]}>Edit</button>
                                                     <div hidden={this.state.hideCareer[index]}>

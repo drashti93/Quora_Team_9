@@ -8,18 +8,41 @@ var client = require("../resources/redis");
 
 //Follow a Topic
 
-topic.post("/topics/follow", async (req, res) => {
+topic.post("/follow", async (req, res) => {
+	
+	console.log(`\n\nInside POST /topics/follow`);
+
 	try {
 		let { userId, topicId } = req.body;
-		let result = await UserModel.update(
-			{ _id: userId },
-			{
-				$push: { topicsFollowed: topicId }
-			}
+
+		let checkUserInTopicFollow = await UserModel.findOne(
+			{ _id: userId, topicsFollowed: topicId }
 		);
-		res.status(200).json({});
+
+		console.log(`\n\n checkUserInTopicFollow- ${checkUserInTopicFollow}`);
+
+		if(checkUserInTopicFollow) {
+
+			let addTopicToUser = await UserModel.findOneAndUpdate(
+				{ _id: userId },
+				{ $pull: { topicsFollowed: topicId } },
+				{ new: true }
+			);
+
+			res.status(200).json(addTopicToUser);
+
+		} else {
+
+			let addTopicToUser = await UserModel.findOneAndUpdate(
+				{ _id: userId },
+				{ $push: { topicsFollowed: topicId } },
+				{ new: true }
+			);
+
+			res.status(200).json(addTopicToUser);
+		}
 	} catch (error) {
-		res.send(error);
+		res.status(500).json({"error": error});
 	}
 });
 
@@ -84,9 +107,7 @@ topic.get("/:topicId/questions/following", async (req, res) => {
 			.populate({
 				path: "answers",
 				populate: {
-
 					path: "upvotes downvotes bookmarks images userId comments.userId"
-
 				}
 			})
 			.exec();
@@ -110,6 +131,52 @@ topic.get("/:topicId/questions/following", async (req, res) => {
 		response.status(500).json({
 			error: error,
 			message: `Error fetching questions for topic ${req.params.topicId}`
+		});
+	}
+});
+
+//Get topic details and number of followers in topic details page
+topic.get("/:topicId/details", async (request, response) => {
+
+	console.log(`\n\n\nInside Get /topics/:topicId/details`);
+
+	let topicId = request.params.topicId;
+
+	try {
+
+		let checkTopicInUsers = await UserModel.find({ topicsFollowed: topicId });
+		let topicDetail = await TopicModel.findOne({ _id: topicId });
+
+		if(topicDetail && checkTopicInUsers) {
+
+			let result = {};
+			result.topicId = topicId;
+			result.topicName = topicDetail.name;
+			result.followers = checkTopicInUsers.length;
+
+			console.log(`Result - ${result}`);
+			console.log(`Topic Name - ${result.topicName}`);
+			console.log(`Topic Followers - ${result.followers}`);
+
+			response.status(200).json(result);
+
+		} else {
+			console.log(`Topic ${topicId} not found`);
+			response
+				.status(404)
+				.json({ messgage: `Topic ${topicId} not found` });
+		}
+	} catch (error) {
+		console.log(
+			`Error fetching topic details for topic - ${
+				req.params.topicId
+			}:\n ${error}`
+		);
+		response.status(500).json({
+			error: error,
+			message: `Error fetching topic details for topic - ${
+				req.params.topicId
+			}`
 		});
 	}
 });

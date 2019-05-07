@@ -259,3 +259,16 @@ border-radius: 5px;
     margin-bottom: 10px;
     /* padding: 20px; */
 }
+.tab_details{
+    margin-bottom: 20px;
+}
+.single-feeds-option{
+    padding: 5px;
+
+}
+#profile_body{
+    margin-top: 100px;
+}
+#profile_main{
+    border: none;
+}
