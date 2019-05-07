@@ -57,6 +57,7 @@ export class QuestionDetails extends Component {
 		.then(response => {
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+				this.update();
 				console.log(`Upvoted answer successfully questionActions->getQuestionsAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -85,6 +86,7 @@ export class QuestionDetails extends Component {
 		.then(response => {
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+				this.update();
 				console.log(`downvoted answer successfully questionActions->getQuestionsAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -134,6 +136,7 @@ export class QuestionDetails extends Component {
 		.then(response =>{
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+				this.update();
 				console.log(`comment answer successfully questionActions->postCommentAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -173,6 +176,7 @@ export class QuestionDetails extends Component {
 		.then(response =>{
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+				this.update();
 				console.log(`follow question successfully questionActions->postCommentAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -250,7 +254,7 @@ export class QuestionDetails extends Component {
 													
 
 												</List.Item>
-												<Comments answerId={answer._id} showComments={this.state.showComments} commentsList={answer.comments}/>
+												<Comments  updateFunc={this.update} answerId={answer._id} showComments={this.state.showComments} commentsList={answer.comments}/>
 											</div>
 										)}
 									/>
