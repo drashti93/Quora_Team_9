@@ -21,6 +21,7 @@ export class QuestionDetails extends Component {
 		};
 	}
 
+
 	update=()=>{
 		this.props.getQuestionsAnswersByQuestionId(window.location.pathname.split('/')[2]);
 
@@ -37,6 +38,7 @@ export class QuestionDetails extends Component {
 			// alert("Answer Submitted successfully!")
 			this.update();
 		})();
+
 	}
 
 	handleAnswerUpvote = (answerId) => {
@@ -239,12 +241,14 @@ export class QuestionDetails extends Component {
 													]}
 												>
 													<List.Item.Meta
+
 													avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
 													title={answer.userId?answer.userId.firstName+" "+answer.userId.lastName:"" }
 													/>
 													<p dangerouslySetInnerHTML={{__html: answer.answerText}}></p>
 
 													
+
 												</List.Item>
 												<Comments answerId={answer._id} showComments={this.state.showComments} commentsList={answer.comments}/>
 											</div>

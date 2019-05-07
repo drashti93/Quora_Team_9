@@ -158,7 +158,7 @@ componentWillReceiveProps(nextProps){
     const imgUrl = _.has(this, 'props.navbar.profile.data.profileImage');
     let {counter,searchArray}=this.state;
     counter=Math.min(counter,searchArray.length);
-    const image = <img className="profile-image" src={imgUrl ? this.props.navbar.profile.data.profileImage : stockimage}></img>
+    const image = <img className="profile-image" src={imgUrl ? this.props.navbar.profile.data.profileImage.url : stockimage}></img>
     return (
       <div className="navbar-parent">
         <Navbar fixed="top" expand="lg">

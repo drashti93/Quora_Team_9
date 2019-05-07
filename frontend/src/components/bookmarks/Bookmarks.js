@@ -13,12 +13,14 @@ import Comments from "../comments/Comments";
 export class Bookmarks extends Component {
 
 	componentDidMount() {
+
 		this.update();
 	}
 	update=()=>{
 		this.props.getBookmarkedAnswersWithCorrespondingQuestionsForBookmark();
 
 	}
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -33,7 +35,9 @@ export class Bookmarks extends Component {
 
 		const body = {
 			//TODO: Remove hardcoding
+
 			"userId": cookie.load('cookie').id
+
 		}
 
 		axios.defaults.withCredentials = true;
@@ -41,7 +45,9 @@ export class Bookmarks extends Component {
 		.then(response => {
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+
 				this.update();
+
 				console.log(`Upvoted answer successfully questionActions->getQuestionsAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -59,7 +65,9 @@ export class Bookmarks extends Component {
 		console.log(`In handleDownvote: answerId - ${answerId}`);
 		const body = {
 			//TODO: Remove hardcoding
+
 			"userId": cookie.load('cookie').id
+
 		}
 
 		axios.defaults.withCredentials = true;
@@ -67,6 +75,7 @@ export class Bookmarks extends Component {
 		.then(response => {
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+
 				this.update();
 				console.log(`downvoted answer successfully questionActions->getQuestionsAnswersForFeed(): ${response.data}`);
 				// dispatch({
@@ -105,7 +114,9 @@ export class Bookmarks extends Component {
 
 		const body = {
 			//TODO: Remove hardcoding of uer_id and comment
+
 			"userId": cookie.load('cookie'.id),
+
 			"answer_id": answerId,
 		}
 		console.log(answerId)
@@ -114,7 +125,9 @@ export class Bookmarks extends Component {
 		.then(response =>{
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+
 				this.update();
+
 				console.log(`comment answer successfully questionActions->postCommentAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -151,6 +164,7 @@ export class Bookmarks extends Component {
 			this.update();
 		})();
 	}
+
 	render() {
 
 		let redirectVar = null;
@@ -209,9 +223,11 @@ export class Bookmarks extends Component {
 											>
 												<List.Item.Meta
 													avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+
 													title={answer.userId?answer.userId.firstName+" "+answer.userId.lastName:"" }
 												/>
 												<p dangerouslySetInnerHTML={{__html: answer.answerText}}></p>
+
 											</List.Item>
 											<Comments answerId={answer._id} showComments={this.state.showComments} commentsList={answer.comments}/>
 										</div>

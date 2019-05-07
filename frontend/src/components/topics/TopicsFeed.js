@@ -13,9 +13,11 @@ import Comments from "../comments/Comments";
 export class TopicsFeed extends Component {
 
 	componentDidMount() {
+
 		this.update();
 	}
 	update=()=>{
+
 		console.log(`TopicId - ${window.location.pathname.split('/')[2]}`);
 		this.props.getQuestionsAnswersForUserTopics(window.location.pathname.split('/')[2]);
 	}
@@ -45,7 +47,9 @@ export class TopicsFeed extends Component {
 		.then(response => {
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+
 				this.update();
+
 				console.log(`Upvoted answer successfully questionActions->getQuestionsAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -74,7 +78,9 @@ export class TopicsFeed extends Component {
 		.then(response => {
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+
 				this.update();
+
 				console.log(`downvoted answer successfully questionActions->getQuestionsAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -124,7 +130,9 @@ export class TopicsFeed extends Component {
 		.then(response =>{
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+
 				this.update();
+
 				console.log(`comment answer successfully questionActions->postCommentAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -164,7 +172,9 @@ export class TopicsFeed extends Component {
 		.then(response =>{
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+
 				this.update();
+
 				console.log(`follow question successfully questionActions->postCommentAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -175,6 +185,7 @@ export class TopicsFeed extends Component {
 			console.log(`follow question failed: questionActions->postCommentAnswersForFeed() - ${error}`)
 		})
 	}
+
 	postAnswer=(qid)=>{
 		(async()=>{
 			let obj={ answerText:this.state.bodyText, userId:cookie.load('cookie').id, isAnonymous:false, credentials:null, questionId:qid }
@@ -184,6 +195,7 @@ export class TopicsFeed extends Component {
 			this.update();
 		})();
 	}
+
 	render() {
 
 		let redirectVar = null;
@@ -242,9 +254,11 @@ export class TopicsFeed extends Component {
 											>
 												<List.Item.Meta
 													avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+
 													title={answer.userId?answer.userId.firstName+" "+answer.userId.lastName:"" }
 												/>
 												<p dangerouslySetInnerHTML={{__html: answer.answerText}}></p>
+
 											</List.Item>
 											<Comments answerId={answer._id} showComments={this.state.showComments} commentsList={answer.comments}/>
 										</div>

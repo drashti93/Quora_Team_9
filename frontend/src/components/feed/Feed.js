@@ -14,15 +14,15 @@ export class Feed extends Component {
 
 
 	update(){
-		this.props.getQuestionsAnswersForFeed();
-
+		this.props.getQuestionsAnswersForFeed();		
 	}
 	constructor(props) {
 		super(props);
 		this.state = {
 			bodyText: '',
 			plainText: '',
-			showComments: false
+			showComments: false,
+			showComments1: []
 		};
 		this.update=this.update.bind(this);
 	}
@@ -31,6 +31,15 @@ export class Feed extends Component {
 
 	componentDidMount() {
 		this.update();
+		
+		var arr = [];
+      for(var i=0; i<20; i++){
+          arr.push(true);
+      }
+      this.setState({
+          showComments1: arr
+      })
+
 	}
 
 	handleAnswerUpvote = (answerId) => {
@@ -91,14 +100,31 @@ export class Feed extends Component {
 
 	}
 
-	handleAnswerComments = (answer) => {
-		console.log(`In handleComments: answerId - ${answer._id}`);
 
-		if(this.state.showComments === false) {
-			this.setState({showComments: true})
-		} else if (this.state.showComments === true) {
-			this.setState({showComments: false})
-		}
+	handleAnswerComments = (i, answer) => {
+		console.log(`In handleComments: answerId - ${answer._id}`);
+		let {showComments1}=this.state;
+		showComments1[i]=!showComments1[i];
+		this.setState({
+			showComments1
+		})
+		// if(this.state.showComments1[i] == false) {
+		// 	console.log(this.state.showComments1)
+		// 	var arr = this.state.showComments1;
+		// 	arr[i] = true;
+		// 	this.setState({
+		// 		showComments1: arr
+		// 	})
+		// 	console.log(this.state.showComments1)
+		// } else if (this.state.showComments1[i] == true) {
+		// 	// this.setState({showComments: false})
+		// 	var arr = this.state.showComments1;
+		// 	arr[i] = false;
+		// 	this.setState({
+		// 		showComments1: arr
+		// 	})
+		// }
+
 
 
 		console.log(`Answer Comments - ${answer.comments}`)
@@ -149,6 +175,7 @@ export class Feed extends Component {
 	handleChange = (content, delta, source, editor) => {
 		const text = editor.getText(content);
 		this.setState({ bodyText: content, plainText:text});
+
 	}
 
 	handleQuestionFollow = (questionId) => {
@@ -202,6 +229,9 @@ export class Feed extends Component {
 			['clean']
 		];
 
+		let state=this.state;
+
+
 		return (
 			<div>
 				{redirectVar}
@@ -216,8 +246,10 @@ export class Feed extends Component {
 						pageSize: 5
 					}}
 					dataSource={this.props.question.feed}
-					renderItem={question => (
+					renderItem={(question, index) => (
+						
 						<div className="feed-container">
+						show comments: {this.state.showComments}
 							<List.Item 
 							
 								key={question._id}
@@ -234,26 +266,30 @@ export class Feed extends Component {
 								<List
 									itemLayout="vertical"
 									dataSource={question.answers}
-									renderItem={answer => (
+									renderItem={(answer, index) => (
 										<div>
 											<List.Item 
 												key={answer._id}
 												actions={[
 													<Tooltip title="Upvotes" onClick={()=>{this.handleAnswerUpvote(answer._id)}}><Icon type="like" style={{ marginRight: 8 }} />{answer.upvotes.length}</Tooltip>,
 													<Tooltip title="Downvotes" onClick={()=>{this.handleAnswerDownvote(answer._id)}}><Icon type="dislike" style={{ marginRight: 8 }} />{answer.downvotes.length}</Tooltip>,
-													<Tooltip title="Comments" onClick={()=>{this.handleAnswerComments(answer)}}><Icon type="message" style={{ marginRight: 8 }} />{answer.comments.length}</Tooltip>, 
+
+													<Tooltip title="Comments" onClick={()=>{this.handleAnswerComments(index, answer)}}><Icon type="message" style={{ marginRight: 8 }} />{answer.comments.length}</Tooltip>, 
+
 													<Tooltip title="Bookmarks" onClick={()=>{this.handleAnswerBookmarks(answer._id)}}><Icon type="book" style={{ marginRight: 8 }} />{answer.bookmarks.length}</Tooltip>
 												]}
 											>
 												<List.Item.Meta
-													avatar={<Avatar src={answer.userId?answer.userId.profileImage:"https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"} />}
+
+													avatar={<Avatar src={answer.userId && answer.userId.profileImage?answer.userId.profileImage.url:"https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"} />}
 													title={answer.userId?answer.userId.firstName+" "+answer.userId.lastName:"" }
+
 												/>
 												<p dangerouslySetInnerHTML={{__html: answer.answerText}}></p>
 
-											
+												
 											</List.Item>
-											<Comments updateFunc={this.update} answerId={answer._id} showComments={this.state.showComments} commentsList={answer.comments}/>
+											<Comments updateFunc={this.update} answerId={answer._id} showComments={state.showComments1[index]} commentsList={answer.comments}/>
 										</div>
 									)}
 								/>
