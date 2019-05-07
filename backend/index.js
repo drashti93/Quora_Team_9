@@ -13,7 +13,7 @@ var question = require("./routes/question");
 var comment = require("./routes/comment");
 var graphs = require('./routes/graphs');
 var topics = require('./routes/topic');
-
+var fileUpload = require('express-fileupload')
 var { client } = require("./resources/redis");
 var bcrypt = require("bcrypt");
 const saltRounds = 10;
@@ -82,7 +82,7 @@ app.use(
 
 const userRoutes = require("./routes/userRoutes");
 const fileUploadRoutes = require("./routes/fileUploadRoute");
-
+app.use(fileUpload());
 app.use("/users", userRoutes);
 app.use("/uploads", fileUploadRoutes);
 app.use("/answers", answer);

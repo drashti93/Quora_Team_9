@@ -190,20 +190,20 @@ router.get("/:userId", async (request, response) => {
 
 		//If user present
 		if (userDocument) {
-			console.log(
-				`Sucessfully fetched user ${
-					request.params.userId
-				}:\n ${userDocument}`
-			);
+			// console.log(
+			// 	`Sucessfully fetched user ${
+			// 		request.params.userId
+			// 	}:\n ${userDocument}`
+			// );
 			response.status(200).json(userDocument);
 		} else {
-			console.log(`User ${request.params.userId} not found`);
+			// console.log(`User ${request.params.userId} not found`);
 			response
 				.status(404)
 				.json({ messgage: `User ${request.params.userId} not found` });
 		}
 	} catch (error) {
-		console.log(`Error fetching user ${request.params.userId}:\n ${error}`);
+		// console.log(`Error fetching user ${request.params.userId}:\n ${error}`);
 		response.status(500).json({
 			error: error,
 			message: `Error fetching user ${request.params.userId}`
@@ -415,7 +415,9 @@ router.get("/:userId/bookmarks", async (request, response) => {
 				bookmarks: request.params.userId
 			})
 			.populate({
+
 				path: "upvotes downvotes bookmarks images userId comments.userId"
+
 			})
 			.exec();
 
@@ -791,7 +793,9 @@ router.get("/:userId/feed", async (request, response) => {
 					.populate({
 						path: "answers",
 						populate: {
+
 							path: "upvotes downvotes bookmarks images userId comments.userId"
+
 						}
 					})
 					.exec();
@@ -866,27 +870,105 @@ router.get("/questionsAsked/:user_id", function(req, res){
 	});
 });
 
-router.get("/questionsAnswered/:user_id", function(req, res){
-	console.log("In answers");
-	var user_id = req.params.user_id;
-	var ques = [];
-	console.log(user_id);
-	AnswerSchema.find({userId: user_id}, function(err, results){
-		if(err){
-			res.status(400);
-		} else {
-			console.log(results);
-			for(answer of results){
-				console.log(answer);
-				QuestionModel.find({answerId: answer._id}, function(err, results1){
-					console.log(results1);
-					ques.push(results1.questionText)
-				})
+
+// router.get("/questionsAnswered/:user_id", function(req, res){
+// 	console.log("In answers");
+// 	var user_id = req.params.user_id;
+	
+// 	console.log(user_id);
+// 	AnswerSchema.find({userId: user_id}, async function(err, results){
+// 		if(err){
+// 			res.status(400);
+// 		} else {
+// 			// console.log(results);
+// 			var ques = [];
+// 			for(answer of results){
+// 				console.log(answer._id);
+				
+// 				let results1=await QuestionModel.find({answers: answer._id});
+// 					// console.log("Questions:")
+// 					// console.log(results1[0].questionText);
+// 					ques.push(results1)
+				
+// 			}
+// 			console.log(ques);
+// 			res.status(200).json({results, ques});
+// 		}
+// 	})
+// })
+
+
+//Fetch bookmarked answers by user and its correspondin question
+router.get("/questionsAnswered/:user_id", async (request, response) => {
+
+	console.log(`\n\nInside GET /users/questionsAnswered/:user_id`);
+
+	try {
+		const bookmarkedAnswerWithQuestion = []
+		let answerDocument = await AnswerSchema
+			.find({
+				userId: request.params.user_id
+			})
+			.populate({
+				path: "upvotes downvotes bookmarks images comments."
+			})
+			.exec();
+
+		//If bookmarked answer present
+		if (answerDocument) {
+
+			console.log(
+				`Sucessfully fetched bookmarked answers for user ${
+					request.params.userId
+				}:\n ${answerDocument}`
+			);
+
+			for (const answer of answerDocument) {
+
+				let question = await QuestionModel
+					.findOne({ answers: answer._id })
+					.exec();
+
+				question.answers = [];
+				question.answers.push(answer);
+
+				// console.log(`\n\n\n\n\n\nQuestion found for bookmarked answer with id - ${answer._id}`);
+				// console.log(`\n\n\n\n\n\nQuestion found for bookmarked answer with id - \n${question}`);
+
+				bookmarkedAnswerWithQuestion.push(question);
+
+
 			}
-			res.status(200).json({results, ques});
+			response.status(200).json(bookmarkedAnswerWithQuestion);
+
+		} else {
+			console.log(`User ${request.params.userId} not found`);
+			response
+				.status(404)
+				.json({ messgage: `User ${request.params.userId} not found` });
 		}
-	})
-})
+	} catch (error) {
+		console.log(
+			`Error fetching bookmarked answers for user ${
+				request.params.userId
+			}:\n ${error}`
+		);
+		response.status(500).json({
+			error: error,
+			message: `Error fetching bookmarked answers for user ${
+				request.params.userId
+			}`
+		});
+	}
+});
+
+
+
+
+
+
+
+
 
 router.get("/followers/:user_id", function(req, res){
 	console.log("In get followers");
@@ -897,7 +979,7 @@ router.get("/followers/:user_id", function(req, res){
 		if(err){
 			res.status(400);
 		} else {
-			console.log(results);
+			// console.log(results);
 			for(follower in results.followers){
 				UserSchema.find({_id: follower.userId}, function(err, results){
 					var name = results.firstName + " " + results.lastName;
@@ -918,7 +1000,7 @@ router.get("/following/:user_id", function(req, res){
 		if(err){
 			res.status(400);
 		} else {
-			console.log(results);
+			// console.log(results);
 			for(following in results.following){
 				UserSchema.find({_id: following.userId}, function(err, results){
 					var name = results.firstName + " " + results.lastName;
