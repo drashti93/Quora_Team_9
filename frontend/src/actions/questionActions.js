@@ -1,10 +1,10 @@
 import axios from "axios";
-import { FEED, BOOKMARK_FEED, TOPIC_FEED, QUESTIONS_FEED, TOPICDETAILS } from './types';
+import { FEED, BOOKMARK_FEED, TOPIC_FEED, QUESTIONS_FEED, TOPICDETAILS, TOPICS } from './types';
 
-export const getQuestionsAnswersForFeed = () => dispatch => {
+export const getQuestionsAnswersForFeed = (userId) => dispatch => {
 
 	axios.defaults.withCredentials = true;
-	axios.get(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/users/5cc3f69dd23457601476d016/feed`)
+	axios.get(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/users/${userId}/feed`)
 	.then(response => {
 		console.log(`Response: ${response}`);
 		if(response.status === 200){
@@ -19,10 +19,10 @@ export const getQuestionsAnswersForFeed = () => dispatch => {
 	});
 }
 
-export const getBookmarkedAnswersWithCorrespondingQuestionsForBookmark = () => dispatch => {
+export const getBookmarkedAnswersWithCorrespondingQuestionsForBookmark = (userId) => dispatch => {
 
 	axios.defaults.withCredentials = true;
-	axios.get(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/users/5cc3f69dd23457601476d016/bookmarks`)
+	axios.get(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/users/${userId}/bookmarks`)
 	.then(response => {
 		console.log(`Response: ${response}`);
 		if(response.status === 200){
@@ -92,5 +92,58 @@ export const getTopicNameAndNumberOfFollowersById = (topicId) => dispatch => {
 	}).catch(error => {
 		console.log(`Something wrong in questionActions->getTopicNameAndNumberOfFollowersById(): ${error}`);
 	});
+
+}
+
+export const followATopic = (topicData) => dispatch => {
+
+	axios.defaults.withCredentials = true;
+		axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/topics/follow`, topicData)
+		.then(response =>{
+			console.log(`Response: ${response}`);
+			if(response.status === 200){
+				console.log(`follow topic successfully questionActions->followATopic(): ${response.data}`);
+				getTopicsFollowedByUser(topicData.userId)
+				// dispatch({
+				// 	type: TOPICS,
+				// 	payload: 
+				// });
+			}
+		}).catch(error =>{
+			console.log(`follow topic failed: questionActions->followATopic() - ${error}`)
+		})
+}
+
+export const getTopicsFollowedByUser = (userId) => dispatch => {
+
+	axios.defaults.withCredentials = true;
+	axios.get(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/users/${userId}/topics`)
+	.then(response => {
+		console.log(`Response: ${response}`);
+		if(response.status === 200){
+			console.log(`Got topics followed by user in questionActions->getTopicsFollowedByUser(): ${response.data}`);
+			dispatch({
+				type: TOPICS,
+				payload: response.data
+			});
+
+			//TODO: remove and add it it follow topic
+			// dispatch({ type: TOPICS, payload: this.props.getTopicsFollowedByUser(userId)})
+		}
+	}).catch(error => {
+		console.log(`Something wrong in questionActions->getTopicsFollowedByUser(): ${error}`);
+	});
+
+
+	// axios
+	// 		.get("http://localhost:3001/users/" + u_id + "/topics")
+	// 		.then(response => {
+	// 			if (response.status === 200) {
+	// 				console.log("------------->", response.data);
+	// 				this.setState({
+	// 					data: [...response.data]
+	// 				});
+	// 			}
+	// 		});
 
 }
