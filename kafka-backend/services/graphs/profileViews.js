@@ -1,8 +1,11 @@
-var UserModel = require('../../../backend/model/UserSchema');
+var UserModel = require('../../model/UserSchema');
 
 
 function  handle_request(msg, callback){
-UserModel.find({'userId': msg, 'Profile_views': true}, function(err,result){
+    console.log("here");
+    console.log(msg);
+    
+UserModel.find({'_id': msg}, function(err,result){
 
         if(err){
             console.log(err);
