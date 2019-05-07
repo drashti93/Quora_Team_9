@@ -29,7 +29,7 @@ export class TopicsFeed extends Component {
 		this.state = {
 			bodyText: '',
 			plainText: '',
-			showComments: false
+			showComments: true
 		};
 	}
 
