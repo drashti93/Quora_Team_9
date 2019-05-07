@@ -8,7 +8,7 @@ const TextArea = Input.TextArea;
 const Editor = ({ onChange, onSubmit, submitting, value }) => (
 	<div>
 		<Form.Item>
-			<TextArea rows={1} onChange={onChange} value={value} />
+			<TextArea autosize onChange={onChange} value={value} />
 		</Form.Item>
 		<Form.Item>
 			<Button
@@ -23,14 +23,19 @@ const Editor = ({ onChange, onSubmit, submitting, value }) => (
 	</div> 
 );
 
-const CommentList = ({ comments }) => (
+const CommentList = ( {comments} ) => (
 	<List
 		dataSource={comments}
-		header={`${comments.length} ${
-			comments.length > 1 ? "replies" : "reply"
-		}`}
+		split={true}
 		itemLayout="horizontal"
-		renderItem={props => <Comment {...props} />}
+		renderItem={comment => (
+			<List.Item 
+				key={comment._id}
+			>
+				<Comment content={comment.comment}/>
+			</List.Item>
+				
+		)}
 	/>
 );
 
@@ -41,7 +46,14 @@ export class Comments extends Component {
 		value: ""
 	};
 
+	
+
 	handleSubmit = () => {
+
+		console.log(`Comments passed: ${this.props.commentsList}`)
+
+
+
 		if (!this.state.value) {
 			return;
 		}
@@ -59,10 +71,10 @@ export class Comments extends Component {
 						author: "Han Solo",
 						avatar:
 							"https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
-						content: <p>{this.state.value}</p>,
-						datetime: moment().fromNow()
+						content: <p>{this.state.value}</p>
 					},
 					...this.state.comments
+					// ...this.props.commentsList
 				]
 			});
 		}, 1000);
@@ -72,8 +84,8 @@ export class Comments extends Component {
 			"userId": "5cc3f69dd23457601476d016",
 			"answerId": this.props.answerId,
 			"comment":this.state.value
-
 		}
+
 		console.log(body)
 		axios.defaults.withCredentials = true;
 		axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/comments/comment`,body)
@@ -103,8 +115,8 @@ export class Comments extends Component {
 
 		return (
 			<div>
-				{comments.length > 0 && (
-					<CommentList comments={comments} />
+				{this.props.showComments === true && (
+					<CommentList comments={this.props.commentsList} />
 				)}
 				<Comment
 					avatar={

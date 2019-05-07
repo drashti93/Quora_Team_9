@@ -1,16 +1,21 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import cookie from "react-cookies";
 import { Redirect } from "react-router";
 import { List, Avatar, Icon, Tooltip, Button, Divider } from "antd";
 import { connect } from "react-redux";
 import {bindActionCreators} from 'redux';
-import { getQuestionsAnswersForFeed } from "../../actions/questionActions";
+import { getQuestionsAnswersForUserTopics } from "../../actions/questionActions";
 import {Link} from "react-router-dom";
 import ReactQuill from 'react-quill';
 import axios from "axios";
 import Comments from "../comments/Comments";
 
-export class Feed extends Component {
+export class TopicsFeed extends Component {
+
+	componentDidMount() {
+		console.log(`TopicId - ${window.location.pathname.split('/')[2]}`);
+		this.props.getQuestionsAnswersForUserTopics(window.location.pathname.split('/')[2]);
+	}
 
 	constructor(props) {
 		super(props);
@@ -19,11 +24,6 @@ export class Feed extends Component {
 			plainText: '',
 			showComments: false
 		};
-	}
-
-	componentDidMount() {
-
-		this.props.getQuestionsAnswersForFeed();
 	}
 
 	handleAnswerUpvote = (answerId) => {
@@ -196,7 +196,7 @@ export class Feed extends Component {
 						},
 						pageSize: 5
 					}}
-					dataSource={this.props.question.feed}
+					dataSource={this.props.question.topicFeed}
 					renderItem={question => (
 						<div>
 							<List.Item 
@@ -235,10 +235,12 @@ export class Feed extends Component {
 									)}
 								/>
 							</List.Item>
+
 							<div>
 								<ReactQuill 
 									modules={{toolbar:toolbarOptions}}
 									onChange={this.handleChange} 
+									
 								/>
 								<Button type="primary" htmlType="submit">Submit</Button>
 							</div>
@@ -251,9 +253,10 @@ export class Feed extends Component {
 					)}
 				/>
 			</div>
-		);
+		)
 	}
 }
+
 
 const mapStateToProps = (state, props) => {
 	return {
@@ -265,8 +268,7 @@ const mapStateToProps = (state, props) => {
 const mapActionToProps = (dispatch, props) => {
 	return bindActionCreators(
 		{
-			getQuestionsAnswersForFeed
-			
+			getQuestionsAnswersForUserTopics
 		},
 		dispatch
 	);
@@ -275,4 +277,4 @@ const mapActionToProps = (dispatch, props) => {
 export default connect(
 	mapStateToProps,
 	mapActionToProps
-)(Feed);
+)(TopicsFeed);

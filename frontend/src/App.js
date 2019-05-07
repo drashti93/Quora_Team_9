@@ -12,8 +12,10 @@ import allReducers from "./reducers/allReducers";
 import Searchpage from "./components/searchpage/searchpage";
 import userProfile from "./components/profile/userProfile";
 import Settings from "./components/Settings/Settings";
-import QuestionDetail from "./components/questions/QuestionDetail";
+import QuestionDetail from "./components/questions/QuestionDetails";
 import Content from "./components/Content/Content";
+import Bookmarks from './components/bookmarks/Bookmarks';
+
 // const allStoreEnchancers=compose(
 //     applyMiddleware(thunk),
 //     // window.devToolsExtension && window.devToolsExtension()
@@ -50,6 +52,9 @@ class App extends Component {
                 <Route exact path="/content" component={Content}></Route> 
                 <Route path="/search/:text" component={Searchpage}></Route> 
                 <Route exact path="/" component={Main}></Route>
+                <Route exact path="/bookmarks" component={Main}></Route>
+                <Route exact path="/topics/:topicId" component={Main}></Route>
+                <Route exact path="/questions/:questionId" component={Main}></Route>
 
 
                 </Switch>
