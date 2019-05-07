@@ -898,7 +898,7 @@ router.get("/questionsAsked/:user_id", function(req, res){
 // })
 
 
-//Fetch bookmarked answers by user and its correspondin question
+//Get answers answered by a user
 router.get("/questionsAnswered/:user_id", async (request, response) => {
 
 	console.log(`\n\nInside GET /users/questionsAnswered/:user_id`);
@@ -910,7 +910,7 @@ router.get("/questionsAnswered/:user_id", async (request, response) => {
 				userId: request.params.user_id
 			})
 			.populate({
-				path: "upvotes downvotes bookmarks images comments."
+				path: "upvotes downvotes bookmarks images userId comments.userId"
 			})
 			.exec();
 

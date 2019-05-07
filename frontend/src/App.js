@@ -20,15 +20,15 @@ import Content from "./components/Content/Content";
 import Bookmarks from './components/bookmarks/Bookmarks';
 
 
-const allStoreEnchancers=compose(
-    applyMiddleware(thunk),
-    // window.devToolsExtension && window.devToolsExtension()
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
-const store=createStore(
-    allReducers,
-    allStoreEnchancers  
-);
+// const allStoreEnchancers=compose(
+//     applyMiddleware(thunk),
+//     // window.devToolsExtension && window.devToolsExtension()
+//     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+// );
+// const store=createStore(
+//     allReducers,
+//     allStoreEnchancers  
+// );
 
 // const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 // const store = createStore(
@@ -37,8 +37,13 @@ const store=createStore(
 // ); 
 
 
-const composePlugin = window._REDUX_DEVTOOLS_EXTENSION_COMPOSE_ || compose;
+const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(
+  allReducers,
+  composeEnhancer(applyMiddleware(thunk))
+); 
 
+const composePlugin = window._REDUX_DEVTOOLS_EXTENSION_COMPOSE_ || compose;
 
 // App Component
 class App extends Component { 
