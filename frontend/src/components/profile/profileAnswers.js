@@ -235,7 +235,7 @@ export class ProfileAnswers extends Component {
 		let state=this.state;
 		console.log(this.props.answers)
 		return (
-			<div>
+			<div className="main-div">
 				{redirectVar}
 				<List
 					itemLayout="vertical"
@@ -250,7 +250,7 @@ export class ProfileAnswers extends Component {
                     
 					dataSource={this.props.answers}
 					renderItem={(question, index) => (
-						<div>
+						<div className="feed-container">
 							<List.Item 
 								key={question._id}
 								actions={[
@@ -259,6 +259,8 @@ export class ProfileAnswers extends Component {
 								]}
 							>
 								<List.Item.Meta
+								className="card-heading"
+
 									title={question.questionText}
 								/>
 								<List
