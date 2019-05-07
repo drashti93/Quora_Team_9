@@ -32,11 +32,15 @@ const reducer = (state = initial, action) => {
         }
 
         case "FOLLOWERS_SUCCESS":{
-            return{...state, followers: action.payload.user_followers}
+            return{...state, followers: action.payload.user_followers, followers_id: action.payload.user_followers_id}
         }
 
         case "FOLLOWING_SUCCESS":{
             return{...state, following: action.payload.user_following}
+        }
+
+        case "UPLOAD_SUCCESS":{
+            return{...state, pictureURL: action.payload}
         }
                     
         default :

@@ -13,12 +13,14 @@ import Comments from "../comments/Comments";
 export class Bookmarks extends Component {
 
 	componentDidMount() {
+
 		this.update();
 	}
 	update=()=>{
 		this.props.getBookmarkedAnswersWithCorrespondingQuestionsForBookmark();
 
 	}
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -33,7 +35,9 @@ export class Bookmarks extends Component {
 
 		const body = {
 			//TODO: Remove hardcoding
+
 			"userId": cookie.load('cookie').id
+
 		}
 
 		axios.defaults.withCredentials = true;
@@ -41,7 +45,9 @@ export class Bookmarks extends Component {
 		.then(response => {
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+
 				this.update();
+
 				console.log(`Upvoted answer successfully questionActions->getQuestionsAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -59,7 +65,9 @@ export class Bookmarks extends Component {
 		console.log(`In handleDownvote: answerId - ${answerId}`);
 		const body = {
 			//TODO: Remove hardcoding
+
 			"userId": cookie.load('cookie').id
+
 		}
 
 		axios.defaults.withCredentials = true;
@@ -67,6 +75,7 @@ export class Bookmarks extends Component {
 		.then(response => {
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+
 				this.update();
 				console.log(`downvoted answer successfully questionActions->getQuestionsAnswersForFeed(): ${response.data}`);
 				// dispatch({
@@ -105,7 +114,9 @@ export class Bookmarks extends Component {
 
 		const body = {
 			//TODO: Remove hardcoding of uer_id and comment
+
 			"userId": cookie.load('cookie'.id),
+
 			"answer_id": answerId,
 		}
 		console.log(answerId)
@@ -114,7 +125,9 @@ export class Bookmarks extends Component {
 		.then(response =>{
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+
 				this.update();
+
 				console.log(`comment answer successfully questionActions->postCommentAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -151,6 +164,7 @@ export class Bookmarks extends Component {
 			this.update();
 		})();
 	}
+
 	render() {
 
 		let redirectVar = null;
@@ -180,7 +194,7 @@ export class Bookmarks extends Component {
 					}}
 					dataSource={this.props.question.bookmarkFeed}
 					renderItem={question => (
-						<div>
+						<div className="feed-container">
 							<List.Item 
 								key={question._id}
 								actions={[
@@ -189,6 +203,7 @@ export class Bookmarks extends Component {
 								]}
 							>
 								<List.Item.Meta
+								className="card-heading"
 								    key={question._id}
 									title = {<Link to = {`/questions/${question._id}`} target="_blank">{question.questionText}</Link>}
 								/>
@@ -196,7 +211,7 @@ export class Bookmarks extends Component {
 									itemLayout="vertical"
 									dataSource={question.answers}
 									renderItem={answer => (
-										<div>
+										<div class="answer-parent">
 											<List.Item 
 												key={answer._id}
 												actions={[
@@ -208,9 +223,11 @@ export class Bookmarks extends Component {
 											>
 												<List.Item.Meta
 													avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+
 													title={answer.userId?answer.userId.firstName+" "+answer.userId.lastName:"" }
 												/>
 												<p dangerouslySetInnerHTML={{__html: answer.answerText}}></p>
+
 											</List.Item>
 											<Comments answerId={answer._id} showComments={this.state.showComments} commentsList={answer.comments}/>
 										</div>
@@ -224,7 +241,7 @@ export class Bookmarks extends Component {
 									onChange={this.handleChange} 
 									
 								/>
-								<Button type="primary" onClick={()=>{this.postAnswer(question._id)}} htmlType="submit">Submit</Button>
+								<Button className="btn-quora" type="primary" onClick={()=>{this.postAnswer(question._id)}} htmlType="submit">Submit</Button>
 							</div>
 
 							<br/>

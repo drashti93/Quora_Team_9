@@ -8,18 +8,41 @@ var client = require("../resources/redis");
 
 //Follow a Topic
 
-topic.post("/topics/follow", async (req, res) => {
+topic.post("/follow", async (req, res) => {
+	
+	console.log(`\n\nInside POST /topics/follow`);
+
 	try {
 		let { userId, topicId } = req.body;
-		let result = await UserModel.update(
-			{ _id: userId },
-			{
-				$push: { topicsFollowed: topicId }
-			}
+
+		let checkUserInTopicFollow = await UserModel.findOne(
+			{ _id: userId, topicsFollowed: topicId }
 		);
-		res.status(200).json({});
+
+		console.log(`\n\n checkUserInTopicFollow- ${checkUserInTopicFollow}`);
+
+		if(checkUserInTopicFollow) {
+
+			let addTopicToUser = await UserModel.findOneAndUpdate(
+				{ _id: userId },
+				{ $pull: { topicsFollowed: topicId } },
+				{ new: true }
+			);
+
+			res.status(200).json(addTopicToUser);
+
+		} else {
+
+			let addTopicToUser = await UserModel.findOneAndUpdate(
+				{ _id: userId },
+				{ $push: { topicsFollowed: topicId } },
+				{ new: true }
+			);
+
+			res.status(200).json(addTopicToUser);
+		}
 	} catch (error) {
-		res.send(error);
+		res.status(500).json({"error": error});
 	}
 });
 
@@ -84,7 +107,9 @@ topic.get("/:topicId/questions/following", async (req, res) => {
 			.populate({
 				path: "answers",
 				populate: {
-					path: "upvotes downvotes bookmarks userId"
+
+					path: "upvotes downvotes bookmarks images userId comments.userId"
+
 				}
 			})
 			.exec();

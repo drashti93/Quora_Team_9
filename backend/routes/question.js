@@ -2,6 +2,7 @@ var express = require("express");
 var question = express.Router();
 const UserSchema = require("../model/UserSchema");
 var QuestionModel = require("../model/QuestionSchema");
+var AnswerModel = require("../model/AnswerSchema");
 var UserModel = require("../model/UserSchema");
 var TopicModel = require("../model/TopicSchema");
 var kafka = require("../kafka/client");
@@ -9,18 +10,37 @@ var client = require("../resources/redis");
 
 //Follow a Question
 question.post("/follow", async (req, res) => {
-	console.log(req.body)
+
+	console.log(`\n\nInside POST /questions/follow`);
+
 	try {
 		let { userId, questionId } = req.body;
-		let result = await QuestionModel.update(
-			{ _id: questionId },
-			{
-				$push: { followers: userId }
-			}
+		let checkUserInQuestionFollow = await QuestionModel.findOne(
+			{ _id: questionId, followers: userId }
 		);
-		res.status(200).json({});
+
+		// console.log(`\n\n checkUserInQuestionFollow- ${checkUserInQuestionFollow}`);
+		
+		if(checkUserInQuestionFollow) {
+			
+			let answer = await QuestionModel.findOneAndUpdate(
+				{ _id: questionId },
+				{ $pull : { followers: userId } },
+				{ new: true }
+			);
+
+			res.status(200).json({answer});
+		} else {
+			let answer = await QuestionModel.findOneAndUpdate(
+				{ _id: questionId },
+				{ $push : { followers: userId } },
+				{ new: true }
+			);
+
+			res.status(200).json({answer});
+		}
 	} catch (error) {
-		res.send(error);
+		res.status(500).json({"error": error});
 	}
 });
 
@@ -125,7 +145,7 @@ question.get("/:questionId", (request, response) => {
 // Question Details
 //This will give questions and coreesponding answers
 question.get("/:questionId/details", async (request, response) => {
-	console.log(`\n\nInside Get /questions/:questionId`);
+	console.log(`\n\nInside Get /questions/:questionId/details`);
 
 	try {
 		let questions = await QuestionModel
@@ -133,11 +153,30 @@ question.get("/:questionId/details", async (request, response) => {
 			.populate({
 				path: "answers",
 				populate: {
-					path: "upvotes downvotes bookmarks"
+
+					path: "upvotes downvotes bookmarks images userId comments.userId"
 				}
 			});
+
+
 		if(questions) {
 			console.log(`Fetched question details successfully - ${questions}`);
+			for(const question of questions) {
+				// console.log(`Question Answers - ${question.answers}`);
+				if(question.answers !== undefined) {
+					const answerWithViews = [];
+					for(const answer of question.answers) {
+						// console.log(`\n\n\n\n\n\nEach answer - ${answer}`);
+						let answerView = await AnswerModel.findOneAndUpdate(
+							{ _id: answer._id },
+							{ $inc: { views : 1 } },
+							{ new: true }
+						);
+						answerWithViews.push(answerView)
+					}
+					question.answers = answerWithViews;
+				}
+			}
 			response.status(200).json(questions);
 		} else {
 			console.log(`Fetching Question details for question ${request.params.questionId} unsuccessful`);

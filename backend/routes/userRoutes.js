@@ -190,20 +190,20 @@ router.get("/:userId", async (request, response) => {
 
 		//If user present
 		if (userDocument) {
-			console.log(
-				`Sucessfully fetched user ${
-					request.params.userId
-				}:\n ${userDocument}`
-			);
+			// console.log(
+			// 	`Sucessfully fetched user ${
+			// 		request.params.userId
+			// 	}:\n ${userDocument}`
+			// );
 			response.status(200).json(userDocument);
 		} else {
-			console.log(`User ${request.params.userId} not found`);
+			// console.log(`User ${request.params.userId} not found`);
 			response
 				.status(404)
 				.json({ messgage: `User ${request.params.userId} not found` });
 		}
 	} catch (error) {
-		console.log(`Error fetching user ${request.params.userId}:\n ${error}`);
+		// console.log(`Error fetching user ${request.params.userId}:\n ${error}`);
 		response.status(500).json({
 			error: error,
 			message: `Error fetching user ${request.params.userId}`
@@ -415,7 +415,9 @@ router.get("/:userId/bookmarks", async (request, response) => {
 				bookmarks: request.params.userId
 			})
 			.populate({
-				path: "upvotes downvotes bookmarks images"
+
+				path: "upvotes downvotes bookmarks images userId comments.userId"
+
 			})
 			.exec();
 
@@ -746,7 +748,7 @@ router.get("/:userId/questions", async (req, res) => {
 			.populate({
 				path: "answers",
 				populate: {
-					path: "upvotes downvotes bookmarks"
+					path: "upvotes downvotes bookmarks images userId comments.userId"
 				}
 			})
 			.exec();
@@ -791,7 +793,9 @@ router.get("/:userId/feed", async (request, response) => {
 					.populate({
 						path: "answers",
 						populate: {
-							path: "upvotes downvotes bookmarks userId"
+
+							path: "upvotes downvotes bookmarks images userId comments.userId"
+
 						}
 					})
 					.exec();
@@ -866,66 +870,208 @@ router.get("/questionsAsked/:user_id", function(req, res){
 	});
 });
 
-router.get("/questionsAnswered/:user_id", function(req, res){
-	console.log("In answers");
-	var user_id = req.params.user_id;
-	var ques = [];
-	console.log(user_id);
-	AnswerSchema.find({userId: user_id}, function(err, results){
-		if(err){
-			res.status(400);
-		} else {
-			console.log(results);
-			for(answer of results){
-				console.log(answer);
-				QuestionModel.find({answerId: answer._id}, function(err, results1){
-					console.log(results1);
-					ques.push(results1.questionText)
-				})
+
+// router.get("/questionsAnswered/:user_id", function(req, res){
+// 	console.log("In answers");
+// 	var user_id = req.params.user_id;
+	
+// 	console.log(user_id);
+// 	AnswerSchema.find({userId: user_id}, async function(err, results){
+// 		if(err){
+// 			res.status(400);
+// 		} else {
+// 			// console.log(results);
+// 			var ques = [];
+// 			for(answer of results){
+// 				console.log(answer._id);
+				
+// 				let results1=await QuestionModel.find({answers: answer._id});
+// 					// console.log("Questions:")
+// 					// console.log(results1[0].questionText);
+// 					ques.push(results1)
+				
+// 			}
+// 			console.log(ques);
+// 			res.status(200).json({results, ques});
+// 		}
+// 	})
+// })
+
+
+//Get answers answered by a user
+router.get("/questionsAnswered/:user_id", async (request, response) => {
+
+	console.log(`\n\nInside GET /users/questionsAnswered/:user_id`);
+
+	try {
+		const bookmarkedAnswerWithQuestion = []
+		let answerDocument = await AnswerSchema
+			.find({
+				userId: request.params.user_id
+			})
+			.populate({
+				path: "upvotes downvotes bookmarks images userId comments.userId"
+			})
+			.exec();
+
+		//If bookmarked answer present
+		if (answerDocument) {
+
+			console.log(
+				`Sucessfully fetched bookmarked answers for user ${
+					request.params.userId
+				}:\n ${answerDocument}`
+			);
+
+			for (const answer of answerDocument) {
+
+				let question = await QuestionModel
+					.findOne({ answers: answer._id })
+					.exec();
+
+				question.answers = [];
+				question.answers.push(answer);
+
+				// console.log(`\n\n\n\n\n\nQuestion found for bookmarked answer with id - ${answer._id}`);
+				// console.log(`\n\n\n\n\n\nQuestion found for bookmarked answer with id - \n${question}`);
+
+				bookmarkedAnswerWithQuestion.push(question);
+
+
 			}
-			res.status(200).json({results, ques});
+			response.status(200).json(bookmarkedAnswerWithQuestion);
+
+		} else {
+			console.log(`User ${request.params.userId} not found`);
+			response
+				.status(404)
+				.json({ messgage: `User ${request.params.userId} not found` });
 		}
-	})
-})
+	} catch (error) {
+		console.log(
+			`Error fetching bookmarked answers for user ${
+				request.params.userId
+			}:\n ${error}`
+		);
+		response.status(500).json({
+			error: error,
+			message: `Error fetching bookmarked answers for user ${
+				request.params.userId
+			}`
+		});
+	}
+});
+
+
+
+
+
+
+
+
 
 router.get("/followers/:user_id", function(req, res){
 	console.log("In get followers");
 	var user_id = req.params.user_id;
-	var user_followers = [];
+	
 	console.log(user_id);
-	UserSchema.find({_id: user_id}, function(err, results){
+	UserSchema.find({_id: user_id}, async function(err, results){
+		var user_followers = [];
+		var user_followers_id = [];
 		if(err){
 			res.status(400);
 		} else {
-			console.log(results);
-			for(follower in results.followers){
-				UserSchema.find({_id: follower.userId}, function(err, results){
-					var name = results.firstName + " " + results.lastName;
+			console.log("**********")
+			console.log(results[0].followers.length);
+			console.log("**********")
+			for(let i=0; i<results[0].followers.length; i++){
+				var user = results[0].followers[i];
+				user_followers_id.push(user);
+				console.log("**********")
+				console.log(user);
+			  console.log("**********")
+			var results =	await UserSchema.find({_id: user});
+				console.log(results[0]);
+					var name = results[0].firstName + " " + results[0].lastName;
 					user_followers.push(name);
-				})
 			}
-			res.status(200).json({user_followers});
+			console.log(user_followers);
+			res.status(200).json({user_followers, user_followers_id});
 		}
 	})
 })
 
-router.get("/following/:user_id", function(req, res){ 
+router.get("/following/:user_id", function(req, res){
 	console.log("In get following");
 	var user_id = req.params.user_id;
-	var user_following = [];
+	
 	console.log(user_id);
-	UserSchema.find({_id: user_id}, function(err, results){
+	UserSchema.find({_id: user_id}, async function(err, results){
+		
 		if(err){
 			res.status(400);
 		} else {
-			console.log(results);
-			for(following in results.following){
-				UserSchema.find({_id: following.userId}, function(err, results){
-					var name = results.firstName + " " + results.lastName;
+			var user_following = [];
+			console.log("**********")
+			console.log(results[0].following.length);
+			console.log("**********")
+			for(let i=0; i<results[0].following.length; i++){
+				var user = results[0].following[i]
+				console.log("**********")
+				console.log(user);
+			  console.log("**********")
+			var results =	await UserSchema.find({_id: user});
+				console.log(results[0]);
+					var name = results[0].firstName + " " + results[0].lastName;
 					user_following.push(name);
-				})
 			}
+			console.log(user_following);
 			res.status(200).json({user_following});
+		}
+	})
+})
+
+router.post("/follow", function(req, res){
+	var user_id=req.body.user_id;
+	console.log(user_id)
+	console.log(req.body.following)
+	var following = req.body.following;
+	UserSchema.updateOne({_id: following}, {$push: {followers: user_id.id}}, function(err, results){
+		if(err){
+			console.log(err)
+		}
+		else{
+			UserSchema.updateOne({_id: user_id.id}, {$push: {following: following}}, function(err, results){
+				if(err){
+					console.log(err)
+				}
+				else{
+					res.status(200).json({});
+				}
+				
+			})
+			
+		}
+	})
+})
+
+router.post("/unfollow", function(req, res){
+	var user_id=req.body.user_id;
+	var following = req.body.following;
+	UserSchema.updateOne({_id: following}, {$pull: {followers: user_id.id}}, function(err, results){
+		if(err){
+			console.log(err)
+		}
+		else{
+			UserSchema.updateOne({_id: user_id.id}, {$pull: {following: following}}, function(err, results){
+				if(err){
+					console.log(err)
+				}
+				else {
+					res.status(200).json({});
+				}
+			})
+			
 		}
 	})
 })

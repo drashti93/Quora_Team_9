@@ -1,8 +1,9 @@
 export default {
     userDetails: {},
     questions: "",
-    questionsAnswered: {},
+    questionsAnswered: [],
     followers: [],
+    followers_id: [],
     following: [],
-
+    pictureURL: "",
 }

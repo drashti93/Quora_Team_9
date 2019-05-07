@@ -6,6 +6,7 @@ import { Navbar, Nav, NavDropdown, Form, FormControl, Button, Modal } from 'reac
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getprofile, getAllUsers, getalltopics, getallquestions } from '../../actions/navbarActions';
+import {logoutuser} from '../../actions/loginActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import _ from "lodash";
@@ -101,7 +102,7 @@ componentWillReceiveProps(nextProps){
               }
             })
            if(found){
-             return {type:"Topic :",link:`/topic/${data._id}`,value:data.name,id:data._id};
+             return {type:"Topic :",link:`/topics/${data._id}`,value:data.name,id:data._id};
            }
         });
         let questions=this.props.navbar.questions.map((data)=>{
@@ -158,7 +159,7 @@ componentWillReceiveProps(nextProps){
     const imgUrl = _.has(this, 'props.navbar.profile.data.profileImage');
     let {counter,searchArray}=this.state;
     counter=Math.min(counter,searchArray.length);
-    const image = <img className="profile-image" src={imgUrl ? this.props.navbar.profile.data.profileImage : stockimage}></img>
+    const image = <img className="profile-image" src={imgUrl ? this.props.navbar.profile.data.profileImage.url : stockimage}></img>
     return (
       <div className="navbar-parent">
         <Navbar fixed="top" expand="lg">
@@ -194,6 +195,8 @@ componentWillReceiveProps(nextProps){
                 <NavDropdown.Item><Link to="/profile">Profile</Link></NavDropdown.Item>
                 <NavDropdown.Item><Link to="/settings">Settings</Link></NavDropdown.Item>
                 <NavDropdown.Item><Link to="/content">Your Content</Link></NavDropdown.Item>
+                <NavDropdown.Item><Link to="/dashboard">Dashboard</Link></NavDropdown.Item>
+                <NavDropdown.Item onClick={this.props.onlogoutuser}>Logout</NavDropdown.Item>
               </NavDropdown>
               <Button className="question-button" onClick={this.handleShowquestion}>Add Question</Button>
 
@@ -220,7 +223,8 @@ const mapActionToProps = (dispatch, props) => {
     ongetprofile: getprofile,
     ongetallusers: getAllUsers,
     ongetalltopics: getalltopics,
-    ongetallquestions: getallquestions
+    ongetallquestions: getallquestions,
+    onlogoutuser:logoutuser
   }, dispatch);
 }
 
