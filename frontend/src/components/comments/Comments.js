@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import {bindActionCreators} from 'redux';
 import moment from 'moment';
 import axios from 'axios';
-import stockimage from '../../resources/images/user.png';
 
 const TextArea = Input.TextArea;
 
@@ -36,7 +35,7 @@ const CommentList = ( {comments} ) => (
 				key={comment._id}
 			>
 				<List.Item.Meta
-					avatar={<Avatar src={comment.userId.profileImage ? comment.userId.profileImage.url : stockimage} />}
+					avatar={<Avatar src={comment.userId.profileImage ? comment.userId.profileImage.url : "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"} />}
 					title={<div>{comment.userId.firstName} {comment.userId.lastName}</div>}
 				/>
 				{/* <Comment style={{float: "left"}} content={comment.comment}/> */}
@@ -126,7 +125,7 @@ export class Comments extends Component {
 				<Comment
 					avatar={
 						<Avatar
-							src={this.props.navbar.profile.data.profileImage? this.props.navbar.profile.data.profileImage.url : stockimage}
+							src={this.props.navbar.profile.data.profileImage? this.props.navbar.profile.data.profileImage.url : "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"}
 							alt={ <div>{this.props.navbar.profile.data.firstName} {this.props.navbar.profile.data.firstName}</div> }
 						/>
 					}
