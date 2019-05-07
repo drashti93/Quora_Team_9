@@ -147,9 +147,10 @@ topic.get("/:topicId/details", async (request, response) => {
 		let checkTopicInUsers = await UserModel.find({ topicsFollowed: topicId });
 		let topicDetail = await TopicModel.findOne({ _id: topicId });
 
-		if(topicDetail) {
+		if(topicDetail && checkTopicInUsers) {
 
 			let result = {};
+			result.topicId = topicId;
 			result.topicName = topicDetail.name;
 			result.followers = checkTopicInUsers.length;
 
