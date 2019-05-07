@@ -13,6 +13,11 @@ import Comments from "../comments/Comments";
 export class TopicsFeed extends Component {
 
 	componentDidMount() {
+
+		this.update();
+	}
+	update=()=>{
+
 		console.log(`TopicId - ${window.location.pathname.split('/')[2]}`);
 		this.props.getQuestionsAnswersForUserTopics(window.location.pathname.split('/')[2]);
 	}
@@ -42,6 +47,9 @@ export class TopicsFeed extends Component {
 		.then(response => {
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+
+				this.update();
+
 				console.log(`Upvoted answer successfully questionActions->getQuestionsAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -70,6 +78,9 @@ export class TopicsFeed extends Component {
 		.then(response => {
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+
+				this.update();
+
 				console.log(`downvoted answer successfully questionActions->getQuestionsAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -119,6 +130,9 @@ export class TopicsFeed extends Component {
 		.then(response =>{
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+
+				this.update();
+
 				console.log(`comment answer successfully questionActions->postCommentAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -158,6 +172,9 @@ export class TopicsFeed extends Component {
 		.then(response =>{
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+
+				this.update();
+
 				console.log(`follow question successfully questionActions->postCommentAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -167,6 +184,16 @@ export class TopicsFeed extends Component {
 		}).catch(error =>{
 			console.log(`follow question failed: questionActions->postCommentAnswersForFeed() - ${error}`)
 		})
+	}
+
+	postAnswer=(qid)=>{
+		(async()=>{
+			let obj={ answerText:this.state.bodyText, userId:cookie.load('cookie').id, isAnonymous:false, credentials:null, questionId:qid }
+
+			let result=await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/answers`,obj);
+			alert("Answer Submitted successfully!")
+			this.update();
+		})();
 	}
 
 	render() {
@@ -226,9 +253,11 @@ export class TopicsFeed extends Component {
 											>
 												<List.Item.Meta
 													avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-													title="DUmmy NAMe"
+
+													title={answer.userId?answer.userId.firstName+" "+answer.userId.lastName:"" }
 												/>
-												{answer.answerText}
+												<p dangerouslySetInnerHTML={{__html: answer.answerText}}></p>
+
 											</List.Item>
 											<Comments answerId={answer._id} showComments={this.state.showComments} commentsList={answer.comments}/>
 										</div>
@@ -242,7 +271,9 @@ export class TopicsFeed extends Component {
 									onChange={this.handleChange} 
 									
 								/>
-								<Button type="primary" htmlType="submit">Submit</Button>
+
+								<Button type="primary" onClick={()=>{this.postAnswer(question._id)}} htmlType="submit">Submit</Button>
+
 							</div>
 
 							<br/>

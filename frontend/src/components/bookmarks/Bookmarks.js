@@ -13,7 +13,12 @@ import Comments from "../comments/Comments";
 export class Bookmarks extends Component {
 
 	componentDidMount() {
+
+		this.update();
+	}
+	update=()=>{
 		this.props.getBookmarkedAnswersWithCorrespondingQuestionsForBookmark();
+
 	}
 
 	constructor(props) {
@@ -30,7 +35,9 @@ export class Bookmarks extends Component {
 
 		const body = {
 			//TODO: Remove hardcoding
-			"userId": "5cc3f69dd23457601476d016"
+
+			"userId": cookie.load('cookie').id
+
 		}
 
 		axios.defaults.withCredentials = true;
@@ -38,6 +45,9 @@ export class Bookmarks extends Component {
 		.then(response => {
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+
+				this.update();
+
 				console.log(`Upvoted answer successfully questionActions->getQuestionsAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -55,7 +65,9 @@ export class Bookmarks extends Component {
 		console.log(`In handleDownvote: answerId - ${answerId}`);
 		const body = {
 			//TODO: Remove hardcoding
-			"userId": "5cc3f69dd23457601476d016"
+
+			"userId": cookie.load('cookie').id
+
 		}
 
 		axios.defaults.withCredentials = true;
@@ -63,6 +75,8 @@ export class Bookmarks extends Component {
 		.then(response => {
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+
+				this.update();
 				console.log(`downvoted answer successfully questionActions->getQuestionsAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -100,7 +114,9 @@ export class Bookmarks extends Component {
 
 		const body = {
 			//TODO: Remove hardcoding of uer_id and comment
-			"userId": "5cc3f69dd23457601476d016",
+
+			"userId": cookie.load('cookie'.id),
+
 			"answer_id": answerId,
 		}
 		console.log(answerId)
@@ -109,6 +125,9 @@ export class Bookmarks extends Component {
 		.then(response =>{
 			console.log(`Response: ${response}`);
 			if(response.status === 200){
+
+				this.update();
+
 				console.log(`comment answer successfully questionActions->postCommentAnswersForFeed(): ${response.data}`);
 				// dispatch({
 				// 	type: FEED,
@@ -136,6 +155,15 @@ export class Bookmarks extends Component {
 	}
 
 
+	postAnswer=(qid)=>{
+		(async()=>{
+			let obj={ answerText:this.state.bodyText, userId:cookie.load('cookie').id, isAnonymous:false, credentials:null, questionId:qid }
+
+			let result=await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/answers`,obj);
+			alert("Answer Submitted successfully!")
+			this.update();
+		})();
+	}
 
 	render() {
 
@@ -194,9 +222,11 @@ export class Bookmarks extends Component {
 											>
 												<List.Item.Meta
 													avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-													title="DUmmy NAMe"
+
+													title={answer.userId?answer.userId.firstName+" "+answer.userId.lastName:"" }
 												/>
-												{answer.answerText}
+												<p dangerouslySetInnerHTML={{__html: answer.answerText}}></p>
+
 											</List.Item>
 											<Comments answerId={answer._id} showComments={this.state.showComments} commentsList={answer.comments}/>
 										</div>
@@ -210,7 +240,9 @@ export class Bookmarks extends Component {
 									onChange={this.handleChange} 
 									
 								/>
-								<Button type="primary" htmlType="submit">Submit</Button>
+
+								<Button type="primary" onClick={()=>{this.postAnswer(question._id)}} htmlType="submit">Submit</Button>
+
 							</div>
 
 							<br/>

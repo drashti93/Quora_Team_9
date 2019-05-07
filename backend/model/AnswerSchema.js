@@ -45,7 +45,10 @@ const AnswerSchema = new Schema({
 	],
 	comments: [
 		{
-			userId: Schema.Types.ObjectId,
+			userId: {
+				type: Schema.Types.ObjectId,
+				ref: "users"
+			},
 			comment: String,
 			replies: [
 				{
@@ -55,6 +58,7 @@ const AnswerSchema = new Schema({
 			]
 		}
 	],
+	views:Number,
 	credentials: {
 		topic: {
 			topicId: Schema.Types.ObjectId,
