@@ -442,12 +442,8 @@ class Profile extends Component {
                                     }
                                     {
                                         this.state.selectedTab === "Activity" ?
-                                            <div>
-                                                <div className="tab_details">
-                                                    <h6>{ this.state.selectedTab }</h6>
-                                                </div>
-                                                
-                                            </div>
+                                            
+                                            <Redirect to="/content">Content</Redirect>
                                             :
                                             <span></span>
                                     }
