@@ -101,7 +101,7 @@ componentWillReceiveProps(nextProps){
               }
             })
            if(found){
-             return {type:"Topic :",link:`/topic/${data._id}`,value:data.name,id:data._id};
+             return {type:"Topic :",link:`/topics/${data._id}`,value:data.name,id:data._id};
            }
         });
         let questions=this.props.navbar.questions.map((data)=>{

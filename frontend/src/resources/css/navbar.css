@@ -71,7 +71,7 @@
 }
 
 .mt70{
-    margin-top: 70px;
+    margin-top: 90px;
 }
 .mt100{
     margin-top: 100px;
@@ -160,4 +160,95 @@ canvas.chartjs-render-monitor {
     margin: auto;
     margin-bottom:50px;
     
+}
+
+body{
+    background: #fafafa !important;
+}
+.ant-list-sm .ant-list-item:hover,.ant-list-header:hover,.ant-list-footer:hover{
+    background-color: #dddddd;
+    cursor: pointer;
+    border-radius: 3px;
+}
+.ant-list-sm .ant-list-item a:hover,.ant-list-footer a,.ant-list-header a{
+        text-decoration: none !important;
+        color: #2b6dad;
+        text-transform: capitalize;
+    
+}
+.ant-list-sm .ant-list-item a,.ant-list-footer a{
+
+    color: #818181;
+    text-transform: capitalize;
+
+}
+.ant-list-footer svg,.ant-list-header svg,.ant-list-sm .ant-list-item svg{
+position: relative;
+bottom: 3px;
+margin-right: 2px;
+}
+.ant-list-footer,.ant-list-header,.ant-list-sm .ant-list-item{
+padding: 4px;
+}
+
+.main-div .feed-container .ant-spin-container>div{
+   
+    /* padding: 20px; */
+
+}
+.main-div .feed-container{
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    background-color: #fff;
+   
+    margin-bottom: 20px;
+
+}
+.main-div .ant-list-item.ant-list-item-no-flex{
+    border: none;
+    padding: 20px;
+}
+.ant-divider.ant-divider-horizontal.ant-divider-dashed{
+    margin: 0px !important;
+}
+.main-div ,.feed-container .ant-list-item .ant-list-item-no-flex{
+    padding: 0px;
+}
+
+.ant-list-item-meta-title{
+    text-transform: capitalize
+}
+.main-div .feed-container .card-heading .ant-list-item-meta-title a{
+    color: black;
+}
+.main-div .feed-container .card-heading .ant-list-item-meta-title{
+    font-size: 20px;
+    text-transform: capitalize;
+    color: black;
+}
+.ant-list-item-action{
+    margin-bottom: 0px;
+    margin-top: 0px !important;
+}
+.ant-row.ant-form-item{
+    margin-bottom: 3px;
+}
+span.ant-avatar.ant-avatar-circle.ant-avatar-image{
+    position: relative;
+    top: 10px;
+}
+.quill {
+    margin: 0px 20px 5px 20px;
+}
+.quill .ql-snow{
+border: 1px solid #ddd !important;
+border-radius: 5px;
+}
+.btn-quora{
+    margin: 10px 0px 0px 20px;
+}
+.answer-parent{
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 15px;
 }

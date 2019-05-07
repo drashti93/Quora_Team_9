@@ -13,7 +13,7 @@ import Comments from "../comments/Comments";
 export class Feed extends Component {
 
 
-	update=()=>{
+	update(){
 		this.props.getQuestionsAnswersForFeed();
 
 	}
@@ -24,6 +24,7 @@ export class Feed extends Component {
 			plainText: '',
 			showComments: false
 		};
+		this.update=this.update.bind(this);
 	}
 
 
@@ -216,8 +217,9 @@ export class Feed extends Component {
 					}}
 					dataSource={this.props.question.feed}
 					renderItem={question => (
-						<div>
+						<div className="feed-container">
 							<List.Item 
+							
 								key={question._id}
 								actions={[
 									<Tooltip title="Answers" onClick={()=>{this.handleQuestionAnswer(question._id)}}><Icon type="form" style={{ marginRight: 8 }} />{question.answers.length}</Tooltip>,
@@ -225,6 +227,7 @@ export class Feed extends Component {
 								]}
 							>
 								<List.Item.Meta
+								className="card-heading"
 								    key={question._id}
 									title = {<Link to = {`/questions/${question._id}`} target="_blank">{question.questionText}</Link>}
 								/>
@@ -250,7 +253,7 @@ export class Feed extends Component {
 
 											
 											</List.Item>
-											<Comments answerId={answer._id} showComments={this.state.showComments} commentsList={answer.comments}/>
+											<Comments updateFunc={this.update} answerId={answer._id} showComments={this.state.showComments} commentsList={answer.comments}/>
 										</div>
 									)}
 								/>
@@ -260,7 +263,7 @@ export class Feed extends Component {
 									modules={{toolbar:toolbarOptions}}
 									onChange={this.handleChange} 
 								/>
-								<Button type="primary" onClick={()=>{this.postAnswer(question._id)}} htmlType="submit">Submit</Button>
+								<Button className="btn-quora" type="primary" onClick={()=>{this.postAnswer(question._id)}} htmlType="submit">Submit</Button>
 							</div>
 
 							<br/>
