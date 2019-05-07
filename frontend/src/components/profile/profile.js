@@ -347,6 +347,7 @@ class Profile extends Component {
                                         <button hidden={this.state.hideEditor} onClick={() => {this.props.saveAboutMe(cookie.load('cookie').id, this.state.aboutMe); this.setState({hideEditor: true})}}>Update</button>
                                     </div>
                                     <p>{this.props && this.props.followers ? (this.props.followers).length : 0} followers</p>
+                                    
                                 </div>
                             </Col>
                         </Row>

@@ -53,6 +53,7 @@ class UserProfile extends Component {
      user_id: "",
      followers: [],
      following: [],
+     hideUnfollow: true,
     }
 
     this.handleShow = this.handleShow.bind(this);
@@ -108,6 +109,7 @@ class UserProfile extends Component {
     this.props.getUserDetails(this.props.match.params.user_id);
     this.props.getFollowers(this.props.match.params.user_id)
     this.props.getFollowing(this.props.match.params.user_id)
+
   }
 
   onChangePosition(e){
@@ -187,10 +189,22 @@ class UserProfile extends Component {
       )
   }
   render() {
-    console.log("Career");
-    console.log(this.state.userDetails);
+    
+    let followVar = null;
+    if(this.props.followers.indexOf(cookie.load('cookie').id) >= 0){
+        console.log("")
+        followVar = <button onClick={() => {this.props.unfollow(cookie.load('cookie'), this.props.match.params.user_id)}}>Unfollow</button>
+    }
+    else {
+        followVar = <button onClick={() => {this.props.follow(cookie.load('cookie'), this.props.match.params.user_id)}}>Follow</button>
+    
+    }
+    
+    
+    
     return(
         <div>
+         
             <div>
                 <Navigationbar></Navigationbar>
             </div>
@@ -208,8 +222,7 @@ class UserProfile extends Component {
                                     <h3>{this.props.userDetails.firstName} {this.props.userDetails.lastName}</h3>
                                     <p>{this.props.userDetails.aboutMe ? this.props.userDetails.aboutMe : ""}</p>
                                     <p>{this.props && this.props.followers ? (this.props.followers).length : 0} followers</p>
-                                    <button>Follow</button>
-                                    <button>Unfollow</button>
+                                    <div>{followVar}</div>
                                 </div>
                             </Col>
                         </Row>
@@ -375,6 +388,8 @@ function mapDispatchToProps(dispatch) {
       school, concentration, secConcentration, degree, gradYear, address, city, locState, zipcode, locStart, locEnd, currentLocation)),
       getFollowers: (user_id) => dispatch(actions.getFollowers(user_id)),
         getFollowing: (user_id) => dispatch(actions.getFollowing(user_id)),
+        follow: (user_id, following) => dispatch(actions.follow(user_id, following)),
+        unfollow: (user_id, following) => dispatch(actions.unfollow(user_id, following)),
     };
 }
 
