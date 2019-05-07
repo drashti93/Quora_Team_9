@@ -35,9 +35,13 @@ const CommentList = ( {comments} ) => (
 			<List.Item 
 				key={comment._id}
 			>
-				<Comment content={comment.comment}/>
+				<List.Item.Meta
+					avatar={<Avatar src={comment.userId.profileImage ? comment.userId.profileImage.url : stockimage} />}
+					title={<div>{comment.userId.firstName} {comment.userId.lastName}</div>}
+				/>
+				{/* <Comment style={{float: "left"}} content={comment.comment}/> */}
+				{comment.comment}
 			</List.Item>
-				
 		)}
 	/>
 );
