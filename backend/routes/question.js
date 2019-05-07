@@ -10,18 +10,37 @@ var client = require("../resources/redis");
 
 //Follow a Question
 question.post("/follow", async (req, res) => {
-	console.log(req.body)
+
+	console.log(`\n\nInside POST /questions/follow`);
+
 	try {
 		let { userId, questionId } = req.body;
-		let result = await QuestionModel.update(
-			{ _id: questionId },
-			{
-				$push: { followers: userId }
-			}
+		let checkUserInQuestionFollow = await QuestionModel.findOne(
+			{ _id: questionId, followers: userId }
 		);
-		res.status(200).json({});
+
+		// console.log(`\n\n checkUserInQuestionFollow- ${checkUserInQuestionFollow}`);
+		
+		if(checkUserInQuestionFollow) {
+			
+			let answer = await QuestionModel.findOneAndUpdate(
+				{ _id: questionId },
+				{ $pull : { followers: userId } },
+				{ new: true }
+			);
+
+			res.status(200).json({answer});
+		} else {
+			let answer = await QuestionModel.findOneAndUpdate(
+				{ _id: questionId },
+				{ $push : { followers: userId } },
+				{ new: true }
+			);
+
+			res.status(200).json({answer});
+		}
 	} catch (error) {
-		res.send(error);
+		res.status(500).json({"error": error});
 	}
 });
 
