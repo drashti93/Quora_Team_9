@@ -1,22 +1,17 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import cookie from "react-cookies";
 import { Redirect } from "react-router";
 import { List, Avatar, Icon, Tooltip, Button, Divider } from "antd";
 import { connect } from "react-redux";
 import {bindActionCreators} from 'redux';
-import { getQuestionsAnswersForFeed } from "../../actions/questionActions";
+import { getQuestionsAnswersByQuestionId } from "../../actions/questionActions";
 import {Link} from "react-router-dom";
 import ReactQuill from 'react-quill';
 import axios from "axios";
 import Comments from "../comments/Comments";
 
-export class Feed extends Component {
+export class QuestionDetails extends Component {
 
-
-	update=()=>{
-		this.props.getQuestionsAnswersForFeed();
-
-	}
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -26,10 +21,8 @@ export class Feed extends Component {
 		};
 	}
 
-
-
 	componentDidMount() {
-		this.update();
+		this.props.getQuestionsAnswersByQuestionId(window.location.pathname.split('/')[2]);
 	}
 
 	handleAnswerUpvote = (answerId) => {
@@ -53,7 +46,6 @@ export class Feed extends Component {
 				// 	type: FEED,
 				// 	payload: response.data
 				// });
-				this.update();
 			}
 		}).catch(error => {
 			console.log(`Upvoting answer failed: questionActions->getQuestionsAnswersForFeed() - ${error}`);
@@ -82,7 +74,6 @@ export class Feed extends Component {
 				// 	type: FEED,
 				// 	payload: response.data
 				// });
-				this.update();
 			}
 		}).catch(error => {
 			console.log(`downvoting answer failed: questionActions->getQuestionsAnswersForFeed() - ${error}`);
@@ -132,7 +123,6 @@ export class Feed extends Component {
 				// 	type: FEED,
 				// 	payload: response.data
 				// });
-				this.update();
 			}
 		}).catch(error =>{
 			console.log(`comments answer failed: questionActions->postCommentAnswersForFeed() - ${error}`)
@@ -172,7 +162,6 @@ export class Feed extends Component {
 				// 	type: FEED,
 				// 	payload: response.data
 				// });
-				this.update();
 			}
 		}).catch(error =>{
 			console.log(`follow question failed: questionActions->postCommentAnswersForFeed() - ${error}`)
@@ -196,72 +185,72 @@ export class Feed extends Component {
 		return (
 			<div>
 				{redirectVar}
-				<List
-					itemLayout="vertical"
-					size="large"
-					
-					pagination={{
-						onChange: page => {
-							console.log(page);
-						},
-						pageSize: 5
-					}}
-					dataSource={this.props.question.feed}
-					renderItem={question => (
-						<div>
-							<List.Item 
-								key={question._id}
-								actions={[
-									<Tooltip title="Answers" onClick={()=>{this.handleQuestionAnswer(question._id)}}><Icon type="form" style={{ marginRight: 8 }} />{question.answers.length}</Tooltip>,
-									<Tooltip title="Followers" onClick={()=>{this.handleQuestionFollow(question._id)}}><Icon type="wifi" style={{ marginRight: 8 }} />{question.followers.length}</Tooltip>
-								]}
-							>
-								<List.Item.Meta
-								    key={question._id}
-									title = {<Link to = {`/questions/${question._id}`} target="_blank">{question.questionText}</Link>}
-								/>
-								<List
-									itemLayout="vertical"
-									dataSource={question.answers}
-									renderItem={answer => (
-										<div>
-											<List.Item 
-												key={answer._id}
-												actions={[
-													<Tooltip title="Upvotes" onClick={()=>{this.handleAnswerUpvote(answer._id)}}><Icon type="like" style={{ marginRight: 8 }} />{answer.upvotes.length}</Tooltip>,
-													<Tooltip title="Downvotes" onClick={()=>{this.handleAnswerDownvote(answer._id)}}><Icon type="dislike" style={{ marginRight: 8 }} />{answer.downvotes.length}</Tooltip>,
-													<Tooltip title="Comments" onClick={()=>{this.handleAnswerComments(answer)}}><Icon type="message" style={{ marginRight: 8 }} />{answer.comments.length}</Tooltip>, 
-													<Tooltip title="Bookmarks" onClick={()=>{this.handleAnswerBookmarks(answer._id)}}><Icon type="book" style={{ marginRight: 8 }} />{answer.bookmarks.length}</Tooltip>
-												]}
-											>
-												<List.Item.Meta
-													avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-													title="DUmmy NAMe"
-												/>
-												{answer.answerText}
-											</List.Item>
-											<Comments answerId={answer._id} showComments={this.state.showComments} commentsList={answer.comments}/>
-										</div>
-									)}
-								/>
-							</List.Item>
+					<List
+						itemLayout="vertical"
+						size="large"
+						
+						pagination={{
+							onChange: page => {
+								console.log(page);
+							},
+							pageSize: 5
+						}}
+						dataSource={this.props.question.questionsFeed}
+						renderItem={question => (
 							<div>
-								<ReactQuill 
-									modules={{toolbar:toolbarOptions}}
-									onChange={this.handleChange} 
-								/>
-								<Button type="primary" htmlType="submit">Submit</Button>
+								<List.Item 
+									key={question._id}
+									actions={[
+										<Tooltip title="Answers" onClick={()=>{this.handleQuestionAnswer(question._id)}}><Icon type="form" style={{ marginRight: 8 }} />{question.answers.length}</Tooltip>,
+										<Tooltip title="Followers" onClick={()=>{this.handleQuestionFollow(question._id)}}><Icon type="wifi" style={{ marginRight: 8 }} />{question.followers.length}</Tooltip>
+									]}
+								>
+									<List.Item.Meta
+										key={question._id}
+										title = {<Link to = {`/questions/${question._id}`} target="_blank">{question.questionText}</Link>}
+									/>
+									<List
+										itemLayout="vertical"
+										dataSource={question.answers}
+										renderItem={answer => (
+											<div>
+												<List.Item 
+													key={answer._id}
+													actions={[
+														<Tooltip title="Upvotes" onClick={()=>{this.handleAnswerUpvote(answer._id)}}><Icon type="like" style={{ marginRight: 8 }} />{answer.upvotes.length}</Tooltip>,
+														<Tooltip title="Downvotes" onClick={()=>{this.handleAnswerDownvote(answer._id)}}><Icon type="dislike" style={{ marginRight: 8 }} />{answer.downvotes.length}</Tooltip>,
+														<Tooltip title="Comments" onClick={()=>{this.handleAnswerComments(answer)}}><Icon type="message" style={{ marginRight: 8 }} />{answer.comments.length}</Tooltip>, 
+														<Tooltip title="Bookmarks" onClick={()=>{this.handleAnswerBookmarks(answer._id)}}><Icon type="book" style={{ marginRight: 8 }} />{answer.bookmarks.length}</Tooltip>
+													]}
+												>
+													<List.Item.Meta
+														avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+														title="DUmmy NAMe"
+													/>
+													{answer.answerText}
+												</List.Item>
+												<Comments answerId={answer._id} showComments={this.state.showComments} commentsList={answer.comments}/>
+											</div>
+										)}
+									/>
+								</List.Item>
+								<div>
+									<ReactQuill 
+										modules={{toolbar:toolbarOptions}}
+										onChange={this.handleChange} 
+									/>
+									<Button type="primary" htmlType="submit">Submit</Button>
+								</div>
+
+								<br/>
+								<br/>
+								<Divider dashed={true}/>
+
 							</div>
-
-							<br/>
-							<br/>
-							<Divider dashed={true}/>
-
-						</div>
-					)}
-				/>
+						)}
+					/>			
 			</div>
-		);
+		)
 	}
 }
 
@@ -275,8 +264,7 @@ const mapStateToProps = (state, props) => {
 const mapActionToProps = (dispatch, props) => {
 	return bindActionCreators(
 		{
-			getQuestionsAnswersForFeed
-			
+			getQuestionsAnswersByQuestionId
 		},
 		dispatch
 	);
@@ -285,4 +273,4 @@ const mapActionToProps = (dispatch, props) => {
 export default connect(
 	mapStateToProps,
 	mapActionToProps
-)(Feed);
+)(QuestionDetails);

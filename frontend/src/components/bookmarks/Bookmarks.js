@@ -1,22 +1,21 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import cookie from "react-cookies";
 import { Redirect } from "react-router";
 import { List, Avatar, Icon, Tooltip, Button, Divider } from "antd";
 import { connect } from "react-redux";
 import {bindActionCreators} from 'redux';
-import { getQuestionsAnswersForFeed } from "../../actions/questionActions";
+import { getBookmarkedAnswersWithCorrespondingQuestionsForBookmark } from "../../actions/questionActions";
 import {Link} from "react-router-dom";
 import ReactQuill from 'react-quill';
 import axios from "axios";
 import Comments from "../comments/Comments";
 
-export class Feed extends Component {
+export class Bookmarks extends Component {
 
-
-	update=()=>{
-		this.props.getQuestionsAnswersForFeed();
-
+	componentDidMount() {
+		this.props.getBookmarkedAnswersWithCorrespondingQuestionsForBookmark();
 	}
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -26,21 +25,12 @@ export class Feed extends Component {
 		};
 	}
 
-
-
-	componentDidMount() {
-		this.update();
-	}
-
 	handleAnswerUpvote = (answerId) => {
 		console.log(`In handleUpvote: answerId - ${answerId}`);
-		let data = cookie.load("cookie");
-		let u_id = data.id;
-		console.log(u_id);
 
 		const body = {
 			//TODO: Remove hardcoding
-			"userId": u_id
+			"userId": "5cc3f69dd23457601476d016"
 		}
 
 		axios.defaults.withCredentials = true;
@@ -53,7 +43,6 @@ export class Feed extends Component {
 				// 	type: FEED,
 				// 	payload: response.data
 				// });
-				this.update();
 			}
 		}).catch(error => {
 			console.log(`Upvoting answer failed: questionActions->getQuestionsAnswersForFeed() - ${error}`);
@@ -64,12 +53,9 @@ export class Feed extends Component {
 		console.log(`In handleDownvote: answerId - ${answerId}`);
 
 		console.log(`In handleDownvote: answerId - ${answerId}`);
-		let data = cookie.load("cookie");
-		let u_id = data.id;
-		console.log(u_id);
 		const body = {
 			//TODO: Remove hardcoding
-			"userId": u_id
+			"userId": "5cc3f69dd23457601476d016"
 		}
 
 		axios.defaults.withCredentials = true;
@@ -82,7 +68,6 @@ export class Feed extends Component {
 				// 	type: FEED,
 				// 	payload: response.data
 				// });
-				this.update();
 			}
 		}).catch(error => {
 			console.log(`downvoting answer failed: questionActions->getQuestionsAnswersForFeed() - ${error}`);
@@ -112,16 +97,13 @@ export class Feed extends Component {
 
 	handleAnswerBookmarks = (answerId) => {
 		console.log(`In handleBookmarks: answerId - ${answerId}`);
-		let data = cookie.load("cookie");
-		let u_id = data.id;
-		console.log(u_id);
 
 		const body = {
 			//TODO: Remove hardcoding of uer_id and comment
-			"userId": u_id,
-			"answerId": answerId,
+			"userId": "5cc3f69dd23457601476d016",
+			"answer_id": answerId,
 		}
-		console.log(body)
+		console.log(answerId)
 		axios.defaults.withCredentials = true;
 		axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/answers/bookmark`,body)
 		.then(response =>{
@@ -132,7 +114,6 @@ export class Feed extends Component {
 				// 	type: FEED,
 				// 	payload: response.data
 				// });
-				this.update();
 			}
 		}).catch(error =>{
 			console.log(`comments answer failed: questionActions->postCommentAnswersForFeed() - ${error}`)
@@ -144,40 +125,17 @@ export class Feed extends Component {
 		console.log(`In handleQuestionAnswer: questionId - ${questionId}`);
 
 	}
+	handleQuestionFollow = (questionId) => {
+		console.log(`In handleQuestionAnswer: questionId - ${questionId}`);
+
+	}
 
 	handleChange = (content, delta, source, editor) => {
 		const text = editor.getText(content);
 		this.setState({ bodyText: content, plainText:text});
 	}
 
-	handleQuestionFollow = (questionId) => {
-		console.log(`In handleFollowingQuestions : questionId - ${questionId}`);
-		let data = cookie.load("cookie");
-		let u_id = data.id;
-		console.log(u_id);
 
-		const body = {
-			//TODO: Remove hardcoding of uer_id and comment
-			"userId": u_id,
-			"questionId": questionId,
-		}
-		console.log(body)
-		axios.defaults.withCredentials = true;
-		axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/questions/follow`,body)
-		.then(response =>{
-			console.log(`Response: ${response}`);
-			if(response.status === 200){
-				console.log(`follow question successfully questionActions->postCommentAnswersForFeed(): ${response.data}`);
-				// dispatch({
-				// 	type: FEED,
-				// 	payload: response.data
-				// });
-				this.update();
-			}
-		}).catch(error =>{
-			console.log(`follow question failed: questionActions->postCommentAnswersForFeed() - ${error}`)
-		})
-	}
 
 	render() {
 
@@ -187,10 +145,10 @@ export class Feed extends Component {
 		}
 
 		const toolbarOptions = [
-			['bold', 'italic', 'underline'],
+			['bold', 'italic', 'underline'],        // toggled buttons
 			[{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
 			['link', 'image', 'video'],
-			['clean']
+			['clean']                                         // remove formatting button
 		];
 
 		return (
@@ -206,7 +164,7 @@ export class Feed extends Component {
 						},
 						pageSize: 5
 					}}
-					dataSource={this.props.question.feed}
+					dataSource={this.props.question.bookmarkFeed}
 					renderItem={question => (
 						<div>
 							<List.Item 
@@ -245,10 +203,12 @@ export class Feed extends Component {
 									)}
 								/>
 							</List.Item>
+
 							<div>
 								<ReactQuill 
 									modules={{toolbar:toolbarOptions}}
 									onChange={this.handleChange} 
+									
 								/>
 								<Button type="primary" htmlType="submit">Submit</Button>
 							</div>
@@ -261,9 +221,10 @@ export class Feed extends Component {
 					)}
 				/>
 			</div>
-		);
+		)
 	}
 }
+
 
 const mapStateToProps = (state, props) => {
 	return {
@@ -275,8 +236,7 @@ const mapStateToProps = (state, props) => {
 const mapActionToProps = (dispatch, props) => {
 	return bindActionCreators(
 		{
-			getQuestionsAnswersForFeed
-			
+			getBookmarkedAnswersWithCorrespondingQuestionsForBookmark
 		},
 		dispatch
 	);
@@ -285,4 +245,4 @@ const mapActionToProps = (dispatch, props) => {
 export default connect(
 	mapStateToProps,
 	mapActionToProps
-)(Feed);
+)(Bookmarks);
