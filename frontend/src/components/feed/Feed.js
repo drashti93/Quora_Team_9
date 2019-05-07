@@ -236,7 +236,7 @@ export class Feed extends Component {
 											>
 												<List.Item.Meta
 													avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-													title="DUmmy NAMe"
+													title="Dummy Name"
 												/>
 												{answer.answerText}
 											</List.Item>

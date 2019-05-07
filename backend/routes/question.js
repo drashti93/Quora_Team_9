@@ -134,7 +134,7 @@ question.get("/:questionId/details", async (request, response) => {
 			.populate({
 				path: "answers",
 				populate: {
-					path: "upvotes downvotes bookmarks"
+					path: "upvotes downvotes bookmarks images userId comments.userId"
 				}
 			});
 

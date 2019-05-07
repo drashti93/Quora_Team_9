@@ -84,7 +84,7 @@ topic.get("/:topicId/questions/following", async (req, res) => {
 			.populate({
 				path: "answers",
 				populate: {
-					path: "upvotes downvotes bookmarks userId"
+					path: "upvotes downvotes bookmarks images userId comments.userId"
 				}
 			})
 			.exec();
