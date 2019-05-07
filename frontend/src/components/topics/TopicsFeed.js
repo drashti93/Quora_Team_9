@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import cookie from "react-cookies";
 import { Redirect } from "react-router";
-import { List, Avatar, Icon, Tooltip, Button, Divider } from "antd";
+import { List, Avatar, Icon, Tooltip, Button, Divider, Card } from "antd";
 import { connect } from "react-redux";
 import {bindActionCreators} from 'redux';
 import { getQuestionsAnswersForUserTopics } from "../../actions/questionActions";
@@ -9,6 +9,7 @@ import {Link} from "react-router-dom";
 import ReactQuill from 'react-quill';
 import axios from "axios";
 import Comments from "../comments/Comments";
+const { Meta } = Card;
 
 export class TopicsFeed extends Component {
 
@@ -17,7 +18,6 @@ export class TopicsFeed extends Component {
 		this.update();
 	}
 	update=()=>{
-
 		console.log(`TopicId - ${window.location.pathname.split('/')[2]}`);
 		this.props.getQuestionsAnswersForUserTopics(window.location.pathname.split('/')[2]);
 	}
@@ -213,6 +213,17 @@ export class TopicsFeed extends Component {
 		return (
 			<div>
 				{redirectVar}
+				<Card
+					style={{ width: '100%' }}
+					actions={[
+						<Tooltip title="Followers"><Icon type="wifi" style={{ marginRight: 8 }} />Follow-Value</Tooltip>
+					]}
+				>
+					<Meta style={{textAlign: "center"}}
+					title="Europe Street beat"
+					/>
+				</Card>
+				<br/>
 				<List
 					itemLayout="vertical"
 					size="large"

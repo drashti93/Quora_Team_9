@@ -107,9 +107,7 @@ topic.get("/:topicId/questions/following", async (req, res) => {
 			.populate({
 				path: "answers",
 				populate: {
-
 					path: "upvotes downvotes bookmarks images userId comments.userId"
-
 				}
 			})
 			.exec();
@@ -133,6 +131,51 @@ topic.get("/:topicId/questions/following", async (req, res) => {
 		response.status(500).json({
 			error: error,
 			message: `Error fetching questions for topic ${req.params.topicId}`
+		});
+	}
+});
+
+//Get topic details and number of followers in topic details page
+topic.get("/:topicId/details", async (request, response) => {
+
+	console.log(`\n\n\nInside Get /topics/:topicId/details`);
+
+	let topicId = request.params.topicId;
+
+	try {
+
+		let checkTopicInUsers = await UserModel.find({ topicsFollowed: topicId });
+		let topicDetail = await TopicModel.findOne({ _id: topicId });
+
+		if(topicDetail) {
+
+			let result = {};
+			result.topicName = topicDetail.name;
+			result.followers = checkTopicInUsers.length;
+
+			console.log(`Result - ${result}`);
+			console.log(`Topic Name - ${result.topicName}`);
+			console.log(`Topic Followers - ${result.followers}`);
+
+			response.status(200).json(result);
+
+		} else {
+			console.log(`Topic ${topicId} not found`);
+			response
+				.status(404)
+				.json({ messgage: `Topic ${topicId} not found` });
+		}
+	} catch (error) {
+		console.log(
+			`Error fetching topic details for topic - ${
+				req.params.topicId
+			}:\n ${error}`
+		);
+		response.status(500).json({
+			error: error,
+			message: `Error fetching topic details for topic - ${
+				req.params.topicId
+			}`
 		});
 	}
 });
