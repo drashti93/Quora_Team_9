@@ -2,6 +2,7 @@ var express = require("express");
 var question = express.Router();
 const UserSchema = require("../model/UserSchema");
 var QuestionModel = require("../model/QuestionSchema");
+var AnswerModel = require("../model/AnswerSchema");
 var UserModel = require("../model/UserSchema");
 var TopicModel = require("../model/TopicSchema");
 var kafka = require("../kafka/client");
@@ -125,38 +126,46 @@ question.get("/:questionId", (request, response) => {
 // Question Details
 //This will give questions and coreesponding answers
 question.get("/:questionId/details", async (request, response) => {
-	console.log(`\n\nInside Get /questions/:questionId`);
+	console.log(`\n\nInside Get /questions/:questionId/details`);
 
 	try {
-
 		let questions = await QuestionModel
-			.findOne({_id: request.params.questionId})
+			.find({_id: request.params.questionId})
 			.populate({
 				path: "answers",
 				populate: {
-					path: "upvotes downvotes bookmarks comments"
+
+					path: "upvotes downvotes bookmarks images userId comments.userId"
 				}
 			});
-		
-		
-		
+
+
 		if(questions) {
-			
 			console.log(`Fetched question details successfully - ${questions}`);
+			for(const question of questions) {
+				// console.log(`Question Answers - ${question.answers}`);
+				if(question.answers !== undefined) {
+					const answerWithViews = [];
+					for(const answer of question.answers) {
+						// console.log(`\n\n\n\n\n\nEach answer - ${answer}`);
+						let answerView = await AnswerModel.findOneAndUpdate(
+							{ _id: answer._id },
+							{ $inc: { views : 1 } },
+							{ new: true }
+						);
+						answerWithViews.push(answerView)
+					}
+					question.answers = answerWithViews;
+				}
+			}
 			response.status(200).json(questions);
-
 		} else {
-
 			console.log(`Fetching Question details for question ${request.params.questionId} unsuccessful`);
 			response.status(404).json({messgage: `Fetching Question details for question ${request.params.questionId} unsuccessful`});
-
 		}
-
 	} catch (error) {
-
 		console.log(`Error while fetching Question details for question ${request.params.questionId}:\n ${error}`);
 		response.status(500).json({ error: error, message: `Error while fetching Question details for question ${request.params.questionId}` });
-
 	}
 });
 

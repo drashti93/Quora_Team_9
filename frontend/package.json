@@ -10,6 +10,9 @@
     "antd": "^3.16.6",
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
+
+    "chart.js": "^2.8.0",
+
     "cookiejar": "^2.1.2",
     "jquery": "^3.4.1",
     "js-cookie": "^2.2.0",
@@ -17,6 +20,7 @@
     "query-string": "^6.5.0",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.8",
+    "react-chartjs-2": "^2.7.6",
     "react-cookies": "^0.1.0",
     "react-dom": "^16.8.6",
     "react-icons-kit": "^1.2.1",

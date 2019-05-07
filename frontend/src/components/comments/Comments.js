@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Comment, Avatar, Form, Button, List, Input } from 'antd';
+import { connect } from "react-redux";
+import {bindActionCreators} from 'redux';
 import moment from 'moment';
 import axios from 'axios';
 
@@ -8,7 +10,7 @@ const TextArea = Input.TextArea;
 const Editor = ({ onChange, onSubmit, submitting, value }) => (
 	<div>
 		<Form.Item>
-			<TextArea rows={1} onChange={onChange} value={value} />
+			<TextArea autosize onChange={onChange} value={value} />
 		</Form.Item>
 		<Form.Item>
 			<Button
@@ -23,14 +25,25 @@ const Editor = ({ onChange, onSubmit, submitting, value }) => (
 	</div> 
 );
 
-const CommentList = ({ comments }) => (
+const CommentList = ( {comments} ) => (
 	<List
 		dataSource={comments}
-		header={`${comments.length} ${
-			comments.length > 1 ? "replies" : "reply"
-		}`}
+		split={true}
 		itemLayout="horizontal"
-		renderItem={props => <Comment {...props} />}
+		renderItem={comment => (
+			<List.Item 
+				key={comment._id}
+			>
+
+				<List.Item.Meta
+					avatar={<Avatar src={comment.userId.profileImage ? comment.userId.profileImage.url : "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"} />}
+					title={<div>{comment.userId.firstName} {comment.userId.lastName}</div>}
+				/>
+				{/* <Comment style={{float: "left"}} content={comment.comment}/> */}
+				{comment.comment}
+			</List.Item>
+
+		)}
 	/>
 );
 
@@ -41,7 +54,12 @@ export class Comments extends Component {
 		value: ""
 	};
 
+	
+
 	handleSubmit = () => {
+
+		console.log(`Comments passed: ${this.props.commentsList}`)
+
 		if (!this.state.value) {
 			return;
 		}
@@ -59,10 +77,10 @@ export class Comments extends Component {
 						author: "Han Solo",
 						avatar:
 							"https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
-						content: <p>{this.state.value}</p>,
-						datetime: moment().fromNow()
+						content: <p>{this.state.value}</p>
 					},
 					...this.state.comments
+					// ...this.props.commentsList
 				]
 			});
 		}, 1000);
@@ -72,8 +90,8 @@ export class Comments extends Component {
 			"userId": "5cc3f69dd23457601476d016",
 			"answerId": this.props.answerId,
 			"comment":this.state.value
-
 		}
+
 		console.log(body)
 		axios.defaults.withCredentials = true;
 		axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/comments/comment`,body)
@@ -85,6 +103,9 @@ export class Comments extends Component {
 				// 	type: FEED,
 				// 	payload: response.data
 				// });
+				if(this.props.updateFunc){
+				this.props.updateFunc();
+				}
 			}
 		}).catch(error =>{
 			console.log(`comments answer failed: questionActions->postCommentAnswersForFeed() - ${error}`)
@@ -99,18 +120,21 @@ export class Comments extends Component {
 	};
 
 	render() {
+		console.log("=====here=====s")
 		const { comments, submitting, value } = this.state;
 
 		return (
 			<div>
-				{comments.length > 0 && (
-					<CommentList comments={comments} />
+
+				{this.props.showComments === false && (
+
+					<CommentList comments={this.props.commentsList} />
 				)}
 				<Comment
 					avatar={
 						<Avatar
-							src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-							alt="Han Solo"
+							src={this.props.navbar.profile.data.profileImage? this.props.navbar.profile.data.profileImage.url : "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"}
+							alt={ <div>{this.props.navbar.profile.data.firstName} {this.props.navbar.profile.data.firstName}</div> }
 						/>
 					}
 					content={
@@ -127,4 +151,23 @@ export class Comments extends Component {
 	}
 }
 
-export default Comments;
+const mapStateToProps = (state, props) => {
+	return {
+		...state,
+		...props
+	};
+};
+
+const mapActionToProps = (dispatch, props) => {
+	return bindActionCreators(
+		{	
+
+		},
+		dispatch
+	);
+};
+
+export default connect(
+	mapStateToProps,
+	mapActionToProps
+)(Comments);

@@ -5,6 +5,7 @@ import { List } from "antd";
 import { Icon } from "antd";
 import { Component } from "react";
 import cookie from "react-cookies";
+import {Link} from "react-router-dom";
 import { Redirect } from "react-router";
 import { Button } from "react-bootstrap";
 
@@ -14,7 +15,7 @@ class TopicBar extends Component {
 		this.state = {
 			data: []
 		};
-		this.handleClick = this.handleClick.bind(this);
+		// this.handleClick = this.handleClick.bind(this);
 	}
 
 	componentDidMount() {
@@ -34,9 +35,17 @@ class TopicBar extends Component {
 			});
 	}
 
-	handleClick = data => {
-		console.log("@@@@@@@", data);
-	};
+	// handleClick = (data) => {
+	// 	console.log("@@@@@@@", data);
+	// 	// window.location.reload();
+	// 	// this.props.history.push({
+	// 	// 	pathname: "/topics/:topicId",
+	// 	// 	state :{
+	// 	// 		Topic_id : data
+	// 	// 	}
+	// 	// })
+	// };
+
 
 	render() {
 		let redirectVar = null;
@@ -47,21 +56,26 @@ class TopicBar extends Component {
 		}
 		return (
 			<div>
+				{/* {redirectVar} */}
 				<List
 					size="small"
-					header={<div>{<Icon type="copy" />} Feed</div>}
+					header={
+						<Link to="/">
+							<div>{<Icon type="copy" />} Feed</div>
+						</Link>
+					}
 					footer={
-						<a href="/">
+						<Link to="/bookmarks">
 							<div>{<Icon type="book" />} Bookmark</div>
-						</a>
+						</Link>
 					}
 					split={false}
 					dataSource={this.state.data}
 					renderItem={item => (
 						<List.Item>
-							<a href="/">
+							<Link to={`/topics/${item._id}`}>
 								{<Icon type="read" />} {item.name}
-							</a>
+							</Link>
 						</List.Item>
 					)}
 				/>

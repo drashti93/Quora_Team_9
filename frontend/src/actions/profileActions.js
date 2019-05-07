@@ -1,5 +1,5 @@
 import axios from "axios"
-
+import cookie from 'react-cookies'
 export function getUserDetails(user_id) {
 
     return function(dispatch){
@@ -20,23 +20,22 @@ export function getUserDetails(user_id) {
     }
 }
 
-export function saveProfilePicture(user_id, image_file) {
+export function saveProfilePicture(file, config) {
 
     return function(dispatch){
-        axios.get("http://localhost:3001/users/"+user_id, {})
-            .then(function (response) {
-              
-                console.log("User Details");
-                console.log(response);
-                
-                if(response.status===200) {
-
-                    dispatch({ type: "USER_DETAILS_SUCCESS", payload: response })
-                }
-            })
-            .catch(function (error) {
-                dispatch({type: "USER_DETAILS_FAILURE",payload: false})
-            });
+        axios.post("http://localhost:3001/uploads/upload/", file, config)
+        .then((res, any) => {
+            console.log(cookie.load('cookie').id);
+            console.log(`Response from /upload in react: ${res}`);
+            console.log(`Response from /upload Key: ${Object.values(res.data)}`);
+            
+            dispatch({type: "UPLOAD_SUCCESS", payload: res})
+            
+            dispatch(getUserDetails(cookie.load('cookie').id));
+        })
+        .catch((err, Error) => {
+            console.log(err)
+        })
     }
 }
 
@@ -50,6 +49,7 @@ export function saveCredentials(user_id, credId, type, kind, position, company, 
         .then(function(response){
             if(response.status === 200){
                 dispatch({type: "CREDENTIALS_SUCCESS", payload: response})
+                dispatch(getUserDetails(user_id));
             }
         })
         .catch(function(error){
@@ -69,7 +69,8 @@ export function saveAboutMe(user_id, text) {
                 
                 if(response.status===200) {
 
-                    dispatch({ type: "ABOUT_ME_SUCCESS", payload: true })
+                    dispatch({ type: "ABOUT_ME_SUCCESS", payload: true });
+                    dispatch(getUserDetails(user_id));
                 }
             })
             .catch(function (error) {
@@ -89,7 +90,8 @@ export function saveName(firstName, lastName, user_id) {
                 
                 if(response.status===200) {
 
-                    dispatch({ type: "NAME_SUCCESS", payload: true })
+                    dispatch({ type: "NAME_SUCCESS", payload: true });
+                    dispatch(getUserDetails(user_id));
                 }
             })
             .catch(function (error) {

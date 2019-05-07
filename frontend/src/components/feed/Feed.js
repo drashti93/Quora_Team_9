@@ -1,21 +1,45 @@
 import React, { Component } from "react";
 import cookie from "react-cookies";
 import { Redirect } from "react-router";
-import { List, Avatar, Icon, Divider, Tooltip, Skeleton } from "antd";
+import { List, Avatar, Icon, Tooltip, Button, Divider } from "antd";
 import { connect } from "react-redux";
 import {bindActionCreators} from 'redux';
 import { getQuestionsAnswersForFeed } from "../../actions/questionActions";
 import {Link} from "react-router-dom";
-
-import _ from "lodash";
+import ReactQuill from 'react-quill';
 import axios from "axios";
 import Comments from "../comments/Comments";
-import stockimage from '../../resources/images/user.png';
 
 export class Feed extends Component {
 
+
+	update(){
+		this.props.getQuestionsAnswersForFeed();		
+	}
+	constructor(props) {
+		super(props);
+		this.state = {
+			bodyText: '',
+			plainText: '',
+			showComments: false,
+			showComments1: []
+		};
+		this.update=this.update.bind(this);
+	}
+
+
+
 	componentDidMount() {
-		this.props.getQuestionsAnswersForFeed();
+		this.update();
+		
+		var arr = [];
+      for(var i=0; i<20; i++){
+          arr.push(true);
+      }
+      this.setState({
+          showComments1: arr
+      })
+
 	}
 
 	handleAnswerUpvote = (answerId) => {
@@ -39,6 +63,7 @@ export class Feed extends Component {
 				// 	type: FEED,
 				// 	payload: response.data
 				// });
+				this.update();
 			}
 		}).catch(error => {
 			console.log(`Upvoting answer failed: questionActions->getQuestionsAnswersForFeed() - ${error}`);
@@ -67,6 +92,7 @@ export class Feed extends Component {
 				// 	type: FEED,
 				// 	payload: response.data
 				// });
+				this.update();
 			}
 		}).catch(error => {
 			console.log(`downvoting answer failed: questionActions->getQuestionsAnswersForFeed() - ${error}`);
@@ -74,10 +100,43 @@ export class Feed extends Component {
 
 	}
 
-	handleAnswerComments = (answerId) => {
-		console.log(`In handleComments: answerId - ${answerId}`);
+
+	handleAnswerComments = (i, answer) => {
+		console.log(`In handleComments: answerId - ${answer._id}`);
+		let {showComments1}=this.state;
+		showComments1[i]=!showComments1[i];
+		this.setState({
+			showComments1
+		})
+		// if(this.state.showComments1[i] == false) {
+		// 	console.log(this.state.showComments1)
+		// 	var arr = this.state.showComments1;
+		// 	arr[i] = true;
+		// 	this.setState({
+		// 		showComments1: arr
+		// 	})
+		// 	console.log(this.state.showComments1)
+		// } else if (this.state.showComments1[i] == true) {
+		// 	// this.setState({showComments: false})
+		// 	var arr = this.state.showComments1;
+		// 	arr[i] = false;
+		// 	this.setState({
+		// 		showComments1: arr
+		// 	})
+		// }
+
+
+
+		console.log(`Answer Comments - ${answer.comments}`)
+
+		answer.comments.map(comment => {
+			console.log(`Each comment - ${comment}`);
+		})
+		
+		
 
 	}
+
 	handleAnswerBookmarks = (answerId) => {
 		console.log(`In handleBookmarks: answerId - ${answerId}`);
 		let data = cookie.load("cookie");
@@ -100,6 +159,7 @@ export class Feed extends Component {
 				// 	type: FEED,
 				// 	payload: response.data
 				// });
+				this.update();
 			}
 		}).catch(error =>{
 			console.log(`comments answer failed: questionActions->postCommentAnswersForFeed() - ${error}`)
@@ -111,12 +171,14 @@ export class Feed extends Component {
 		console.log(`In handleQuestionAnswer: questionId - ${questionId}`);
 
 	}
-	handleQuestionAnswer = (questionId) => {
-		console.log(`In handleQuestionAnswer: questionId - ${questionId}`);
+
+	handleChange = (content, delta, source, editor) => {
+		const text = editor.getText(content);
+		this.setState({ bodyText: content, plainText:text});
 
 	}
 
-	QuestionFollow = (questionId) =>{
+	handleQuestionFollow = (questionId) => {
 		console.log(`In handleFollowingQuestions : questionId - ${questionId}`);
 		let data = cookie.load("cookie");
 		let u_id = data.id;
@@ -138,21 +200,37 @@ export class Feed extends Component {
 				// 	type: FEED,
 				// 	payload: response.data
 				// });
+				this.update();
 			}
 		}).catch(error =>{
 			console.log(`follow question failed: questionActions->postCommentAnswersForFeed() - ${error}`)
 		})
-
-
-
 	}
+	postAnswer=(qid)=>{
+		(async()=>{
+			let obj={ answerText:this.state.bodyText, userId:cookie.load('cookie').id, isAnonymous:false, credentials:null, questionId:qid }
 
+			let result=await axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/answers`,obj);
+			alert("Answer Submitted successfully!")
+			this.update();
+		})();
+	}
 	render() {
 
 		let redirectVar = null;
 		if (!cookie.load("cookie")) {
 			redirectVar = <Redirect to="/login" />;
 		}
+
+		const toolbarOptions = [
+			['bold', 'italic', 'underline'],
+			[{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+			['link', 'image', 'video'],
+			['clean']
+		];
+
+		let state=this.state;
+
 
 		return (
 			<div>
@@ -168,45 +246,66 @@ export class Feed extends Component {
 						pageSize: 5
 					}}
 					dataSource={this.props.question.feed}
-					renderItem={question => (
-						<div>
+					renderItem={(question, index) => (
+						
+						<div className="feed-container">
+						show comments: {this.state.showComments}
 							<List.Item 
+							
 								key={question._id}
 								actions={[
 									<Tooltip title="Answers" onClick={()=>{this.handleQuestionAnswer(question._id)}}><Icon type="form" style={{ marginRight: 8 }} />{question.answers.length}</Tooltip>,
-									<Tooltip title="Followers" onClick={()=>{this.QuestionFollow(question._id)}}><Icon type="wifi" style={{ marginRight: 8 }} />{question.followers.length}</Tooltip>
+									<Tooltip title="Followers" onClick={()=>{this.handleQuestionFollow(question._id)}}><Icon type="wifi" style={{ marginRight: 8 }} />{question.followers.length}</Tooltip>
 								]}
 							>
 								<List.Item.Meta
+								className="card-heading"
 								    key={question._id}
 									title = {<Link to = {`/questions/${question._id}`} target="_blank">{question.questionText}</Link>}
 								/>
 								<List
 									itemLayout="vertical"
 									dataSource={question.answers}
-									renderItem={answer => (
+									renderItem={(answer, index) => (
 										<div>
 											<List.Item 
-												split={true}
 												key={answer._id}
 												actions={[
 													<Tooltip title="Upvotes" onClick={()=>{this.handleAnswerUpvote(answer._id)}}><Icon type="like" style={{ marginRight: 8 }} />{answer.upvotes.length}</Tooltip>,
 													<Tooltip title="Downvotes" onClick={()=>{this.handleAnswerDownvote(answer._id)}}><Icon type="dislike" style={{ marginRight: 8 }} />{answer.downvotes.length}</Tooltip>,
-													<Tooltip title="Comments" onClick={()=>{this.handleAnswerComments(answer._id)}}><Icon type="message" style={{ marginRight: 8 }} />{answer.bookmarks.length}</Tooltip>, 
-													<Tooltip title="Bookmarks" onClick={()=>{this.handleAnswerBookmarks(answer._id)}}><Icon type="book" style={{ marginRight: 8 }} />{answer.comments.length}</Tooltip>
+
+													<Tooltip title="Comments" onClick={()=>{this.handleAnswerComments(index, answer)}}><Icon type="message" style={{ marginRight: 8 }} />{answer.comments.length}</Tooltip>, 
+
+													<Tooltip title="Bookmarks" onClick={()=>{this.handleAnswerBookmarks(answer._id)}}><Icon type="book" style={{ marginRight: 8 }} />{answer.bookmarks.length}</Tooltip>
 												]}
 											>
 												<List.Item.Meta
-													avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-													title="Dummy Name"
+
+													avatar={<Avatar src={answer.userId && answer.userId.profileImage?answer.userId.profileImage.url:"https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"} />}
+													title={answer.userId?answer.userId.firstName+" "+answer.userId.lastName:"" }
+
 												/>
-												{answer.answerText}
+												<p dangerouslySetInnerHTML={{__html: answer.answerText}}></p>
+
+												
 											</List.Item>
-											<Comments answerId={answer._id}/>
+											<Comments updateFunc={this.update} answerId={answer._id} showComments={state.showComments1[index]} commentsList={answer.comments}/>
 										</div>
 									)}
 								/>
 							</List.Item>
+							<div>
+								<ReactQuill 
+									modules={{toolbar:toolbarOptions}}
+									onChange={this.handleChange} 
+								/>
+								<Button className="btn-quora" type="primary" onClick={()=>{this.postAnswer(question._id)}} htmlType="submit">Submit</Button>
+							</div>
+
+							<br/>
+							<br/>
+							<Divider dashed={true}/>
+
 						</div>
 					)}
 				/>

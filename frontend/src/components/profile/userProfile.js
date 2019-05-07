@@ -208,6 +208,8 @@ class UserProfile extends Component {
                                     <h3>{this.props.userDetails.firstName} {this.props.userDetails.lastName}</h3>
                                     <p>{this.props.userDetails.aboutMe ? this.props.userDetails.aboutMe : ""}</p>
                                     <p>{this.props && this.props.followers ? (this.props.followers).length : 0} followers</p>
+                                    <button>Follow</button>
+                                    <button>Unfollow</button>
                                 </div>
                             </Col>
                         </Row>
