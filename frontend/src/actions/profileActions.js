@@ -32,6 +32,7 @@ export function saveProfilePicture(user_id, image_file) {
                 if(response.status===200) {
 
                     dispatch({ type: "USER_DETAILS_SUCCESS", payload: response })
+                    dispatch(getUserDetails(user_id));
                 }
             })
             .catch(function (error) {
@@ -50,6 +51,7 @@ export function saveCredentials(user_id, credId, type, kind, position, company, 
         .then(function(response){
             if(response.status === 200){
                 dispatch({type: "CREDENTIALS_SUCCESS", payload: response})
+                dispatch(getUserDetails(user_id));
             }
         })
         .catch(function(error){
@@ -69,7 +71,8 @@ export function saveAboutMe(user_id, text) {
                 
                 if(response.status===200) {
 
-                    dispatch({ type: "ABOUT_ME_SUCCESS", payload: true })
+                    dispatch({ type: "ABOUT_ME_SUCCESS", payload: true });
+                    dispatch(getUserDetails(user_id));
                 }
             })
             .catch(function (error) {
@@ -89,7 +92,8 @@ export function saveName(firstName, lastName, user_id) {
                 
                 if(response.status===200) {
 
-                    dispatch({ type: "NAME_SUCCESS", payload: true })
+                    dispatch({ type: "NAME_SUCCESS", payload: true });
+                    dispatch(getUserDetails(user_id));
                 }
             })
             .catch(function (error) {
