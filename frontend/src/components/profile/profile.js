@@ -324,7 +324,8 @@ class Profile extends Component {
         addressError: "",
         cityError: "",
         zipcodeError: "",
-        formError:""
+        formError:"",
+        nameError: "",
 });
 
 if(type === "employment"){
@@ -405,6 +406,29 @@ if(type === "location"){
 }
   }
 
+  saveNameInternal(firstName, lastName, user_id){
+    if(firstName == ""){
+        this.setState({hideEditorName: true})
+    }
+    else {
+        this.props.saveName(firstName, lastName, user_id);
+        this.setState({hideEditorName: true})
+    }
+    
+  }
+
+  saveAboutMeInternal(user_id, aboutMe){
+     
+    if(aboutMe == ""){
+        this.setState({hideEditor: true})
+    }
+    else {
+        this.props.saveAboutMe(user_id, aboutMe);
+        this.setState({hideEditor: true})
+    }
+    
+  }
+
   saveDisplayPic(){
     const data = new FormData()
     data.append('profileImage', this.state.image_file, this.state.image_file.name);
@@ -452,7 +476,7 @@ if(type === "location"){
                                     <input type="text" hidden={this.state.hideEditorName} value={this.state.lastName} onChange={this.handleChangeLN}></input>
                                     {/* <h3>{this.props.userDetails.firstName} {this.props.userDetails.lastName}</h3> */}
                                     <button hidden={this.state.hideEditorName} onClick={() => this.setState({hideEditorName: true})}>Cancel</button>
-                                    <button hidden={this.state.hideEditorName} onClick={() => {this.props.saveName(this.state.firstName, this.state.lastName, cookie.load('cookie').id); this.setState({hideEditorName: true})}}>Update</button>
+                                    <button hidden={this.state.hideEditorName} onClick={() => {this.saveNameInternal(this.state.firstName, this.state.lastName, cookie.load('cookie').id)}}>Update</button>
                                     <button hidden={!this.state.hideEditorName} onClick={() => this.setState({hideEditorName: false})}>Edit</button>
                                     </div>
                                     <p className="profile-desc" hidden={!this.state.hideEditor}>{this.props.userDetails.aboutMe ? this.props.userDetails.aboutMe : <a onClick={() => this.setState({hideEditor: false})}>Write a description about yourself</a>}</p>
@@ -460,7 +484,7 @@ if(type === "location"){
                                     <div>
                                         <input type="text" value={this.state.aboutMe} onChange={this.handleChange} hidden={this.state.hideEditor}/>
                                         <button onClick={() => this.setState({hideEditor: true})} hidden={this.state.hideEditor}>Cancel</button>
-                                        <button hidden={this.state.hideEditor} onClick={() => {this.props.saveAboutMe(cookie.load('cookie').id, this.state.aboutMe); this.setState({hideEditor: true})}}>Update</button>
+                                        <button hidden={this.state.hideEditor} onClick={() => {this.saveAboutMeInternal(cookie.load('cookie').id, this.state.aboutMe)}}>Update</button>
                                     </div>
                                     <p>{this.props && this.props.followers ? (this.props.followers).length : 0} followers</p>
                                     
