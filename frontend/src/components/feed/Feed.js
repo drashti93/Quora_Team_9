@@ -23,7 +23,8 @@ export class Feed extends Component {
 			bodyText: '',
 			plainText: '',
 			showComments: false,
-			showComments1: []
+			showComments1: [],
+			showAnswers: []
 		};
 	}
 
