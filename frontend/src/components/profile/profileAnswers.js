@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import cookie from "react-cookies";
 import { Redirect } from "react-router";
-import { List, Avatar, Icon, Divider, Tooltip, Skeleton } from "antd";
+import { List, Avatar, Icon, Divider, Tooltip, Button } from "antd";
 import { connect } from "react-redux";
 import Comments from "../comments/Comments"
 import * as actions from "../../actions/profileActions"
 import axios from "axios";
+import ReactQuill from 'react-quill';
 
 export class ProfileAnswers extends Component {
 
@@ -281,13 +282,24 @@ export class ProfileAnswers extends Component {
 													}
 													title={answer.userId?answer.userId.firstName+" "+answer.userId.lastName:""}
 												/>
-												{answer.answerText}
+												<p dangerouslySetInnerHTML={{__html: answer.answerText}}></p>
 											</List.Item>
 											<Comments answerId={answer._id} showComments={state.showComments1[index]} commentsList={answer.comments}/>
 										</div>
 									)}
 								/>
 							</List.Item>
+							<div>
+								<ReactQuill 
+									modules={{toolbar:toolbarOptions}}
+									onChange={this.handleChange} 
+								/>
+								<Button className="btn-quora" type="primary" onClick={()=>{this.postAnswer(question._id)}} htmlType="submit">Submit</Button>
+							</div>
+
+							<br/>
+							<br/>
+							<Divider dashed={true}/>
 						</div>
 					)}
 				/>
