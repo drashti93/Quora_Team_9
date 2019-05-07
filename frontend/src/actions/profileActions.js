@@ -179,3 +179,41 @@ export function getFollowing(user_id) {
             });
     }
 }
+
+export function follow(user_id, following){
+    console.log("In set following");
+    return function(dispatch){
+        axios.post("http://localhost:3001/users/follow", {
+            user_id, following
+        })
+        .then(function(response){
+            if(response.status===200){
+                console.log(response);
+                dispatch({type: "FOLLOW_SUCCESS", payload: true})
+                dispatch(getUserDetails(following));
+            }
+        })
+        .catch(function(error){
+            dispatch({type: "FOLLOW_FAILURE", payload: false})
+        })
+    }
+}
+
+export function unfollow(user_id, following){
+    console.log("In set un-following");
+    return function(dispatch){
+        axios.post("http://localhost:3001/users/unfollow", {
+            user_id, following
+        })
+        .then(function(response){
+            if(response.status===200){
+                console.log(response);
+                dispatch({type: "UNFOLLOW_SUCCESS", payload: true});
+                dispatch(getUserDetails(following));
+            }
+        })
+        .catch(function(error){
+            dispatch({type: "UNFOLLOW_FAILURE", payload: false})
+        })
+    }
+}
