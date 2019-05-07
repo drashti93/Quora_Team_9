@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import cookie from "react-cookies";
 import { Redirect } from "react-router";
-import { List, Avatar, Icon, Tooltip, Button, Divider } from "antd";
+import { List, Avatar, Icon, Tooltip, Button, Divider, Card, Typography } from "antd";
 import { connect } from "react-redux";
 import {bindActionCreators} from 'redux';
-import { getQuestionsAnswersForUserTopics } from "../../actions/questionActions";
+import { getQuestionsAnswersForUserTopics, getTopicNameAndNumberOfFollowersById } from "../../actions/questionActions";
 import {Link} from "react-router-dom";
 import ReactQuill from 'react-quill';
 import axios from "axios";
 import Comments from "../comments/Comments";
+const { Meta } = Card;
+const { Title } = Typography;
 
 export class TopicsFeed extends Component {
 
@@ -17,9 +19,9 @@ export class TopicsFeed extends Component {
 		this.update();
 	}
 	update=()=>{
-
 		console.log(`TopicId - ${window.location.pathname.split('/')[2]}`);
 		this.props.getQuestionsAnswersForUserTopics(window.location.pathname.split('/')[2]);
+		this.props.getTopicNameAndNumberOfFollowersById(window.location.pathname.split('/')[2]);
 	}
 
 	constructor(props) {
@@ -196,6 +198,29 @@ export class TopicsFeed extends Component {
 		})();
 	}
 
+	handleTopicFollow = (topicId) => {
+		console.log(`In handleTopicFollow : topicId - ${topicId}`);
+		let data = cookie.load("cookie");
+		let u_id = data.id;
+		console.log(u_id);
+		const body = {
+			"userId": u_id,
+			"topicId": topicId,
+		}
+		console.log(body)
+		axios.defaults.withCredentials = true;
+		axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/topics/follow`, body)
+		.then(response =>{
+			console.log(`Response: ${response}`);
+			if(response.status === 200){
+				console.log(`follow topic successfully questionActions->postCommentAnswersForFeed(): ${response.data}`);
+				this.update();
+			}
+		}).catch(error =>{
+			console.log(`follow topic failed: questionActions->postCommentAnswersForFeed() - ${error}`)
+		})
+	}
+
 	render() {
 
 		let redirectVar = null;
@@ -213,6 +238,17 @@ export class TopicsFeed extends Component {
 		return (
 			<div>
 				{redirectVar}
+				<Card
+					style={{ width: '100%' }}
+					actions={[
+						<Tooltip title="Followers" onClick={()=>{this.handleTopicFollow(this.props.question.topicDetails.topicId)}}><Icon type="wifi" style={{ marginRight: 8 }} />Followers - {this.props.question.topicDetails.followers}</Tooltip>
+					]}
+				>
+					<Meta style={{textAlign: "center"}}
+					title={<Title>{this.props.question.topicDetails.topicName}</Title>}
+					/>
+				</Card>
+				<br/>
 				<List
 					itemLayout="vertical"
 					size="large"
@@ -277,7 +313,6 @@ export class TopicsFeed extends Component {
 
 							<br/>
 							<br/>
-							<Divider dashed={true}/>
 
 						</div>
 					)}
@@ -298,7 +333,8 @@ const mapStateToProps = (state, props) => {
 const mapActionToProps = (dispatch, props) => {
 	return bindActionCreators(
 		{
-			getQuestionsAnswersForUserTopics
+			getQuestionsAnswersForUserTopics,
+			getTopicNameAndNumberOfFollowersById
 		},
 		dispatch
 	);
