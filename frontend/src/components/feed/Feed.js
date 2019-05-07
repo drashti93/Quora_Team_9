@@ -14,8 +14,13 @@ import stockimage from '../../resources/images/user.png';
 
 export class Feed extends Component {
 
-	componentDidMount() {
+
+	update=()=>{
 		this.props.getQuestionsAnswersForFeed();
+
+	}
+	componentDidMount() {
+		this.update();
 	}
 
 	handleAnswerUpvote = (answerId) => {
@@ -39,6 +44,7 @@ export class Feed extends Component {
 				// 	type: FEED,
 				// 	payload: response.data
 				// });
+				this.update();
 			}
 		}).catch(error => {
 			console.log(`Upvoting answer failed: questionActions->getQuestionsAnswersForFeed() - ${error}`);
@@ -67,6 +73,7 @@ export class Feed extends Component {
 				// 	type: FEED,
 				// 	payload: response.data
 				// });
+				this.update();
 			}
 		}).catch(error => {
 			console.log(`downvoting answer failed: questionActions->getQuestionsAnswersForFeed() - ${error}`);
@@ -100,6 +107,7 @@ export class Feed extends Component {
 				// 	type: FEED,
 				// 	payload: response.data
 				// });
+				this.update();
 			}
 		}).catch(error =>{
 			console.log(`comments answer failed: questionActions->postCommentAnswersForFeed() - ${error}`)
@@ -138,6 +146,7 @@ export class Feed extends Component {
 				// 	type: FEED,
 				// 	payload: response.data
 				// });
+				this.update();
 			}
 		}).catch(error =>{
 			console.log(`follow question failed: questionActions->postCommentAnswersForFeed() - ${error}`)
