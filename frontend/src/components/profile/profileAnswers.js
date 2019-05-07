@@ -80,7 +80,7 @@ export class ProfileAnswers extends Component {
 		if (!cookie.load("cookie")) {
 			redirectVar = <Redirect to="/login" />;
 		}
-
+		console.log(this.props.answers)
 		return (
 			<div>
 				{redirectVar}
@@ -95,7 +95,7 @@ export class ProfileAnswers extends Component {
 						pageSize: 5
 					}}
                     
-					dataSource={this.props.answers.ques}
+					dataSource={this.props.answers}
 					renderItem={question => (
 						<div>
 							<List.Item 
@@ -110,7 +110,7 @@ export class ProfileAnswers extends Component {
 								/>
 								<List
 									itemLayout="vertical"
-									dataSource={this.props.answers.results[0]}
+									dataSource={question.answers}
 									renderItem={answer => (
 										<div>
 											<List.Item 
@@ -127,7 +127,7 @@ export class ProfileAnswers extends Component {
 													avatar={
 														<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
 													}
-													title={answer.userId}
+													title={answer.userId ? answer.userId.firstName+" "+answer.userId.firstName : ""	}
 												/>
 												{answer.answerText}
 											</List.Item>
