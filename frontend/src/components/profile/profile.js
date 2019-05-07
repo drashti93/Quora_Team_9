@@ -322,14 +322,14 @@ class Profile extends Component {
                                     <input type="text" hidden={this.state.hideEditorName} value={this.state.lastName} onChange={this.handleChangeLN}></input>
                                     {/* <h3>{this.props.userDetails.firstName} {this.props.userDetails.lastName}</h3> */}
                                     <button hidden={this.state.hideEditorName} onClick={() => this.setState({hideEditorName: true})}>Cancel</button>
-                                    <button hidden={this.state.hideEditorName} onClick={() => this.props.saveName(this.state.firstName, this.state.lastName, cookie.load('cookie').id)}>Update</button>
+                                    <button hidden={this.state.hideEditorName} onClick={() => {this.props.saveName(this.state.firstName, this.state.lastName, cookie.load('cookie').id); this.setState({hideEditorName: true})}}>Update</button>
                                     <button hidden={!this.state.hideEditorName} onClick={() => this.setState({hideEditorName: false})}>Edit</button>
                                     <p hidden={!this.state.hideEditor}>{this.props.userDetails.aboutMe ? this.props.userDetails.aboutMe : <a onClick={() => this.setState({hideEditor: false})}>Write a description about yourself</a>}</p>
                                     <span>{this.props.userDetails.aboutMe ? <button onClick={() => this.setState({hideEditor: false})}>Edit</button> : ""}</span>
                                     <div>
                                         <input type="text" value={this.state.aboutMe} onChange={this.handleChange} hidden={this.state.hideEditor}/>
                                         <button onClick={() => this.setState({hideEditor: true})} hidden={this.state.hideEditor}>Cancel</button>
-                                        <button hidden={this.state.hideEditor} onClick={() => this.props.saveAboutMe(cookie.load('cookie').id, this.state.aboutMe)}>Update</button>
+                                        <button hidden={this.state.hideEditor} onClick={() => {this.props.saveAboutMe(cookie.load('cookie').id, this.state.aboutMe); this.setState({hideEditor: true})}}>Update</button>
                                     </div>
                                     <p>{this.props && this.props.followers ? (this.props.followers).length : 0} followers</p>
                                 </div>
@@ -460,18 +460,52 @@ class Profile extends Component {
                                                
                                                return(
                                                    <div>
-                                                    <li>{career.position}</li>
+                                                    <li hidden={!this.state.hideCareer[index]}>{career.position}</li>
                                                     <button onClick={() => {this.setState({position: this.state.credentials.career[index].position, company: this.state.credentials.career[index].company,
                                                     careerStart: this.state.credentials.career[index].startDate, careerEnd: this.state.credentials.career[index].endDate,
                                                     currentCompany: this.state.credentials.career[index].isCurrent}); this.handleHideCareer(index, false)}} hidden={!this.state.hideCareer[index]}>Edit</button>
                                                     <div hidden={this.state.hideCareer[index]}>
-                                                        <input type="text" name="position" value={this.state.position} onChange={this.onChangePosition.bind(this)}></input>
-                                                        <input type="text" name="company" value={this.state.company} onChange={this.onChangeCompany.bind(this)}></input>
-                                                        <input type="select" name="careerStart" value={this.state.careerStart} onChange={this.onChangeCareerStart.bind(this)}></input>
-                                                        <input type="select" name="careerEnd" value={this.state.careerEnd} onChange={this.onChangeCareerEnd.bind(this)}></input>
-                                                        <input type="checkbox" value={this.state.currentCompany} onChange={this.onChangeCurrentCompany.bind(this)}></input>
-                                                        <button onClick={() => this.handleHideCareer(index, true)}>Cancel</button>
-                                                        <button onClick={() => this.saveCredentialsInternal(career._id, "employment", "update")}>Save</button>
+                                                        <Form.Group>
+                                                            <Form.Label>Position</Form.Label>
+                                                            <Form.Control as="textarea" rows="1" value={this.state.position} onChange={this.onChangePosition.bind(this)}/>
+                                                            <Form.Label>Company</Form.Label>
+                                                            <Form.Control as="textarea" rows="1" value={this.state.company} onChange={this.onChangeCompany.bind(this)}/>
+                                                        </Form.Group>
+                                                        <Form.Group controlId="exampleForm.ControlSelect1">
+                                                            <Form.Label>Start Year</Form.Label>
+                                                            <Form.Control as="select" value={this.state.careerStart} onChange={this.onChangeCareerStart.bind(this)}>
+                                                            {
+                                                                this.state.years.map((year, index) => {
+                                                                    return(
+                                                                        <option>{year}</option>
+                                                                    )
+                                                                    
+                                                                })
+                                                            }
+                                                            </Form.Control>
+                                                        </Form.Group>
+                                                        <Form.Group controlId="exampleForm.ControlSelect1">
+                                                            <Form.Label>End Year</Form.Label>
+                                                            <Form.Control as="select" value={this.state.careerEnd} onChange={this.onChangeCareerEnd.bind(this)}>
+                                                            {
+                                                                this.state.years.map((year, index) => {
+                                                                    return(
+                                                                        <option>{year}</option>
+                                                                    )
+                                                                    
+                                                                })
+                                                            }
+                                                            </Form.Control>
+                                                        </Form.Group>
+                                                        <Form>
+                                                            <Form.Check 
+                                                                label="I currently work here"
+                                                                onSelect={this.onChangeCurrentCompany}
+                                                                value={this.state.currentCompany}
+                                                            />
+                                                        </Form>
+                                                        <Button onClick={() => this.handleHideCareer(index, true)}>Cancel</Button>
+                                                        <Button onClick={() => {this.saveCredentialsInternal(career._id, "employment", "update"); this.handleHideCareer(index, true)}}>Save</Button>
                                                     </div>
                                                     </div>
                                                )  
@@ -481,18 +515,37 @@ class Profile extends Component {
                                             this.props.userDetails.credentials && this.props.userDetails.credentials.education ? this.props.userDetails.credentials.education.map((education, index) => {
                                                return(
                                                    <div>
-                                                    <li>{education.school}</li>
+                                                    <li hidden={!this.state.hideEducation[index]}>{education.school}</li>
                                                     <button onClick={() => {this.setState({school: this.state.credentials.education[index].school, concentration: this.state.credentials.education[index].concentration,
                                                     secConcentration: this.state.credentials.education[index].secConcentration, gradYear: this.state.credentials.education[index].gradYear,
                                                     degree: this.state.credentials.education[index].degree}); this.handleHideEducation(index, false)}} hidden={!this.state.hideEducation[index]}>Edit</button>
                                                     <div hidden={this.state.hideEducation[index]}>
-                                                        <input type="text" name="school" value={this.state.school} onChange={this.onChangeSchool.bind(this)}></input>
-                                                        <input type="text" name="concentration" value={this.state.concentration} onChange={this.onChangeConcentration.bind(this)}></input>
-                                                        <input type="text" name="secConcentration" value={this.state.secConcentration} onChange={this.onChangeSecConcentration.bind(this)}></input>
-                                                        <input type="select" name="gradYear" value={this.state.gradYear} onChange={this.onChangeGradYear.bind(this)}></input>
-                                                        <input type="text" name="degree" value={this.state.degree} onChange={this.onChangeDegree.bind(this)}></input>
-                                                        <button onClick={() => this.handleHideEducation(index, true)}>Cancel</button>
-                                                        <button onClick={() => this.saveCredentialsInternal(education._id, "education", "update")}>Save</button>
+                                                    <Form.Group controlId="exampleForm.ControlTextarea1">
+                                                        <Form.Label>School</Form.Label>
+                                                        <Form.Control as="textarea" rows="1" value={this.state.school} onChange={this.onChangeSchool.bind(this)}/>
+                                                        <Form.Label>Concentration</Form.Label>
+                                                        <Form.Control as="textarea" rows="1" value={this.state.concentration} onChange={this.onChangeConcentration.bind(this)}/>
+                                                        <Form.Label>Secondary Concentration</Form.Label>
+                                                        <Form.Control as="textarea" rows="1" value={this.state.secConcentration} onChange={this.onChangeSecConcentration.bind(this)}/>
+                                                        <Form.Label>Degree Type</Form.Label>
+                                                        <Form.Control as="textarea" rows="1" value={this.state.degree} onChange={this.onChangeDegree.bind(this)}/>
+                                                    </Form.Group>
+                                                    <Form.Group controlId="exampleForm.ControlSelect1">
+                                                        <Form.Label>Graduation Year</Form.Label>
+                                                        <Form.Control as="select" value={this.state.gradYear} onChange={this.onChangeGradYear.bind(this)}>
+                                                            {
+                                                                [...this.state.years, 2020, 2021, 2022, 2023].map((year, index) => {
+                                                                    return(
+                                                                        <option>{year}</option>
+                                                                    )
+                                                                    
+                                                                })
+                                                            }
+                                                        </Form.Control>
+                                                    </Form.Group>
+                                                    <Button onClick={() => this.handleHideEducation(index, true)}>Cancel</Button>
+                                                    <Button onClick={() => {this.saveCredentialsInternal(education._id, "education", "update"); this.handleHideEducation(index, true)}}>Save</Button>
+                                                    
                                                     </div>
                                                    </div>
                                                     
@@ -503,19 +556,57 @@ class Profile extends Component {
                                             this.props.userDetails.credentials && this.props.userDetails.credentials.location ? this.props.userDetails.credentials.location.map((location, index) => {
                                                return(
                                                    <div>
-                                                    <li>{location.address}</li>
-                                                    <button onClick={() => {this.setState({position: this.state.credentials.career[index].position, company: this.state.credentials.career[index].company,
-                                                    careerStart: this.state.credentials.career[index].startDate, careerEnd: this.state.credentials.career[index].endDate,
-                                                    currentCompany: this.state.credentials.career[index].isCurrent}); this.handleHideCareer(index, false)}} hidden={!this.state.hideCareer[index]}>Edit</button>
-                                                    <div hidden={this.state.hideCareer[index]}>
-                                                        <input type="text" name="address" value={this.state.address} onChange={this.onChangeAddress.bind(this)}></input>
-                                                        <input type="text" name="city" value={this.state.city} onChange={this.onChangeCity.bind(this)}></input>
-                                                        <input type="text" name="state" value={this.state.locState} onChange={this.onChangeState.bind(this)}></input>
-                                                        <input type="select" name="start" value={this.state.locStart} onChange={this.onChangeLocationStart.bind(this)}></input>
-                                                        <input type="select" name="start" value={this.state.locEnd} onChange={this.onChangeLocationEnd.bind(this)}></input>
-                                                        <input type="checkbox" value={this.state.currentLocation} onChange={this.onChangeCurrentLocation.bind(this)}></input>
-                                                        <button onClick={() => this.handleHideLocation(index, true)}>Cancel</button>
-                                                        <button onClick={() => this.saveCredentialsInternal(location._id, "location", "update")}>Save</button>
+                                                    <li hidden={!this.state.hideAddress[index]}>{location.address}</li>
+                                                    <button onClick={() => {this.setState({address: this.state.credentials.location[index].address, city: this.state.credentials.location[index].city,
+                                                    locState: this.state.credentials.location[index].state, zipcode: this.state.credentials.location[index].zipcode, locStart: this.state.credentials.location[index].startDate,
+                                                    locStart: this.state.credentials.location[index].endDate, currentLocation: this.state.credentials.location[index].isCurrent}); this.handleHideLocation(index, false)}} hidden={!this.state.hideAddress[index]}>Edit</button>
+                                                    <div hidden={this.state.hideAddress[index]}>
+                                                        <Form.Group controlId="exampleForm.ControlTextarea1">
+                                                            <Form.Label>Address</Form.Label>
+                                                            <Form.Control as="textarea" rows="1" value={this.state.address} onChange={this.onChangeAddress.bind(this)}/>
+                                                            <Form.Label>City</Form.Label>
+                                                            <Form.Control as="textarea" rows="1" value={this.state.city} onChange={this.onChangeCity.bind(this)}/>
+                                                            <Form.Label>State</Form.Label>
+                                                            <Form.Control as="textarea" rows="1" value={this.state.locState} onChange={this.onChangeState.bind(this)}/>
+                                                            <Form.Label>ZipCode</Form.Label>
+                                                            <Form.Control as="textarea" rows="1" value={this.state.zipcode} onChange={this.onChangeZipcode.bind(this)}/>
+                                                        </Form.Group>
+                                                        <Form.Group controlId="exampleForm.ControlSelect1">
+                                                            <Form.Label>Start Year</Form.Label>
+                                                            <Form.Control as="select" value={this.state.locStart} onChange={this.onChangeLocationStart.bind(this)}>
+                                                            {
+                                                                this.state.years.map((year, index) => {
+                                                                    return(
+                                                                        <option>{year}</option>
+                                                                    )
+                                                                    
+                                                                })
+                                                            }
+                                                            </Form.Control>
+                                                        </Form.Group>
+                                                        <Form.Group controlId="exampleForm.ControlSelect1">
+                                                            <Form.Label>End Year</Form.Label>
+                                                            <Form.Control as="select" value={this.state.locEnd} onChange={this.onChangeLocationEnd.bind(this)}>
+                                                            {
+                                                                this.state.years.map((year, index) => {
+                                                                    return(
+                                                                        <option>{year}</option>
+                                                                    )
+                                                                    
+                                                                })
+                                                            }
+                                                            </Form.Control>
+                                                        </Form.Group>
+                                                        <Form>
+                                                            <Form.Check 
+                                                                label="I currently live here"
+                                                                onSelect={this.onChangeCurrentLocation.bind(this)}
+                                                                value={this.state.currentLocation}
+                                                            />
+                                                        </Form>
+                                                       
+                                                        <Button onClick={() => this.handleHideLocation(index, true)}>Cancel</Button>
+                                                        <Button onClick={() => {this.saveCredentialsInternal(location._id, "location", "update"); this.handleHideLocation(index, true)}}>Save</Button>
                                                     </div>
                                                     </div>
                                                )  
