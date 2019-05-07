@@ -657,7 +657,7 @@ router.post('/credentials', function(req, res){
 			var street = req.body.street;
 			var city = req.body.city;
 			var state = req.body.state;
-			var zipcode = req.body.zipcode
+			var zipcode = parseInt(req.body.zipcode, 10);
 			var startYear = parseInt(req.body.lstartYear,10);
 			var endYear = parseInt(req.body.lendYear,10);
 			var isCurrentString = req.body.lisCurrentString;
