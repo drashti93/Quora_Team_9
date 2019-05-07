@@ -20,6 +20,7 @@ class TopicBar extends Component {
 
 	componentDidMount() {
 		let data = cookie.load("cookie");
+		if(data){
 		let u_id = data.id;
 		console.log(u_id);
 
@@ -33,6 +34,7 @@ class TopicBar extends Component {
 					});
 				}
 			});
+		}
 	}
 
 	// handleClick = (data) => {

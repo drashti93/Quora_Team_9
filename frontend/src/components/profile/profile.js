@@ -68,6 +68,7 @@ class Profile extends Component {
      followers: [],
      following: [],
      pictureURL: "",
+     usStates: ['AK', 'AL', 'AR', 'AS', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA', 'GU', 'HI', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'ME', 'MI', 'MN', 'MO', 'MP', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH', 'NJ', 'NM', 'NV', 'NY', 'OH', 'OK', 'OR', 'PA', 'PR', 'RI', 'SC', 'SD', 'TN', 'TX', 'UM', 'UT', 'VA', 'VI', 'VT', 'WA', 'WI', 'WV', 'WY'],
     }
 
     this.handleShow = this.handleShow.bind(this);
@@ -88,6 +89,8 @@ class Profile extends Component {
     this.onChangePosition = this.onChangePosition.bind(this);
     this.handleHideCareer = this.handleHideCareer.bind(this);
     this.saveDisplayPic = this.saveDisplayPic.bind(this);
+
+    
   }
 
   handleClose() {
@@ -100,6 +103,15 @@ class Profile extends Component {
 
   handleClose1() {
     this.setState({ show1: false });
+    this.setState({
+        positionError: "",
+        companyError: "",
+        schoolError: "",
+        addressError: "",
+        cityError: "",
+        zipcodeError: "",
+        formError:""
+});
   }
 
   handleShow1() {
@@ -108,6 +120,15 @@ class Profile extends Component {
 
   handleClose2() {
     this.setState({ show2: false });
+    this.setState({
+        positionError: "",
+        companyError: "",
+        schoolError: "",
+        addressError: "",
+        cityError: "",
+        zipcodeError: "",
+        formError:""
+});
   }
 
   handleShow2() {
@@ -116,6 +137,15 @@ class Profile extends Component {
 
   handleClose3() {
     this.setState({ show3: false });
+    this.setState({
+        positionError: "",
+        companyError: "",
+        schoolError: "",
+        addressError: "",
+        cityError: "",
+        zipcodeError: "",
+        formError:""
+});
   }
 
   handleShow3() {
@@ -284,11 +314,119 @@ class Profile extends Component {
       })
   }
 
-  saveCredentialsInternal(credId, type, kind){
-      this.props.saveCredentials(cookie.load('cookie').id, credId, type, kind, this.state.position, this.state.company, this.state.careerStart, this.state.careerEnd, this.state.currentCompany,
+  
+
+  saveCredentialsInternal(credId, type, kind, i, b){
+    this.setState({
+        positionError: "",
+        companyError: "",
+        schoolError: "",
+        addressError: "",
+        cityError: "",
+        zipcodeError: "",
+        formError:"",
+        nameError: "",
+});
+
+if(type === "employment"){
+    let isFormValid = true;
+    if(this.state.position === ""){
+        this.setState({positionError: "Kindly enter the position"})
+        isFormValid = false
+    }
+    else if(this.company === ""){
+        this.setState({companyError: "Kindly enter the company name"})
+        isFormValid = false
+    }
+    if(isFormValid){
+        this.props.saveCredentials(cookie.load('cookie').id, credId, type, kind, this.state.position, this.state.company, this.state.careerStart, this.state.careerEnd, this.state.currentCompany,
       this.state.school, this.state.concentration, this.state.secConcentration, this.state.degree, this.state.gradYear,
       this.state.address, this.state.city, this.state.locState, this.state.zipcode, this.state.locStart, this.state.locEnd, this.state.currentLocation
       )
+      if(kind == "update"){
+        this.handleHideCareer(i, b);
+      }
+      else if(kind == "save"){
+        this.handleClose1();
+      }
+    }
+}
+if(type === "education"){
+    let isFormValid = true;
+    if(this.state.school === ""){
+        this.setState({schoolError: "Kindly enter the school name"})
+        isFormValid = false
+    }
+    if(isFormValid){
+        this.props.saveCredentials(cookie.load('cookie').id, credId, type, kind, this.state.position, this.state.company, this.state.careerStart, this.state.careerEnd, this.state.currentCompany,
+      this.state.school, this.state.concentration, this.state.secConcentration, this.state.degree, this.state.gradYear,
+      this.state.address, this.state.city, this.state.locState, this.state.zipcode, this.state.locStart, this.state.locEnd, this.state.currentLocation
+      )
+      if(kind == "update"){
+        this.handleHideEducation(i,b)
+      }
+      else if(kind == "save"){
+        this.handleClose2();
+      }
+    }
+}
+
+if(type === "location"){
+    let isFormValid = true;
+    if(this.state.address === ""){
+        this.setState({addressError: "Kindly enter the address"})
+        isFormValid = false
+    }
+    if(this.state.city === ""){
+        this.setState({cityError: "Kindly enter the city"})
+        isFormValid = false
+    }
+    if(this.state.zipcode === ""){
+        this.setState({zipcodeError: "Kindly enter the zipcode"})
+        isFormValid = false
+    }
+    if(!(/(^\d{5}$)|(^\d{5}-\d{4}$)/.test(this.state.zipcode))){
+        this.setState({zipcodeError: "Invalid zipcode"})
+        isFormValid = false
+    }
+    if(isFormValid){
+        this.props.saveCredentials(cookie.load('cookie').id, credId, type, kind, this.state.position, this.state.company, this.state.careerStart, this.state.careerEnd, this.state.currentCompany,
+      this.state.school, this.state.concentration, this.state.secConcentration, this.state.degree, this.state.gradYear,
+      this.state.address, this.state.city, this.state.locState, this.state.zipcode, this.state.locStart, this.state.locEnd, this.state.currentLocation
+      )
+      if(kind == "update"){
+        this.handleHideLocation(i,b)
+        
+      }
+      else if(kind == "save"){
+        this.handleClose3();
+      }
+     
+    }
+}
+  }
+
+  saveNameInternal(firstName, lastName, user_id){
+    if(firstName == ""){
+        this.setState({hideEditorName: true})
+    }
+    else {
+        this.props.saveName(firstName, lastName, user_id);
+        this.setState({hideEditorName: true})
+    }
+    
+  }
+
+  saveAboutMeInternal(user_id, aboutMe){
+     
+    if(aboutMe == ""){
+        this.setState({hideEditor: true})
+    }
+    else {
+        this.props.saveAboutMe(user_id, aboutMe);
+        this.setState({hideEditor: true})
+    }
+    
   }
 
   saveDisplayPic(){
@@ -338,7 +476,7 @@ class Profile extends Component {
                                     <input type="text" hidden={this.state.hideEditorName} value={this.state.lastName} onChange={this.handleChangeLN}></input>
                                     {/* <h3>{this.props.userDetails.firstName} {this.props.userDetails.lastName}</h3> */}
                                     <button hidden={this.state.hideEditorName} onClick={() => this.setState({hideEditorName: true})}>Cancel</button>
-                                    <button hidden={this.state.hideEditorName} onClick={() => {this.props.saveName(this.state.firstName, this.state.lastName, cookie.load('cookie').id); this.setState({hideEditorName: true})}}>Update</button>
+                                    <button hidden={this.state.hideEditorName} onClick={() => {this.saveNameInternal(this.state.firstName, this.state.lastName, cookie.load('cookie').id)}}>Update</button>
                                     <button hidden={!this.state.hideEditorName} onClick={() => this.setState({hideEditorName: false})}>Edit</button>
                                     </div>
                                     <p className="profile-desc" hidden={!this.state.hideEditor}>{this.props.userDetails.aboutMe ? this.props.userDetails.aboutMe : <a onClick={() => this.setState({hideEditor: false})}>Write a description about yourself</a>}</p>
@@ -346,7 +484,7 @@ class Profile extends Component {
                                     <div>
                                         <input type="text" value={this.state.aboutMe} onChange={this.handleChange} hidden={this.state.hideEditor}/>
                                         <button onClick={() => this.setState({hideEditor: true})} hidden={this.state.hideEditor}>Cancel</button>
-                                        <button hidden={this.state.hideEditor} onClick={() => {this.props.saveAboutMe(cookie.load('cookie').id, this.state.aboutMe); this.setState({hideEditor: true})}}>Update</button>
+                                        <button hidden={this.state.hideEditor} onClick={() => {this.saveAboutMeInternal(cookie.load('cookie').id, this.state.aboutMe)}}>Update</button>
                                     </div>
                                     <p>{this.props && this.props.followers ? (this.props.followers).length : 0} followers</p>
                                     
@@ -479,10 +617,15 @@ class Profile extends Component {
                                                     careerStart: this.state.credentials.career[index].startDate, careerEnd: this.state.credentials.career[index].endDate,
                                                     currentCompany: this.state.credentials.career[index].isCurrent}); this.handleHideCareer(index, false)}} hidden={!this.state.hideCareer[index]}>Edit</button>
                                                     <div hidden={this.state.hideCareer[index]}>
+                                                    
                                                         <Form.Group>
-                                                            <Form.Label>Position</Form.Label>
+                                                        
+                                                            <Form.Label>Position</Form.Label><br/>
+                                                            <span className="error">{this.state.positionError}</span>
                                                             <Form.Control as="textarea" rows="1" value={this.state.position} onChange={this.onChangePosition.bind(this)}/>
-                                                            <Form.Label>Company</Form.Label>
+                                                            
+                                                            <Form.Label>Company</Form.Label><br/>
+                                                            <span className="error">{this.state.companyError}</span>
                                                             <Form.Control as="textarea" rows="1" value={this.state.company} onChange={this.onChangeCompany.bind(this)}/>
                                                         </Form.Group>
                                                         <Form.Group controlId="exampleForm.ControlSelect1">
@@ -519,7 +662,7 @@ class Profile extends Component {
                                                             />
                                                         </Form>
                                                         <Button onClick={() => this.handleHideCareer(index, true)}>Cancel</Button>
-                                                        <Button onClick={() => {this.saveCredentialsInternal(career._id, "employment", "update"); this.handleHideCareer(index, true)}}>Save</Button>
+                                                        <Button onClick={() => {this.saveCredentialsInternal(career._id, "employment", "update", index, true); }}>Save</Button>
                                                     </div>
                                                     </div>
                                                )  
@@ -535,7 +678,9 @@ class Profile extends Component {
                                                     degree: this.state.credentials.education[index].degree}); this.handleHideEducation(index, false)}} hidden={!this.state.hideEducation[index]}>Edit</button>
                                                     <div hidden={this.state.hideEducation[index]}>
                                                     <Form.Group controlId="exampleForm.ControlTextarea1">
-                                                        <Form.Label>School</Form.Label>
+                                                        
+                                                        <Form.Label>School</Form.Label><br></br>
+                                                        <span className="error">{this.state.schoolError}</span>
                                                         <Form.Control as="textarea" rows="1" value={this.state.school} onChange={this.onChangeSchool.bind(this)}/>
                                                         <Form.Label>Concentration</Form.Label>
                                                         <Form.Control as="textarea" rows="1" value={this.state.concentration} onChange={this.onChangeConcentration.bind(this)}/>
@@ -558,7 +703,7 @@ class Profile extends Component {
                                                         </Form.Control>
                                                     </Form.Group>
                                                     <Button onClick={() => this.handleHideEducation(index, true)}>Cancel</Button>
-                                                    <Button onClick={() => {this.saveCredentialsInternal(education._id, "education", "update"); this.handleHideEducation(index, true)}}>Save</Button>
+                                                    <Button onClick={() => {this.saveCredentialsInternal(education._id, "education", "update", index, true); }}>Save</Button>
                                                     
                                                     </div>
                                                    </div>
@@ -567,24 +712,42 @@ class Profile extends Component {
                                             }) : ""
                                         }
                                         {
-                                            this.props.userDetails.credentials && this.props.userDetails.credentials.location ? this.props.userDetails.credentials.location.map((location, index) => {
+                                            this.props.userDetails.credentials && this.props.userDetails.credentials.address ? this.props.userDetails.credentials.address.map((location, index) => {
                                                return(
                                                    <div>
-                                                    <li hidden={!this.state.hideAddress[index]}>{location.address}</li>
-                                                    <button onClick={() => {this.setState({address: this.state.credentials.location[index].address, city: this.state.credentials.location[index].city,
-                                                    locState: this.state.credentials.location[index].state, zipcode: this.state.credentials.location[index].zipcode, locStart: this.state.credentials.location[index].startDate,
-                                                    locStart: this.state.credentials.location[index].endDate, currentLocation: this.state.credentials.location[index].isCurrent}); this.handleHideLocation(index, false)}} hidden={!this.state.hideAddress[index]}>Edit</button>
+                                                    <li hidden={!this.state.hideAddress[index]}>{location.street}</li>
+                                                    <button onClick={() => {this.setState({address: this.state.credentials.address[index].street, city: this.state.credentials.address[index].city,
+                                                    locState: this.state.credentials.address[index].state, zipcode: this.state.credentials.address[index].zipcode, locStart: this.state.credentials.address[index].startDate,
+                                                    locStart: this.state.credentials.address[index].endDate, currentLocation: this.state.credentials.address[index].isCurrent}); this.handleHideLocation(index, false)}} hidden={!this.state.hideAddress[index]}>Edit</button>
                                                     <div hidden={this.state.hideAddress[index]}>
+                                                        
                                                         <Form.Group controlId="exampleForm.ControlTextarea1">
-                                                            <Form.Label>Address</Form.Label>
+                                                        
+                                                            <Form.Label>Address</Form.Label><br></br>
+                                                            <span className="error">{this.state.addressError}</span>
                                                             <Form.Control as="textarea" rows="1" value={this.state.address} onChange={this.onChangeAddress.bind(this)}/>
-                                                            <Form.Label>City</Form.Label>
+                                                            <Form.Label>City</Form.Label><br></br>
+                                                            <span className="error">{this.state.cityError}</span>
                                                             <Form.Control as="textarea" rows="1" value={this.state.city} onChange={this.onChangeCity.bind(this)}/>
-                                                            <Form.Label>State</Form.Label>
-                                                            <Form.Control as="textarea" rows="1" value={this.state.locState} onChange={this.onChangeState.bind(this)}/>
-                                                            <Form.Label>ZipCode</Form.Label>
-                                                            <Form.Control as="textarea" rows="1" value={this.state.zipcode} onChange={this.onChangeZipcode.bind(this)}/>
                                                         </Form.Group>
+                                                            <Form.Group controlId="exampleForm.ControlSelect1">
+                                                            <Form.Label>State</Form.Label>
+                                                            <Form.Control as="select" value={this.state.locState} onChange={this.onChangeState.bind(this)}>
+                                                            {
+                                                                this.state.usStates.map((stateUs, index) => {
+                                                                    return(
+                                                                        <option>{stateUs}</option>
+                                                                    )
+                                                                    
+                                                                })
+                                                            }
+                                                            </Form.Control>
+                                                            </Form.Group>
+                                                            
+                                                            <Form.Label>ZipCode</Form.Label><br></br>
+                                                            <span className="error">{this.state.zipcodeError}</span>
+                                                            <Form.Control as="textarea" rows="1" value={this.state.zipcode} onChange={this.onChangeZipcode.bind(this)}/>
+                                                       
                                                         <Form.Group controlId="exampleForm.ControlSelect1">
                                                             <Form.Label>Start Year</Form.Label>
                                                             <Form.Control as="select" value={this.state.locStart} onChange={this.onChangeLocationStart.bind(this)}>
@@ -620,7 +783,7 @@ class Profile extends Component {
                                                         </Form>
                                                        
                                                         <Button onClick={() => this.handleHideLocation(index, true)}>Cancel</Button>
-                                                        <Button onClick={() => {this.saveCredentialsInternal(location._id, "location", "update"); this.handleHideLocation(index, true)}}>Save</Button>
+                                                        <Button onClick={() => {this.saveCredentialsInternal(location._id, "location", "update", index, true); }}>Save</Button>
                                                     </div>
                                                     </div>
                                                )  
@@ -644,11 +807,13 @@ class Profile extends Component {
                                         <Modal.Body>
                                             <h6>Add employment detail</h6>
                                             <Form.Group controlId="exampleForm.ControlTextarea1">
-                                                <Form.Label>Position</Form.Label>
+                                                <Form.Label>Position</Form.Label><br></br>
+                                                <span class="error">{this.state.positionError}</span>
                                                 <Form.Control as="textarea" rows="1" onChange={this.onChangePosition.bind(this)}/>
                                             </Form.Group>
                                             <Form.Group controlId="exampleForm.ControlTextarea1">
-                                                <Form.Label>Company</Form.Label>
+                                                <Form.Label>Company</Form.Label><br></br>
+                                                <span class="error">{this.state.companyError}</span>
                                                 <Form.Control as="textarea" rows="1" onChange={this.onChangeCompany.bind(this)}/>
                                             </Form.Group>
                                             <Form.Group controlId="exampleForm.ControlSelect1">
@@ -688,7 +853,7 @@ class Profile extends Component {
                                             <Button variant="secondary" onClick={this.handleClose1}>
                                             Close
                                             </Button>
-                                            <Button variant="primary" onClick={() => this.saveCredentialsInternal("", "employment", "save")}>
+                                            <Button variant="primary" onClick={() => this.saveCredentialsInternal("", "employment", "save", "", "")}>
                                             Save Changes
                                             </Button>
                                         </Modal.Footer>
@@ -705,7 +870,8 @@ class Profile extends Component {
                                         <Modal.Body>
                                             <h6>Add education detail</h6>
                                             <Form.Group controlId="exampleForm.ControlTextarea1">
-                                                <Form.Label>School</Form.Label>
+                                                <Form.Label>School</Form.Label><br></br>
+                                                <span className="error">{this.state.schoolError}</span>
                                                 <Form.Control as="textarea" rows="1" onChange={this.onChangeSchool.bind(this)}/>
                                                 <Form.Label>Concentration</Form.Label>
                                                 <Form.Control as="textarea" rows="1" onChange={this.onChangeConcentration.bind(this)}/>
@@ -732,13 +898,13 @@ class Profile extends Component {
                                             <Button variant="secondary" onClick={this.handleClose2}>
                                             Close
                                             </Button>
-                                            <Button variant="primary" onClick={() => this.saveCredentialsInternal("","education", "save")}>
+                                            <Button variant="primary" onClick={() => this.saveCredentialsInternal("","education", "save", "", "")}>
                                             Save Changes
                                             </Button>
                                         </Modal.Footer>
                                     </Modal>
                                     {
-                                    this.props.userDetails.credentials && this.props.userDetails.credentials.location && this.props.userDetails.credentials.location[(this.props.userDetails.credentials.location.length)-1]? <p> Lived at {this.props.userDetails.credentials.location[(this.props.userDetails.credentials.location.length)-1].address} </p>: 
+                                    this.props.userDetails.credentials && this.props.userDetails.credentials.address && this.props.userDetails.credentials.address[(this.props.userDetails.credentials.address.length)-1]? <p> Lived at {this.props.userDetails.credentials.address[(this.props.userDetails.credentials.address.length)-1].street} </p>: 
                                 
                                 <li onClick={this.handleShow3}><a>Add a location credential</a></li>
                                     }
@@ -749,15 +915,31 @@ class Profile extends Component {
                                         <Modal.Body>
                                             <h6>Add location detail</h6>
                                             <Form.Group controlId="exampleForm.ControlTextarea1">
-                                                <Form.Label>Address</Form.Label>
+                                               
+                                                <Form.Label>Address</Form.Label><br></br>
+                                                 <span class="error">{this.state.addressError}</span>
                                                 <Form.Control as="textarea" rows="1" onChange={this.onChangeAddress.bind(this)}/>
-                                                <Form.Label>City</Form.Label>
+                                                <Form.Label>City</Form.Label><br></br>
+                                                <span class="error">{this.state.cityError}</span>
                                                 <Form.Control as="textarea" rows="1" onChange={this.onChangeCity.bind(this)}/>
-                                                <Form.Label>State</Form.Label>
-                                                <Form.Control as="textarea" rows="1" onChange={this.onChangeState.bind(this)}/>
-                                                <Form.Label>ZipCode</Form.Label>
+                                                </Form.Group>
+                                                <Form.Group controlId="exampleForm.ControlSelect1">
+                                                    <Form.Label>State</Form.Label>
+                                                    <Form.Control as="select" value={this.state.locState} onChange={this.onChangeState.bind(this)}>
+                                                    {
+                                                        this.state.usStates.map((stateUs, index) => {
+                                                            return(
+                                                                <option>{stateUs}</option>
+                                                            )
+                                                            
+                                                        })
+                                                    }
+                                                    </Form.Control>
+                                                </Form.Group>
+                                                <Form.Label>ZipCode</Form.Label><br></br>
+                                                <span class="error">{this.state.zipcodeError}</span>
                                                 <Form.Control as="textarea" rows="1" onChange={this.onChangeZipcode.bind(this)}/>
-                                            </Form.Group>
+                                            
                                             <Form.Group controlId="exampleForm.ControlSelect1">
                                                 <Form.Label>Start Year</Form.Label>
                                                 <Form.Control as="select" onChange={this.onChangeLocationStart.bind(this)}>
@@ -795,12 +977,12 @@ class Profile extends Component {
                                             <Button variant="secondary" onClick={this.handleClose3}>
                                             Close
                                             </Button>
-                                            <Button variant="primary" onClick={() => this.saveCredentialsInternal("", "location", "save")}>
+                                            <Button variant="primary" onClick={() => this.saveCredentialsInternal("", "location", "save", "", "")}>
                                             Save Changes
                                             </Button>
                                         </Modal.Footer>
                                     </Modal>
-                                <li>Knows Hindi</li>
+                                
                             </ul>
                         </Row>
                         <Row id="languages">

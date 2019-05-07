@@ -21,8 +21,7 @@ export class Feed extends Component {
 		this.state = {
 			bodyText: '',
 			plainText: '',
-			showComments: false,
-			showComments1: [],
+			showComments: [],
 			showAnswers: []
 		};
 		this.update=this.update.bind(this);
@@ -31,11 +30,11 @@ export class Feed extends Component {
 	componentDidMount() {
 		this.update();
 		var arr = [];
-		for(var i=0; i<this.props.question.feed.length; i++){
+		for(var i=0; i < this.props.question.feed.length; i++){
 			arr.push(true);
 		}
 		this.setState({
-			showComments1: arr,
+			showComments: arr,
 			showAnswers: arr
 		})
 	}
@@ -90,10 +89,10 @@ export class Feed extends Component {
 
 	handleAnswerComments = (i, answer) => {
 		console.log(`In handleComments: answerId - ${answer._id}`);
-		let {showComments1}=this.state;
-		showComments1[i]=!showComments1[i];
+		let {showComments}=this.state;
+		showComments[i]=!showComments[i];
 		this.setState({
-			showComments1
+			showComments
 		})
 	}
 
@@ -211,15 +210,13 @@ export class Feed extends Component {
 									itemLayout="vertical"
 									dataSource={question.answers}
 									renderItem={answer => (
-										<div>
+										<div className="answer-parent">
 											<List.Item 
 												key={answer._id}
 												actions={[
 													<Tooltip title="Upvotes" onClick={()=>{this.handleAnswerUpvote(answer._id)}}><Icon type="like" style={{ marginRight: 8 }} />{answer.upvotes.length}</Tooltip>,
 													<Tooltip title="Downvotes" onClick={()=>{this.handleAnswerDownvote(answer._id)}}><Icon type="dislike" style={{ marginRight: 8 }} />{answer.downvotes.length}</Tooltip>,
-
 													<Tooltip title="Comments" onClick={()=>{this.handleAnswerComments(index, answer)}}><Icon type="message" style={{ marginRight: 8 }} />{answer.comments.length}</Tooltip>, 
-
 													<Tooltip title="Bookmarks" onClick={()=>{this.handleAnswerBookmarks(answer._id)}}><Icon type="book" style={{ marginRight: 8 }} />{answer.bookmarks.length}</Tooltip>
 												]}
 											>
@@ -229,7 +226,7 @@ export class Feed extends Component {
 												/>
 												<p dangerouslySetInnerHTML={{__html: answer.answerText}}></p>
 											</List.Item>
-											<Comments updateFunc={this.update} answerId={answer._id} showComments={state.showComments1[index]} commentsList={answer.comments}/>
+											<Comments updateFunc={this.update} answerId={answer._id} showComments={state.showComments[index]} commentsList={answer.comments}/>
 										</div>
 									)}
 								/>
@@ -244,6 +241,7 @@ export class Feed extends Component {
 									<Button className="btn-quora" type="primary" onClick={()=>{this.postAnswer(question._id)}} htmlType="submit">Submit</Button>
 								</div>
 							}
+							<br/>
 						</div>
 					)}
 				/>
