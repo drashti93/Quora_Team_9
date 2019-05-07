@@ -8,39 +8,30 @@ var kafka = require("../kafka/client");
 var client = require("../resources/redis");
 
 answer.get("/:question_id/answers", urlencodedParser, function(req, res) {
-	// client.get("answersKey", function(err, results) {
-	// 	if (results) {
-	// 		res.json({ answers: results });
-
-	// 		res.end();
-	// 	} else {
-			var question_id = req.params.question_id;
-			console.log(
-				"Inside get all answers request. Question id: " + question_id
-			);
-			kafka.make_request("get_answers", question_id, function(
-				err,
-				results
-			) {
-				console.log("In get all answers - kafka make request");
-				if (err) {
-					console.log("Inside err");
-					res.json({
-						status: "error",
-						msg: "System Error, Try Again."
-					});
-				} else {
-					//console.log("Inside else");
-					// client.set("answersKey", results);
-					res.status(200).json({ answers: results });
-
-					res.end();
-				}
+	var question_id = req.params.question_id;
+	console.log(
+		"Inside get all answers request. Question id: " + question_id
+	);
+	kafka.make_request("get_answers", question_id, function(
+		err,
+		results
+	) {
+		console.log("In get all answers - kafka make request");
+		if (err) {
+			console.log("Inside err");
+			res.json({
+				status: "error",
+				msg: "System Error, Try Again."
 			});
-		// }
+		} else {
+			//console.log("Inside else");
+			// client.set("answersKey", results);
+			res.status(200).json({ answers: results });
+			res.end();
+		}
 	});
-// }
-// );
+});
+
 
 //to add an answer
 answer.post("/", async (req, res) => {
@@ -183,28 +174,38 @@ answer.post("/:answerId/downvote", async (req, res) => {
 });
 
 answer.post("/bookmark", async (req, res) => {
+
+	console.log(`\n\nInside POST /answers/bookmark`);
+
 	try {
-		let { userId, questionId, answerId } = req.body;
-		let result = await AnswerModel.update(
-			{ _id: answerId },
-			{
-				$push: { bookmarks: userId }
-			}
+		let { userId, answerId } = req.body;
+		let checkUserInAnswerBookmarks = await AnswerModel.findOne(
+			{ _id: answerId, bookmarks: userId }
 		);
-		console.log(req.body)
-		res.status(200).json({});
+
+		// console.log(`\n\n checkUserInAnswerBookmarks- ${checkUserInAnswerBookmarks}`);
+		
+		if(checkUserInAnswerBookmarks) {
+			
+			let answer = await AnswerModel.findOneAndUpdate(
+				{ _id: answerId },
+				{ $pull : { bookmarks: userId } },
+				{ new: true }
+			);
+
+			res.status(200).json({answer});
+		} else {
+			let answer = await AnswerModel.findOneAndUpdate(
+				{ _id: answerId },
+				{ $push : { bookmarks: userId } },
+				{ new: true }
+			);
+
+			res.status(200).json({answer});
+		}
 	} catch (error) {
-		res.send(error);
+		res.status(500).json({"error": error});
 	}
 });
 
-// answer.get("/:userId/answers", async(req, res) => {
-//     try {
-//         let {userId} = req.body;
-//         let result1 = await AnswerModel.find({userId: userId});
-//         let result2 = await QuestionModel.find({})
-//     } catch(error) {
-//         res.send(error);
-//     }
-// })
 module.exports = answer;
