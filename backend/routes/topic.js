@@ -81,7 +81,12 @@ topic.get("/:topicId/questions/following", async (req, res) => {
 
 	try {
 		let result = await QuestionModel.find({ topicsArray: topicId })
-			.populate("answers")
+			.populate({
+				path: "answers",
+				populate: {
+					path: "upvotes downvotes bookmarks userId"
+				}
+			})
 			.exec();
 
 		if (result) {

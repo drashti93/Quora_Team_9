@@ -6,8 +6,9 @@ import { Route } from 'react-router-dom';
 import Navigationbar from './navbar/Navigationbar';
 import Feed from './feed/Feed';
 import Bookmarks from './bookmarks/Bookmarks';
-// import Questions, {QuestionDetail }  from './questions/QuestionDetail';
-import TopicBar from './topics/topic'
+import TopicBar from './topics/topic';
+import TopicsFeed from './topics/TopicsFeed';
+import QuestionDetails from './questions/QuestionDetails';
 
 
 // Main Component
@@ -27,8 +28,9 @@ class Main extends Component{
                     <div className="col-lg-2 col-md-2 col-xs-12 left-stick"><TopicBar/></div>
                     <div className="col-lg-8 col-md-8 col-xs-12">
                         <Route exact path="/" component={Feed} />
-                        <Route exact path="/bookmarks" component={Bookmarks} />
-                        {/* <Route exact path="/:question._id/answers" component={QuestionDetail}/> */}
+                        <Route path="/bookmarks" component={Bookmarks} />
+                        <Route path="/topics/:topicId" component={TopicsFeed} />
+                        <Route exact path="/questions/:questionId" component={QuestionDetails} />
                         {/* <Route path="/questions" component={Questions} /> */}
                     </div>
                     <div className="col-lg-2 col-md-2 col-xs-12 right-stick">Right side bar</div>

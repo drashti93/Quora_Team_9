@@ -15,7 +15,7 @@ class TopicBar extends Component {
 		this.state = {
 			data: []
 		};
-		this.handleClick = this.handleClick.bind(this);
+		// this.handleClick = this.handleClick.bind(this);
 	}
 
 	componentDidMount() {
@@ -35,9 +35,17 @@ class TopicBar extends Component {
 			});
 	}
 
-	handleClick = data => {
-		console.log("@@@@@@@", data);
-	};
+	// handleClick = (data) => {
+	// 	console.log("@@@@@@@", data);
+	// 	// window.location.reload();
+	// 	// this.props.history.push({
+	// 	// 	pathname: "/topics/:topicId",
+	// 	// 	state :{
+	// 	// 		Topic_id : data
+	// 	// 	}
+	// 	// })
+	// };
+
 
 	render() {
 		let redirectVar = null;
@@ -48,6 +56,7 @@ class TopicBar extends Component {
 		}
 		return (
 			<div>
+				{/* {redirectVar} */}
 				<List
 					size="small"
 					header={<div>{<Icon type="copy" />} Feed</div>}
@@ -60,9 +69,9 @@ class TopicBar extends Component {
 					dataSource={this.state.data}
 					renderItem={item => (
 						<List.Item>
-							<a href="/">
+							<Link to={`/topics/${item._id}`}>
 								{<Icon type="read" />} {item.name}
-							</a>
+							</Link>
 						</List.Item>
 					)}
 				/>
