@@ -24,9 +24,10 @@ class TopicBar extends Component {
 	componentDidMount() {
 		let data = cookie.load("cookie");
 		if(data){
-		let u_id = data.id;
-		console.log(u_id);
-		this.props.getTopicsFollowedByUser(u_id);
+			let u_id = data.id;
+			console.log(u_id);
+			this.props.getTopicsFollowedByUser(u_id);
+		}
 	}
 
 	// handleClick = (data) => {
@@ -42,15 +43,9 @@ class TopicBar extends Component {
 
 
 	render() {
-		let redirectVar = null;
-		if (cookie.load("cookie")) {
-			redirectVar = <Redirect to="/" />;
-		} else {
-			redirectVar = <Redirect to="/login" />;
-		}
+		
 		return (
 			<div>
-				{/* {redirectVar} */}
 				<List
 					size="small"
 					header={
