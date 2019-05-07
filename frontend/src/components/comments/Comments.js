@@ -133,8 +133,8 @@ export class Comments extends Component {
 				<Comment
 					avatar={
 						<Avatar
-							src={this.props.navbar.profile.data.profileImage? this.props.navbar.profile.data.profileImage.url : "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"}
-							alt={ <div>{this.props.navbar.profile.data.firstName} {this.props.navbar.profile.data.firstName}</div> }
+							src={this.props.navbar.profile && this.props.navbar.profile.data.profileImage? this.props.navbar.profile.data.profileImage.url : "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"}
+							alt={ <div>{this.props.navbar.profile?this.props.navbar.profile.data.firstName:""} {this.props.navbar.profile?this.props.navbar.profile.data.firstName:""}</div> }
 						/>
 					}
 					content={
