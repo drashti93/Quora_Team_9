@@ -103,6 +103,9 @@ export class Comments extends Component {
 				// 	type: FEED,
 				// 	payload: response.data
 				// });
+				if(this.props.updateFunc){
+				this.props.updateFunc();
+				}
 			}
 		}).catch(error =>{
 			console.log(`comments answer failed: questionActions->postCommentAnswersForFeed() - ${error}`)

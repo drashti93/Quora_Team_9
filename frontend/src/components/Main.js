@@ -26,14 +26,14 @@ class Main extends Component{
             <div className="container mt70">
                 <div className="row">
                     <div className="col-lg-2 col-md-2 col-xs-12 left-stick"><TopicBar/></div>
-                    <div className="col-lg-8 col-md-8 col-xs-12">
+                    <div className="col-lg-8 col-md-8 col-xs-12 main-div">
                         <Route exact path="/" component={Feed} />
                         <Route path="/bookmarks" component={Bookmarks} />
                         <Route path="/topics/:topicId" component={TopicsFeed} />
                         <Route exact path="/questions/:questionId" component={QuestionDetails} />
                         {/* <Route path="/questions" component={Questions} /> */}
                     </div>
-                    <div className="col-lg-2 col-md-2 col-xs-12 right-stick">Right side bar</div>
+                    {/* <div className="col-lg-2 col-md-2 col-xs-12 right-stick">Right side bar</div> */}
                 </div>
             </div>
             </div>

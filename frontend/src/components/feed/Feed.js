@@ -13,10 +13,8 @@ import Comments from "../comments/Comments";
 export class Feed extends Component {
 
 
-	update=()=>{
-
-		this.props.getQuestionsAnswersForFeed();
-		
+	update(){
+		this.props.getQuestionsAnswersForFeed();		
 	}
 	constructor(props) {
 		super(props);
@@ -26,6 +24,7 @@ export class Feed extends Component {
 			showComments: false,
 			showComments1: []
 		};
+		this.update=this.update.bind(this);
 	}
 
 
@@ -249,9 +248,10 @@ export class Feed extends Component {
 					dataSource={this.props.question.feed}
 					renderItem={(question, index) => (
 						
-						<div>
+						<div className="feed-container">
 						show comments: {this.state.showComments}
 							<List.Item 
+							
 								key={question._id}
 								actions={[
 									<Tooltip title="Answers" onClick={()=>{this.handleQuestionAnswer(question._id)}}><Icon type="form" style={{ marginRight: 8 }} />{question.answers.length}</Tooltip>,
@@ -259,6 +259,7 @@ export class Feed extends Component {
 								]}
 							>
 								<List.Item.Meta
+								className="card-heading"
 								    key={question._id}
 									title = {<Link to = {`/questions/${question._id}`} target="_blank">{question.questionText}</Link>}
 								/>
@@ -288,10 +289,7 @@ export class Feed extends Component {
 
 												
 											</List.Item>
-
-											<Comments answerId={answer._id} showComments={state.showComments1[index]} commentsList={answer.comments}/>
-											
-
+											<Comments updateFunc={this.update} answerId={answer._id} showComments={state.showComments1[index]} commentsList={answer.comments}/>
 										</div>
 									)}
 								/>
@@ -301,9 +299,7 @@ export class Feed extends Component {
 									modules={{toolbar:toolbarOptions}}
 									onChange={this.handleChange} 
 								/>
-
-								<Button type="primary" onClick={()=>{this.postAnswer(question._id)}} htmlType="submit">Submit</Button>
-
+								<Button className="btn-quora" type="primary" onClick={()=>{this.postAnswer(question._id)}} htmlType="submit">Submit</Button>
 							</div>
 
 							<br/>

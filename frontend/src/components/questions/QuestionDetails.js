@@ -213,7 +213,7 @@ export class QuestionDetails extends Component {
 						}}
 						dataSource={this.props.question.questionsFeed}
 						renderItem={question => (
-							<div>
+							<div className="feed-container">
 								<List.Item 
 									key={question._id}
 									actions={[
@@ -221,7 +221,8 @@ export class QuestionDetails extends Component {
 										<Tooltip title="Followers" onClick={()=>{this.handleQuestionFollow(question._id)}}><Icon type="wifi" style={{ marginRight: 8 }} />{question.followers.length}</Tooltip>
 									]}
 								>
-									<List.Item.Meta
+									<List.Item.Meta	
+									className="card-heading"
 										key={question._id}
 										title = {<Link to = {`/questions/${question._id}`} target="_blank">{question.questionText}</Link>}
 									/>
@@ -229,7 +230,7 @@ export class QuestionDetails extends Component {
 										itemLayout="vertical"
 										dataSource={question.answers}
 										renderItem={answer => (
-											<div>
+											<div class="answer-parent">
 												<List.Item 
 													key={answer._id}
 													actions={[
@@ -259,9 +260,7 @@ export class QuestionDetails extends Component {
 										modules={{toolbar:toolbarOptions}}
 										onChange={this.handleChange} 
 									/>
-
-								<Button type="primary" onClick={()=>{this.postAnswer(question._id)}} htmlType="submit">Submit</Button>
-
+								<Button className="btn-quora" type="primary" onClick={()=>{this.postAnswer(question._id)}} htmlType="submit">Submit</Button>
 								</div>
 
 								<br/>
