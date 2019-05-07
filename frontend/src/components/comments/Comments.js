@@ -115,11 +115,12 @@ export class Comments extends Component {
 	};
 
 	render() {
+		console.log("=====here=====s")
 		const { comments, submitting, value } = this.state;
 
 		return (
 			<div>
-				{this.props.showComments === true && (
+				{this.props.showComments === false && (
 					<CommentList comments={this.props.commentsList} />
 				)}
 				<Comment
