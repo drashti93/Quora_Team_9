@@ -196,3 +196,7 @@ button.btn-quora-custom {
 #profile_main .user_profile_button{
     opacity: 1;
 }
+
+.error{
+    color: red;
+}

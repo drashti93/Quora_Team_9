@@ -21,8 +21,10 @@ export class Bookmarks extends Component {
 		this.state = {
 			bodyText: '',
 			plainText: '',
+
 			showComments: [],
 			showAnswers: []
+
 		};
 		this.update=this.update.bind(this);
 	}
@@ -227,7 +229,9 @@ export class Bookmarks extends Component {
 												/>
 												<p dangerouslySetInnerHTML={{__html: answer.answerText}}></p>
 											</List.Item>
+
 											<Comments updateFunc={this.update} answerId={answer._id} showComments={this.state.showComments[index]} commentsList={answer.comments}/>
+
 										</div>
 									)}
 								/>
