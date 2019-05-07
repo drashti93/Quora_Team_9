@@ -109,6 +109,7 @@ const UserSchema = new Schema({
 			}
 		]
 	},
+	Profile_views:[{type:Number}],
 	isFollowAllowed: {
 		type: Boolean,
 		default: true

@@ -49,16 +49,16 @@ function handleTopicRequest(topic_name, fname) {
 //second argument is a function that will handle this topic request
 
 // handleTopicRequest("get_answers",Answers)
-// handleTopicRequest("top_10_answers",top10Answers)
-// handleTopicRequest("top_10_answers_upvote",top10AnswersUpvotes)
-// handleTopicRequest("top_5_answers_downvotes",top5AnswersDownvotes)
+handleTopicRequest("top_10_answers",top10Answers)
+handleTopicRequest("top_10_answers_upvote",top10AnswersUpvotes)
+handleTopicRequest("top_5_answers_downvotes",top5AnswersDownvotes)
 // handleTopicRequest("bookmarked_answers",bookmarkedAnswers)
-// handleTopicRequest("profile_views",profileViews)
+handleTopicRequest("profile_views",profileViews)
 // handleTopicRequest("user_activity",userActivity)
 //handleTopicRequest("signin", signinRequests.signin);
 handleTopicRequest("signup", signinRequests.signup);
 // handleTopicRequest("get_answers", answerRequests.getanswers);
-// handleTopicRequest("post_answer", answerRequests.postanswers);
+handleTopicRequest("post_answer", answerRequests.postanswers);
 handleTopicRequest("post_question", questionRequests.postquestion);
 // handleTopicRequest("edit_question", questionRequests.editquestion);
 // handleTopicRequest("delete_question", questionRequests.deletequestion);

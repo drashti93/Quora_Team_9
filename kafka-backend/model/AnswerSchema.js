@@ -60,6 +60,7 @@ const AnswerSchema = new Schema({
 			]
 		}
 	],
+	views:Number,
 	credentials: {
 		topic: {
 			topicId: Schema.Types.ObjectId,

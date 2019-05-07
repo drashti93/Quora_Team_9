@@ -1,4 +1,4 @@
-var AnswersModel = require('../../../backend/model/AnswerSchema');
+var AnswersModel = require('../../model/AnswerSchema');
 
 
 function  handle_request(msg, callback){
