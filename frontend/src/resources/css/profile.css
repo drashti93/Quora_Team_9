@@ -192,3 +192,7 @@ button.btn-quora-custom {
 #profile_main button:hover{
     opacity: 1;
 }
+
+#profile_main .user_profile_button{
+    opacity: 1;
+}

@@ -191,12 +191,12 @@ class UserProfile extends Component {
   render() {
     
     let followVar = null;
-    if(this.props.followers.indexOf(cookie.load('cookie').id) >= 0){
-        console.log("")
-        followVar = <button onClick={() => {this.props.unfollow(cookie.load('cookie'), this.props.match.params.user_id)}}>Unfollow</button>
+    if(this.props.followers_id.indexOf(cookie.load('cookie').id) >=0){
+        console.log("followed")
+        followVar = <button className="user_profile_button" onClick={() => {this.props.unfollow(cookie.load('cookie'), this.props.match.params.user_id); window.location.reload()}}>Unfollow</button>
     }
     else {
-        followVar = <button onClick={() => {this.props.follow(cookie.load('cookie'), this.props.match.params.user_id)}}>Follow</button>
+        followVar = <button className="user_profile_button" onClick={() => {this.props.follow(cookie.load('cookie'), this.props.match.params.user_id); window.location.reload()}}>Follow</button>
     
     }
     
@@ -375,6 +375,7 @@ function mapStatetoProps(state) {
         lastName: state.profile.userDetails.lastName,
         followers: state.profile.followers,
         following: state.profile.following,
+        followers_id: state.profile.followers_id,
     }
 }
 
