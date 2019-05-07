@@ -6,6 +6,7 @@ import { Navbar, Nav, NavDropdown, Form, FormControl, Button, Modal } from 'reac
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getprofile, getAllUsers, getalltopics, getallquestions } from '../../actions/navbarActions';
+import {logoutuser} from '../../actions/loginActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import _ from "lodash";
@@ -194,6 +195,8 @@ componentWillReceiveProps(nextProps){
                 <NavDropdown.Item><Link to="/profile">Profile</Link></NavDropdown.Item>
                 <NavDropdown.Item><Link to="/settings">Settings</Link></NavDropdown.Item>
                 <NavDropdown.Item><Link to="/content">Your Content</Link></NavDropdown.Item>
+                <NavDropdown.Item><Link to="/dashboard">Dashboard</Link></NavDropdown.Item>
+                <NavDropdown.Item onClick={this.props.onlogoutuser}>Logout</NavDropdown.Item>
               </NavDropdown>
               <Button className="question-button" onClick={this.handleShowquestion}>Add Question</Button>
 
@@ -220,7 +223,8 @@ const mapActionToProps = (dispatch, props) => {
     ongetprofile: getprofile,
     ongetallusers: getAllUsers,
     ongetalltopics: getalltopics,
-    ongetallquestions: getallquestions
+    ongetallquestions: getallquestions,
+    onlogoutuser:logoutuser
   }, dispatch);
 }
 

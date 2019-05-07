@@ -24,7 +24,7 @@
 
 #profile_main{
     padding: 10px;
-    border-bottom: 2px solid #e2e2e2
+    /* border-bottom: 2px solid #e2e2e2 */
     
 }
 
@@ -76,4 +76,119 @@
     width: 100%;
     margin-bottom: 8px;
     margin-top: 10px;
+}
+#credentials_title button{
+    margin-left:10px;
+    position: relative;
+    bottom: 7px;
+    font-size: 14px;
+    border-radius: 3px;
+    padding: 3px 7px 4px 7px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid #b92b27;
+    background: #b92b27;
+    color: #ffffff;
+}
+#credentials_title h6{
+   float: left;
+}
+#credentials ul p{
+    font-weight: 400;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+#credentials ul li:hover{
+/* background-color: #ddd; */
+/* color: #fff; */
+text-decoration: underline;
+cursor: pointer;
+}
+#credentials ul li,.modal-body ul li{
+    color: #1890ff;
+    cursor: pointer;
+}
+.modal-body ul li:hover{
+    background-color: #ddd;
+    color: #fff;
+}
+.modal-body ul li{
+   padding: 10px;
+   border-bottom:1px solid #ddd;
+}
+#credentials ul,.modal-body ul {
+    list-style-type: none;
+    padding: 10px 0px;
+}
+#credentials {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    /* margin-bottom: 20px; */
+    padding: 15px 10px 5px 10px;
+    height: 220px;
+}
+#profile_main{
+    height: 220px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    margin-bottom: 20px;
+    width: 100%;
+}
+#credentials_languages{
+    padding-top: 0px;
+}
+#profile_main button,.btn-quora-custom{
+    margin-left:10px;
+    position: relative;
+    bottom: 7px;
+    font-size: 14px;
+    border-radius: 3px;
+    padding: 3px 7px 4px 7px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid #b92b27;
+    background: #b92b27;
+    color: #ffffff;
+}
+.profile-div span{
+    font-weight: 700;
+    font-size: 20px;
+}
+.profile-div {
+    margin-top: 32px;
+    text-transform: capitalize;
+}
+.profile-desc{
+  display: inline;
+}
+#profile_details {
+    width: 100%;
+    margin-top: 20px;
+}
+.profile-div input[type="text"] {
+    width: 28%;
+    margin-right: 20px;
+    padding: 0px 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    border-radius: 3px;
+    position: relative;
+    bottom: 6px;
+}
+button.btn-quora-custom {
+    margin-top: 20px;
+}
+
+#profile_main button{
+    opacity: 0;
+}
+#profile_main button:hover{
+    opacity: 1;
 }

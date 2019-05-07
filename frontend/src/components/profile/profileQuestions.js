@@ -42,7 +42,7 @@ export class ProfileQuestions extends Component {
 		}
 
 		return (
-			<div>
+			<div className="main-div">
 				{redirectVar}
 				<List
 					itemLayout="vertical"
@@ -57,7 +57,7 @@ export class ProfileQuestions extends Component {
                     
 					dataSource={this.props.questions.results}
 					renderItem={question => (
-						<div>
+						<div className="feed-container">
 							<List.Item 
 								key={question._id}
 								actions={[
