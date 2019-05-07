@@ -12,7 +12,7 @@ import axios from 'axios';
 
 import TopicBar from '../topics/topic'
 // import user_img from "../../resources/images/user.png"
-// import "../../resources/css/settings.css"
+import "../../resources/css/settings.css"
 import Feed from '../feed/Feed'
 import * as actions from '../../actions/profileActions';
 
@@ -23,8 +23,8 @@ export class Settings extends Component{
         this.state = {
             checkFollowState: true,
             checkActivationState: true,
-            settings_options: ["Account", "Privacy", "Email & Notifications"],
-            selectedTab: "Account",
+            settings_options: ["Account Settings", "Privacy", "Email & Notifications"],
+            selectedTab: "Account Settings",
         }
         this.onFollowToggle = this.onFollowToggle.bind(this);
         this.onActivationToggle = this.onActivationToggle.bind(this);
@@ -97,15 +97,15 @@ export class Settings extends Component{
                     <div className="col-lg-2 col-md-2 col-xs-12 left-stick">
                         <Row>
                             {/* <Col id="list_of_actions" xs={3}> */}
-                                <div id="feeds_title">
+                                <div id="settings_title">
                                     <h6>Settings</h6>
                                 </div>
-                                <div id="feeds_options">
+                                <div id="settings_options">
                                     {
                                         this.state.settings_options.map((option,index) => {
                                             return <div  onClick={() => {
                                                 this.setState({selectedTab : option})
-                                            }} className="single-feeds-option" key={index}>
+                                            }} className="single-settings-option" key={index}>
                                                 <span>{option}</span>
                                             </div>
                                         })
@@ -122,20 +122,55 @@ export class Settings extends Component{
                     </div>
                         <div className="col-lg-8 col-md-8 col-xs-12">
                             <div>
-                                {/* <Row> */}
-                                <h6>Account Settings</h6>
-                                {/* </Row> */}
-                                <hr />
-                                <span>
-                                    {/* <Row> */}
-                                        <p>Enable Follow</p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <Switch defaultChecked onChange={this.onFollowToggle} />
-                                    {/* </Row>
-                                    <Row> */}
-                                        <p>Activate/Deactivate Account</p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <Switch defaultChecked onChange={this.onActivationToggle} />
-                                    {/* </Row> */}
-                                </span>
+                                <Row id="settings_inner_title">
+                                <h6>
+                                    {
+                                    this.state.selectedTab === "Account Settings" ?
+                                        <div>
+                                            <div className="">
+                                                <h6>{ this.state.selectedTab }</h6>
+                                            </div>
+                                        </div>
+                                        :
+                                        <span></span>
+                                    }
+                                    {
+                                    this.state.selectedTab === "Privacy" ?
+                                        <div>
+                                            <div className="">
+                                                <h6>{ this.state.selectedTab }</h6>
+                                            </div>
+                                        </div>
+                                        :
+                                        <span></span>
+                                    }
+                                    {
+                                    this.state.selectedTab === "Email & Notifications" ?
+                                        <div>
+                                            <div className="">
+                                                <h6>{ this.state.selectedTab }</h6>
+                                            </div>
+                                        </div>
+                                        :
+                                        <span></span>
+                                    }
+                                </h6>
+                                </Row>
+                                {
+                                    this.state.selectedTab === "Account Settings" ?
+                                    <span>
+                                        <Row>
+                                            <p>Enable Follow</p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <Switch defaultChecked onChange={this.onFollowToggle} />
+                                        </Row>
+                                        <Row>
+                                            <p>Activate/Deactivate Account</p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <Switch defaultChecked onChange={this.onActivationToggle} />
+                                        </Row>
+                                    </span>
+                                    :
+                                    <span></span>
+                                }
                             </div>
                         </div>
                     <div className="col-lg-2 col-md-2 col-xs-12 right-stick">Right side bar</div>

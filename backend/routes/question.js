@@ -9,6 +9,7 @@ var client = require("../resources/redis");
 
 //Follow a Question
 question.post("/follow", async (req, res) => {
+	console.log(req.body)
 	try {
 		let { userId, questionId } = req.body;
 		let result = await QuestionModel.update(
@@ -127,35 +128,24 @@ question.get("/:questionId/details", async (request, response) => {
 	console.log(`\n\nInside Get /questions/:questionId`);
 
 	try {
-
 		let questions = await QuestionModel
-			.findOne({_id: request.params.questionId})
+			.find({_id: request.params.questionId})
 			.populate({
 				path: "answers",
 				populate: {
-					path: "upvotes downvotes bookmarks comments"
+					path: "upvotes downvotes bookmarks"
 				}
 			});
-		
-		
-		
 		if(questions) {
-			
 			console.log(`Fetched question details successfully - ${questions}`);
 			response.status(200).json(questions);
-
 		} else {
-
 			console.log(`Fetching Question details for question ${request.params.questionId} unsuccessful`);
 			response.status(404).json({messgage: `Fetching Question details for question ${request.params.questionId} unsuccessful`});
-
 		}
-
 	} catch (error) {
-
 		console.log(`Error while fetching Question details for question ${request.params.questionId}:\n ${error}`);
 		response.status(500).json({ error: error, message: `Error while fetching Question details for question ${request.params.questionId}` });
-
 	}
 });
 
