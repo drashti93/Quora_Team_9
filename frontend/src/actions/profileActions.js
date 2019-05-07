@@ -190,7 +190,7 @@ export function follow(user_id, following){
             if(response.status===200){
                 console.log(response);
                 dispatch({type: "FOLLOW_SUCCESS", payload: true})
-                dispatch(getUserDetails(user_id));
+                dispatch(getUserDetails(following));
             }
         })
         .catch(function(error){
@@ -209,7 +209,7 @@ export function unfollow(user_id, following){
             if(response.status===200){
                 console.log(response);
                 dispatch({type: "UNFOLLOW_SUCCESS", payload: true});
-                dispatch(getUserDetails(user_id));
+                dispatch(getUserDetails(following));
             }
         })
         .catch(function(error){

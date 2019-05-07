@@ -977,6 +977,7 @@ router.get("/followers/:user_id", function(req, res){
 	console.log(user_id);
 	UserSchema.find({_id: user_id}, async function(err, results){
 		var user_followers = [];
+		var user_followers_id = [];
 		if(err){
 			res.status(400);
 		} else {
@@ -984,7 +985,8 @@ router.get("/followers/:user_id", function(req, res){
 			console.log(results[0].followers.length);
 			console.log("**********")
 			for(let i=0; i<results[0].followers.length; i++){
-				var user = results[0].followers[i]
+				var user = results[0].followers[i];
+				user_followers_id.push(user);
 				console.log("**********")
 				console.log(user);
 			  console.log("**********")
@@ -994,7 +996,7 @@ router.get("/followers/:user_id", function(req, res){
 					user_followers.push(name);
 			}
 			console.log(user_followers);
-			res.status(200).json({user_followers});
+			res.status(200).json({user_followers, user_followers_id});
 		}
 	})
 })
