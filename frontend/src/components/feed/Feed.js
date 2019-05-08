@@ -13,6 +13,7 @@ import Comments from "../comments/Comments";
 export class Feed extends Component {
 
 	update() {
+		if(cookie.load("cookie"))
 		this.props.getQuestionsAnswersForFeed(cookie.load("cookie").id);		
 	}
 	

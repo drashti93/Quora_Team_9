@@ -221,3 +221,5 @@ app.post("/signup", function(req, res) {
 //start your server on port 3001
 app.listen(process.env.BACK_END_PORT);
 console.log(`Server Listening on port ${process.env.BACK_END_PORT}`);
+
+module.exports = app

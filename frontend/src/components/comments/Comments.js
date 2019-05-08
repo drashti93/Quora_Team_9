@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import {bindActionCreators} from 'redux';
 import moment from 'moment';
 import axios from 'axios';
+import cookie from "react-cookies";
 
 const TextArea = Input.TextArea;
 
@@ -87,7 +88,7 @@ export class Comments extends Component {
 
 		const body = {
 			//TODO: Remove hardcoding of uer_id and comment
-			"userId": "5cc3f69dd23457601476d016",
+			"userId": cookie.load("cookie").id,
 			"answerId": this.props.answerId,
 			"comment":this.state.value
 		}
