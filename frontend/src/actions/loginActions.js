@@ -32,8 +32,9 @@ export function loginuser(data){
                     axios.defaults.withCredentials=true;
                   let result = await axios.post(rootUrl+"/login",data);
                   if(result.status===200 && result.data.loginSuccess===1){
-                   // console.log("successfull");
-                   localStorage.setItem('token', result.data.token);
+                    console.log("Login successfull");
+                    console.log("cookie.load -------->",cookie.load("cookie"));
+                    localStorage.setItem('token', result.data.token);
                     dispatch(callcomplete({loginSuccess:1,message:"Login Successful !"}));
                   }else{
                     // this.setState({

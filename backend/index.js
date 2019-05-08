@@ -122,10 +122,12 @@ app.post("/login", async function(req, res) {
 			};
 		} else {
 			const match = await bcrypt.compare(password, temp.password);
+			console.log("match: ", match);
 			if (match) {
 				var user = {
 					email: result.email
 				};
+				console.log("email after match: ", email);
 				var token = jwt.sign(
 					user,
 					"There is no substitute for hardwork",
@@ -143,7 +145,7 @@ app.post("/login", async function(req, res) {
 					}),
 					{ maxAge: 900000000, httpOnly: false, path: "/" }
 				);
-				req.session.user = result.id;
+				// console.log("req.session.user: ",req.session.user);
 				data = {
 					id: result._id,
 					role: result.role,
@@ -157,8 +159,10 @@ app.post("/login", async function(req, res) {
 					message: "Email or Password Incorrect"
 				};
 			}
+
 		}
 		// client.set('loginQueryKeynew', JSON.stringify(data));
+		console.log("data: -----> ", data);
 		res.status(200).json(data);
 	} catch (error) {
 		console.log(error);
