@@ -4,11 +4,12 @@ import { Redirect } from "react-router";
 import { List, Avatar, Icon, Tooltip, Button, Divider, Card, Typography } from "antd";
 import { connect } from "react-redux";
 import {bindActionCreators} from 'redux';
-import { getQuestionsAnswersForUserTopics, getTopicNameAndNumberOfFollowersById } from "../../actions/questionActions";
+import { getQuestionsAnswersForUserTopics, getTopicNameAndNumberOfFollowersById, getTopicsFollowedByUser, followATopic } from "../../actions/questionActions";
 import {Link} from "react-router-dom";
 import ReactQuill from 'react-quill';
 import axios from "axios";
 import Comments from "../comments/Comments";
+import { TOPICS } from "../../actions/types";
 const { Meta } = Card;
 const { Title } = Typography;
 
@@ -208,17 +209,8 @@ export class TopicsFeed extends Component {
 			"topicId": topicId,
 		}
 		console.log(body)
-		axios.defaults.withCredentials = true;
-		axios.post(`${process.env.REACT_APP_BACKEND_API_URL}:${process.env.REACT_APP_BACKEND_API_PORT}/topics/follow`, body)
-		.then(response =>{
-			console.log(`Response: ${response}`);
-			if(response.status === 200){
-				console.log(`follow topic successfully questionActions->postCommentAnswersForFeed(): ${response.data}`);
-				this.update();
-			}
-		}).catch(error =>{
-			console.log(`follow topic failed: questionActions->postCommentAnswersForFeed() - ${error}`)
-		})
+		this.props.followATopic(body);
+		this.update();
 	}
 
 	render() {
@@ -334,7 +326,9 @@ const mapActionToProps = (dispatch, props) => {
 	return bindActionCreators(
 		{
 			getQuestionsAnswersForUserTopics,
-			getTopicNameAndNumberOfFollowersById
+			getTopicNameAndNumberOfFollowersById,
+			getTopicsFollowedByUser,
+			followATopic
 		},
 		dispatch
 	);

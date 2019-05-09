@@ -113,7 +113,7 @@ componentWillReceiveProps(nextProps){
               }
             })
            if(found){
-            return {type:"Question :",link:`/question/${data._id}`,value:data.questionText,id:data._id};
+            return {type:"Question :",link:`/questions/${data._id}`,value:data.questionText,id:data._id};
           }
         });
         let users=this.props.navbar.userList.map((data)=>{
