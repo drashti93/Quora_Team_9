@@ -151,9 +151,8 @@ question.get("/:questionId/details", async (request, response) => {
 		let questions = await QuestionModel
 			.find({_id: request.params.questionId})
 			.populate({
-				path: "answers",
+				path: "answers userId",
 				populate: {
-
 					path: "upvotes downvotes bookmarks images userId comments.userId"
 				}
 			});

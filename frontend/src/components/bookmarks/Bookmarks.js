@@ -13,7 +13,7 @@ import Comments from "../comments/Comments";
 export class Bookmarks extends Component {
 
 	update(){
-		this.props.getBookmarkedAnswersWithCorrespondingQuestionsForBookmark();
+		this.props.getBookmarkedAnswersWithCorrespondingQuestionsForBookmark(cookie.load("cookie").id);
 	}
 
 	constructor(props) {

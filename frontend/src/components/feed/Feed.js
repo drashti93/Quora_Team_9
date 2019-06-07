@@ -12,8 +12,9 @@ import Comments from "../comments/Comments";
 
 export class Feed extends Component {
 
-	update(){
-		this.props.getQuestionsAnswersForFeed();		
+	update() {
+		if(cookie.load("cookie"))
+		this.props.getQuestionsAnswersForFeed(cookie.load("cookie").id);		
 	}
 	
 	constructor(props) {

@@ -1,4 +1,4 @@
-import { FEED, BOOKMARK_FEED, TOPIC_FEED, QUESTIONS_FEED, TOPICDETAILS } from "../actions/types";
+import { FEED, BOOKMARK_FEED, TOPIC_FEED, QUESTIONS_FEED, TOPICDETAILS, TOPICS } from "../actions/types";
 
 
 const initialState = {
@@ -6,7 +6,8 @@ const initialState = {
 	bookmarkFeed: [],
 	topicFeed: [],
 	questionsFeed: [],
-	topicDetails: {}
+	topicDetails: {},
+	topics: []
 }
 
 export default function loginReducer(state = initialState, { type, payload }) {
@@ -35,6 +36,11 @@ export default function loginReducer(state = initialState, { type, payload }) {
 			return {
 				...state,
 				topicDetails: payload
+			};
+		case TOPICS:
+			return {
+				...state,
+				topics: payload
 			};
 		default:
 			return state;
